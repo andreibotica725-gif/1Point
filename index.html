@@ -1,0 +1,2951 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#1A1A1A">
+    <title>1Point</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" id="favicon" href="logoLight.png">
+    <link rel="apple-touch-icon" href="logoLight.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+/* ==========================================
+   1Point - CSS Variables & Theme System
+   ========================================== */
+:root {
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F7F7F8;
+    --bg-tertiary: #EFEFEF;
+    --bg-card: #F5F5F6;
+    --text-primary: #1A1A1A;
+    --text-secondary: #6B6B6B;
+    --text-tertiary: #9E9E9E;
+    --text-placeholder: #C0C0C0;
+    --border: #E8E8E8;
+    --border-light: #F0F0F0;
+    --accent: #1A1A1A;
+    --accent-soft: #F0F0F0;
+    --done: #4CAF50;
+    --done-bg: rgba(76, 175, 80, 0.08);
+    --failed: #F44336;
+    --failed-bg: rgba(244, 67, 54, 0.08);
+    --undeclared: #9E9E9E;
+    --po-color: #717171;
+    --po-bg: rgba(92, 107, 192, 0.08);
+    --priority-max: #F44336;
+    --priority-high: #FF9800;
+    --priority-usual: #9E9E9E;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --nav-height: 68px;
+    --font: 'Montserrat', sans-serif;
+    --font-heading: 'Comfortaa', cursive;
+    --seg-bg: var(--bg-tertiary);
+    --seg-active-bg: var(--accent);
+    --seg-active-text: var(--bg-primary);
+    --seg-text: var(--text-secondary);
+}
+
+[data-theme="dark"] {
+    --bg-primary: #121212;
+    --bg-secondary: #1E1E1E;
+    --bg-tertiary: #2A2A2A;
+    --bg-card: #1E1E1E;
+    --text-primary: #F0F0F0;
+    --text-secondary: #A0A0A0;
+    --text-tertiary: #666;
+    --text-placeholder: #555;
+    --border: #2E2E2E;
+    --border-light: #252525;
+    --accent: #F0F0F0;
+    --accent-soft: #2A2A2A;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+body { font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+input, button, select, textarea { font-family: inherit; font-size: inherit; }
+button { border: none; background: none; cursor: pointer; color: inherit; }
+a { color: inherit; text-decoration: none; }
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar { display: none; }
+input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+.nav-tab span, .cal-day-header, .po-field label, .section-title { text-transform: none !important; }
+
+/* Page System */
+.page { position: fixed; inset: 0; background: var(--bg-primary); opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity var(--transition), visibility var(--transition), transform var(--transition); overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; padding-bottom: calc(var(--nav-height) + 20px); }
+.page.active { opacity: 1; visibility: visible; transform: translateY(0); z-index: 1; }
+.page-content { padding: 20px; max-width: 480px; margin: 0 auto; }
+.page-title { font-family: var(--font-heading); font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 20px; padding-top: 12px; }
+
+/* Task List */
+.task-list { display: flex; flex-direction: column; gap: 2px; }
+.task-item { position: relative; padding: 10px 14px; border-radius: var(--radius-md); transition: all var(--transition); animation: taskSlideIn 0.35s ease-out backwards; cursor: pointer; user-select: none; -webkit-user-select: none; }
+.task-item:active { transform: scale(0.98); }
+@keyframes taskSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.task-item.done .task-title { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.task-item.done .task-check i { color: var(--done); }
+.task-item.failed .task-title { color: var(--failed); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.task-item.failed .task-check i { color: var(--failed); }
+.task-row { display: flex; align-items: center; gap: 10px; }
+.task-check { width: 22px; height: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all var(--transition); font-size: 1.1rem; color: var(--text-tertiary); }
+.task-item.done .task-check i { color: var(--done); }
+.task-item.failed .task-check i { color: var(--failed); }
+.task-title { font-size: 1rem; font-weight: 500; color: var(--text-primary); transition: color var(--transition); flex: 1; }
+.task-time { font-size: 0.75rem; color: var(--text-tertiary); font-weight: 500; letter-spacing: 0.5px; }
+.task-expand-chevron { flex-shrink: 0; font-size: 0.75rem; color: var(--text-tertiary); transition: transform var(--transition); display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; }
+.task-item.expanded .task-expand-chevron i { transform: rotate(180deg); }
+
+/* Complex Task / Dropdown - now applies to any expandable task */
+.task-item.expandable { background: var(--bg-card); padding: 14px 16px; margin: 4px 0; }
+.task-expanded-content { max-height: 0; overflow: hidden; transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1); margin-left: 16px; }
+.task-item.expanded .task-expanded-content { max-height: 2000px; }
+.subtask-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; user-select: none; }
+.subtask-item:last-child { border-bottom: none; }
+.subtask-check { width: 18px; height: 18px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all var(--transition); font-size: 0.95rem; color: var(--text-tertiary); }
+.subtask-item.done .subtask-check i { color: var(--done); }
+.subtask-item.failed .subtask-check i { color: var(--failed); }
+.subtask-item.done .subtask-text { color: var(--done); text-decoration: line-through; text-decoration-thickness: 1px; }
+.subtask-item.failed .subtask-text { color: var(--failed); text-decoration: line-through; text-decoration-thickness: 1px; }
+.subtask-text { font-size: 0.9rem; color: var(--text-secondary); }
+.subtask-text .po-value { font-weight: 700; color: var(--po-color); }
+.task-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding: 10px 0; }
+.task-action-btn { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; color: var(--text-secondary); padding: 4px 0; transition: color var(--transition); }
+.task-action-btn:hover { color: var(--text-primary); }
+.task-timer { font-size: 0.8rem; font-weight: 500; color: var(--text-tertiary); letter-spacing: 1px; font-variant-numeric: tabular-nums; }
+.task-item.dragging { opacity: 0.5; transform: scale(0.96); }
+.task-item.drag-over { border-top: 2px solid var(--accent); }
+.task-expanded-priority { font-size: 0.75rem; font-weight: 500; color: var(--text-tertiary); text-align: right; padding-top: 4px; }
+.task-expanded-priority.priority { color: var(--priority-high); }
+.task-expanded-priority.maximum { color: var(--priority-max); }
+
+/* Task description shown in expanded view */
+.task-expanded-description { font-size: 0.85rem; color: var(--text-secondary); padding: 6px 0; line-height: 1.5; }
+
+/* Section Dividers & Accomplishment */
+.section-divider { text-align: center; font-size: 0.8rem; color: var(--text-tertiary); padding: 16px 0; font-weight: 400; }
+.accomplishment-card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 18px 20px; margin-top: 8px; }
+.accomplishment-header { display: flex; align-items: center; gap: 8px; font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; margin-bottom: 14px; color: var(--text-primary); }
+.accomplishment-body { display: flex; justify-content: space-between; align-items: center; }
+.accomplishment-stats { display: flex; flex-direction: column; gap: 2px; }
+.stat-done { color: var(--done); font-weight: 600; font-size: 0.9rem; }
+.stat-failed { color: var(--failed); font-weight: 600; font-size: 0.9rem; }
+.stat-undeclared { color: var(--text-tertiary); font-weight: 500; font-size: 0.9rem; }
+.accomplishment-rate { font-size: 2rem; font-weight: 300; color: var(--done); letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.see-all-link { display: block; text-align: center; font-size: 0.8rem; color: var(--text-tertiary); padding-top: 14px; cursor: pointer; transition: color var(--transition); }
+.see-all-link:hover { color: var(--text-primary); }
+
+/* FAB */
+.fab { position: fixed; bottom: calc(var(--nav-height) + 24px); right: 24px; width: 52px; height: 52px; border-radius: 50%; background: var(--bg-card); border: 1.5px solid var(--border); color: var(--text-primary); display: flex; align-items: center; justify-content: center; transition: all var(--transition); z-index: 50; }
+.fab:hover { transform: scale(1.08); }
+.fab:active { transform: scale(0.92); }
+
+/* Bottom Navigation */
+.bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: var(--bg-primary); border-top: 1px solid var(--border-light); display: flex; justify-content: space-around; align-items: center; z-index: 100; padding-bottom: env(safe-area-inset-bottom, 0); transition: transform var(--transition); }
+.bottom-nav.hidden { transform: translateY(100%); }
+.nav-tab { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; flex: 1; padding: 6px 0; color: var(--text-tertiary); transition: color var(--transition); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.3px; }
+.nav-tab.active { color: var(--text-primary); }
+.nav-tab i { font-size: 1.25rem; }
+
+/* Task Editor */
+#page-editor { z-index: 50; }
+.editor-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; position: sticky; top: 0; background: var(--bg-primary); z-index: 5; }
+.editor-back, .editor-save { display: flex; align-items: center; gap: 4px; font-size: 0.95rem; font-weight: 500; color: var(--text-primary); transition: opacity var(--transition); }
+.editor-back:active, .editor-save:active { opacity: 0.5; }
+.editor-body { padding: 0 20px 100px; max-width: 480px; margin: 0 auto; }
+.editor-title { font-family: var(--font-heading); width: 100%; font-size: 1.8rem; font-weight: 600; border: none; outline: none; background: transparent; color: var(--text-primary); padding: 8px 0; letter-spacing: -0.3px; }
+.editor-title::placeholder { color: var(--text-placeholder); }
+.editor-description { width: 100%; min-height: 80px; border: none; outline: none; background: transparent; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; padding: 4px 0; }
+.editor-description:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
+
+/* Subtasks in Editor */
+.subtasks-container { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; }
+.subtask-editor { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); animation: subtaskIn 0.3s ease-out; }
+@keyframes subtaskIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+.subtask-editor-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; }
+.subtask-editor-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.9rem; color: var(--text-primary); min-height: 22px; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
+.subtask-editor-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
+.subtask-editor-input::placeholder { color: var(--text-placeholder); }
+.subtask-editor-delete, .subtask-editor-duplicate { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); opacity: 0; transition: opacity var(--transition); font-size: 0.85rem; }
+.subtask-editor:hover .subtask-editor-delete, .subtask-editor:focus-within .subtask-editor-delete,
+.subtask-editor:hover .subtask-editor-duplicate, .subtask-editor:focus-within .subtask-editor-duplicate { opacity: 1; }
+
+/* Subtask description editor - grows vertically */
+.subtask-description-editor { padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); animation: subtaskIn 0.3s ease-out; display: flex; align-items: flex-start; gap: 10px; }
+.subtask-description-editor .subtask-desc-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.85rem; color: var(--text-secondary); font-style: italic; min-height: 24px; overflow: hidden; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
+.subtask-description-editor .subtask-desc-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
+
+/* Editor Sidebar */
+.editor-sidebar { position: fixed; right: 12px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; z-index: 10; background: var(--bg-primary); border-radius: var(--radius-lg); padding: 6px; border: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); touch-action: none; }
+#page-editor.active .editor-sidebar { opacity: 1; visibility: visible; }
+.sidebar-drag-handle { display: flex; align-items: center; justify-content: center; padding: 4px 0 2px; cursor: grab; color: var(--text-tertiary); transition: color var(--transition); }
+.sidebar-drag-handle:active { cursor: grabbing; }
+.sidebar-drag-handle:hover { color: var(--text-secondary); }
+.sidebar-tool { width: 38px; height: 38px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 1rem; transition: all var(--transition); }
+.sidebar-tool:hover { background: var(--bg-secondary); color: var(--text-primary); }
+.sidebar-tool.active { background: var(--accent-soft); color: var(--accent); }
+.sidebar-tool[data-tool="priority"].priority-usual { color: var(--priority-usual); }
+.sidebar-tool[data-tool="priority"].priority-high { color: var(--priority-high); }
+.sidebar-tool[data-tool="priority"].priority-max { color: var(--priority-max); }
+
+/* Priority Picker Modal */
+.priority-option { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: opacity var(--transition); font-size: 0.95rem; }
+.priority-option:last-child { border-bottom: none; }
+.priority-option:active { opacity: 0.5; }
+.priority-option.selected { font-weight: 600; }
+.priority-option-radio { font-size: 1rem; width: 20px; text-align: center; color: var(--text-tertiary); }
+.priority-option.selected .priority-option-radio { color: var(--text-primary); }
+.priority-option-label { font-weight: 500; }
+
+/* Custom Dropdown */
+.custom-dropdown { position: relative; width: 100%; }
+.custom-dropdown-trigger { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; cursor: pointer; transition: border-color var(--transition); }
+.custom-dropdown-trigger:hover { border-color: var(--text-secondary); }
+.custom-dropdown-trigger i { transition: transform var(--transition); color: var(--text-tertiary); }
+.custom-dropdown.open .custom-dropdown-trigger i { transform: rotate(180deg); }
+.custom-dropdown-menu { position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-top: 4px; z-index: 50; opacity: 0; visibility: hidden; transform: translateY(-4px); transition: all var(--transition); }
+.custom-dropdown.open .custom-dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+.custom-dropdown-option { padding: 10px 14px; font-size: 0.9rem; cursor: pointer; transition: background var(--transition); }
+.custom-dropdown-option:hover { background: var(--bg-secondary); }
+.custom-dropdown-option.active { font-weight: 600; color: var(--text-primary); }
+
+/* Horizontal Segmented Control */
+.segment-control { display: flex; background: var(--seg-bg); border-radius: var(--radius-md); padding: 3px; overflow: hidden; }
+.segment-control .seg-btn { flex: 1; padding: 8px 4px; text-align: center; font-size: 0.78rem; font-weight: 500; border-radius: calc(var(--radius-md) - 2px); color: var(--seg-text); transition: all var(--transition); cursor: pointer; white-space: nowrap; background: transparent; }
+.segment-control .seg-btn.active { background: var(--seg-active-bg); color: var(--seg-active-text); }
+
+/* Calendar Page */
+.calendar-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; }
+.cal-month-label { font-family: var(--font-heading); font-size: 1.2rem; font-weight: 600; }
+.cal-nav-btn { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background var(--transition); font-size: 0.9rem; color: var(--text-secondary); }
+.cal-nav-btn:hover { background: var(--bg-secondary); }
+.calendar-grid-wrapper { position: relative; overflow: hidden; touch-action: pan-y; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; transition: transform 0.3s ease, opacity 0.3s ease; }
+.cal-day-header { font-size: 0.7rem; font-weight: 600; color: var(--text-tertiary); padding: 8px 0; letter-spacing: 0.5px; }
+.cal-day { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: var(--radius-sm); font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all var(--transition); position: relative; }
+.cal-day:hover { background: var(--bg-secondary); }
+.cal-day.today { font-weight: 700; color: var(--text-primary); }
+.cal-day.today::after { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--text-primary); position: absolute; bottom: 4px; }
+.cal-day.other-month { color: var(--text-placeholder); }
+.cal-day.selected { background: var(--accent); color: var(--bg-primary); }
+.cal-day-tasks { padding: 16px 0; }
+.cal-day-tasks-header { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
+
+/* Future routines back button */
+.future-routines-back { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); padding: 8px 0; cursor: pointer; transition: color var(--transition); margin-bottom: 8px; }
+.future-routines-back:hover { color: var(--text-primary); }
+.future-routines-back i { font-size: 0.8rem; }
+
+/* Daily Detail View */
+.daily-detail-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 16px; }
+.daily-detail-header .day-label { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; text-align: center; flex: 1; }
+.daily-detail-nav { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: var(--text-secondary); transition: background var(--transition); }
+.daily-detail-nav:hover { background: var(--bg-secondary); }
+
+/* Account Page */
+.account-header { display: flex; flex-direction: column; align-items: center; padding: 24px 0 12px; gap: 4px; }
+.account-balance-card { background: var(--bg-card); border-radius: var(--radius-lg); padding: 28px 20px; text-align: center; margin-bottom: 24px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.balance-label { font-size: 0.8rem; color: var(--text-tertiary); font-weight: 500; letter-spacing: 1px; }
+.balance-value { font-size: 2.8rem; font-weight: 700; letter-spacing: -2px; }
+.balance-unit { font-size: 0.75rem; color: var(--text-tertiary); font-weight: 500; }
+
+.account-section { margin-bottom: 28px; }
+.section-title { font-family: var(--font-heading); font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; color: var(--text-tertiary); margin-bottom: 12px; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; transition: opacity var(--transition); font-size: 0.95rem; }
+.setting-row:active { opacity: 0.5; }
+.setting-value { color: var(--text-tertiary); font-weight: 500; font-size: 0.85rem; }
+
+/* Toggle Switch */
+.toggle { width: 44px; height: 24px; background: var(--bg-tertiary); border-radius: 12px; position: relative; transition: background var(--transition); }
+.toggle.on { background: var(--accent); }
+.toggle-knob { width: 20px; height: 20px; background: var(--bg-primary); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform var(--transition); }
+.toggle.on .toggle-knob { transform: translateX(20px); }
+
+/* Analytics - replaced chart with 3 rate values */
+.analytics-filters { margin-bottom: 16px; }
+.analytics-rates-row { display: flex; justify-content: space-around; align-items: center; background: var(--bg-card); border-radius: var(--radius-lg); padding: 24px 16px; }
+.analytics-rate-item { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.analytics-rate-value { font-size: 1.8rem; font-weight: 700; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.analytics-rate-label { font-size: 0.7rem; font-weight: 500; color: var(--text-tertiary); letter-spacing: 0.5px; }
+.analytics-rate-item.done .analytics-rate-value { color: var(--done); }
+.analytics-rate-item.failed .analytics-rate-value { color: var(--failed); }
+.analytics-rate-item.undeclared .analytics-rate-value { color: var(--text-tertiary); }
+
+/* Records */
+.records-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.record-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--bg-card); border-radius: var(--radius-md); animation: taskSlideIn 0.3s ease-out; }
+.record-title { font-weight: 500; font-size: 0.95rem; }
+.record-value { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); }
+.record-unit { font-size: 0.8rem; color: var(--text-tertiary); margin-left: 4px; }
+.record-date { font-size: 0.75rem; color: var(--text-tertiary); }
+.record-reminder-info { font-size: 0.7rem; color: var(--po-color); margin-top: 2px; }
+.record-delete-btn { color: var(--failed); font-size: 0.8rem; padding: 4px 8px; margin-top: 4px; cursor: pointer; border-radius: 4px; transition: background var(--transition); }
+.record-delete-btn:hover { background: var(--failed-bg); }
+.add-record-btn { width: 100%; padding: 12px; border-radius: var(--radius-md); border: 1.5px dashed var(--border); color: var(--text-tertiary); font-size: 0.9rem; font-weight: 500; transition: all var(--transition); }
+.add-record-btn:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+
+/* Modals */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 200; opacity: 0; visibility: hidden; transition: all var(--transition); backdrop-filter: blur(4px); }
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-primary); border-radius: var(--radius-xl) var(--radius-xl) 0 0; z-index: 201; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1); padding-bottom: env(safe-area-inset-bottom, 16px); }
+.modal.active { transform: translateY(0); }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 0; }
+.modal-header h3 { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; }
+.modal-close { font-size: 1.2rem; color: var(--text-tertiary); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 12px 20px 20px; }
+.modal-btn-save { width: 100%; padding: 14px; background: var(--accent); color: var(--bg-primary); border-radius: var(--radius-md); font-size: 0.95rem; font-weight: 600; transition: opacity var(--transition); }
+.modal-btn-save:active { opacity: 0.7; }
+
+/* Date Picker Modal */
+.dp-weekdays-label { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 10px; }
+.dp-or { text-align: center; font-size: 0.75rem; color: var(--text-tertiary); padding: 12px 0; }
+.dp-calendar-mini { margin-bottom: 12px; }
+.dp-cal-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.9rem; font-weight: 600; }
+.cal-nav-btn-sm { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; color: var(--text-secondary); transition: background var(--transition); }
+.cal-nav-btn-sm:hover { background: var(--bg-secondary); }
+.dp-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.dp-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 0.8rem; cursor: pointer; transition: all var(--transition); }
+.dp-cal-day:hover { background: var(--bg-secondary); }
+.dp-cal-day.selected { background: var(--accent); color: var(--bg-primary); }
+.dp-cal-day.in-range { background: var(--accent-soft); }
+.dp-cal-day.other-month { color: var(--text-placeholder); }
+.dp-selected-dates { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 8px; }
+.dp-date-chip { padding: 4px 10px; background: var(--accent-soft); border-radius: 12px; font-size: 0.75rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.dp-date-chip-remove { font-size: 0.9rem; cursor: pointer; color: var(--text-tertiary); }
+
+/* Recurrence Dates Dropdown */
+.recurrence-dates-section { margin-top: 12px; }
+.recurrence-dates-toggle { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); transition: background var(--transition); }
+.recurrence-dates-toggle:hover { background: var(--bg-tertiary); }
+.recurrence-dates-list { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+.recurrence-dates-list.open { max-height: 300px; overflow-y: auto; }
+.recurrence-date-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border-light); font-size: 0.82rem; }
+.recurrence-date-row:last-child { border-bottom: none; }
+.recurrence-date-exclude { color: var(--failed); font-size: 0.75rem; cursor: pointer; font-weight: 500; padding: 2px 8px; border-radius: 4px; transition: background var(--transition); }
+.recurrence-date-exclude:hover { background: var(--failed-bg); }
+.recurrence-date-excluded { text-decoration: line-through; color: var(--text-tertiary); }
+
+/* Custom Time Picker */
+.time-picker-custom { display: flex; flex-direction: column; gap: 12px; }
+.time-picker-row { display: flex; align-items: center; gap: 8px; }
+.time-picker-clock { display: flex; align-items: center; gap: 4px; background: var(--bg-secondary); border-radius: var(--radius-sm); padding: 8px 12px; border: 1px solid var(--border); }
+.time-picker-clock input { width: 36px; text-align: center; border: none; outline: none; background: transparent; font-size: 1.1rem; font-weight: 600; color: var(--text-primary); }
+.time-picker-clock .time-colon { font-size: 1.1rem; font-weight: 600; color: var(--text-tertiary); }
+.time-picker-text { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; }
+.time-per-day { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+.time-day-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.time-day-label { font-size: 0.85rem; font-weight: 500; min-width: 60px; }
+.time-mode-option { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 8px; cursor: pointer; }
+.time-mode-option i { font-size: 1rem; color: var(--text-tertiary); transition: color var(--transition); }
+.time-mode-option.selected i { color: var(--text-primary); }
+
+/* PO Config */
+.po-info { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+.po-field { margin-bottom: 16px; }
+.po-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; }
+.po-input, .po-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; -webkit-appearance: none; appearance: none; }
+
+/* PO numbers bold */
+.po-value { font-weight: 700 !important; color: var(--po-color); }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.task-removing { animation: taskRemove 0.35s ease-in forwards; }
+@keyframes taskRemove { to { opacity: 0; transform: translateX(-100%); height: 0; padding: 0; margin: 0; } }
+
+/* ==========================================
+   TABLE FEATURE STYLES (embedded in editor)
+   ========================================== */
+.editor-tables-container { display: flex; flex-direction: column; gap: 12px; padding: 12px 0; }
+.table-container { background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden; animation: taskSlideIn 0.3s ease-out; }
+.table-title-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; transition: background var(--transition); }
+.table-title-bar:hover { background: var(--bg-secondary); }
+.table-title-bar i { font-size: 0.8rem; color: var(--text-tertiary); }
+.user-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; }
+.user-table td { border: 1px solid var(--border); padding: 8px 10px; font-size: 0.85rem; min-width: 60px; min-height: 32px; height: 36px; position: relative; cursor: text; transition: background var(--transition); vertical-align: top; word-wrap: break-word; }
+.user-table td:focus { outline: 2px solid var(--accent); outline-offset: -2px; background: var(--bg-secondary); }
+.user-table td.merged { background: var(--bg-secondary); }
+.user-table td .po-value { font-weight: 700; color: var(--po-color); }
+.table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0 0 8px; }
+.table-settings-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-primary); border-radius: var(--radius-lg); padding: 20px; z-index: 250; width: 85%; max-width: 340px; border: 1px solid var(--border); }
+.table-settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 249; backdrop-filter: blur(4px); }
+.add-table-btn { width: 100%; padding: 12px; border-radius: var(--radius-md); border: 1.5px dashed var(--border); color: var(--text-tertiary); font-size: 0.9rem; font-weight: 500; transition: all var(--transition); }
+.add-table-btn:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+
+/* Future task item in calendar */
+.future-task-item { padding: 10px 14px; background: var(--bg-card); border-radius: var(--radius-md); margin-bottom: 6px; }
+
+/* Calendar Record Picker */
+.record-reminder-btn { display: flex; align-items: center; gap: 8px; width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; cursor: pointer; transition: border-color var(--transition); }
+.record-reminder-btn:hover { border-color: var(--text-secondary); }
+.record-reminder-btn i { color: var(--text-tertiary); }
+
+#modal-record-calendar { min-height: 65vh; }
+#dp-weekday-seg { padding: 0px; }
+.seg-btn { border-radius: 0px !important; }
+
+/* Mobile polish */
+@media (max-width: 480px) { .page-content { padding: 16px; } .page-title { font-size: 1.7rem; } .editor-sidebar { right: 8px; } }
+#page-editor.active ~ .bottom-nav { transform: translateY(100%); }
+
+.subtask-desc-input {
+  font-style: normal !important;
+}
+.analytics-rate-value {
+  font-weight: 400;
+}
+.record-value {
+  font-weight: 500;
+}
+#account-balance {
+  font-weight: 500;
+}
+.po-value {
+  font-weight: 500 !important;
+}
+.record-unit {
+  font-size: 1.2rem;
+}
+.time-per-day .time-picker-text {
+  max-width: 18rem;
+}
+#record-delete-wrapper {
+  padding: 14px;
+}
+.record-delete-btn:hover {
+  background: none;
+}
+.recurrence-dates-toggle {
+  padding: 14px;
+}
+.recurrence-date-exclude:hover {
+  background: none;
+}
+</style>
+</head>
+<body>
+    <div id="app">
+        <!-- Main Page -->
+        <div id="page-main" class="page active">
+            <div class="page-content">
+                <h1 class="page-title" id="main-title">Today</h1>
+                <div id="task-list" class="task-list"></div>
+                <p class="section-divider" id="end-of-tasks">End of Today's Tasks</p>
+
+                <div class="accomplishment-card" id="daily-accomplishment">
+                    <div class="accomplishment-header">
+                        <span>Today's Results</span>
+                    </div>
+                    <div class="accomplishment-body">
+                        <div class="accomplishment-stats">
+                            <p class="stat-done"><span id="stat-done-count">0</span> Done</p>
+                            <p class="stat-failed"><span id="stat-failed-count">0</span> Failed</p>
+                            <p class="stat-undeclared"><span id="stat-undeclared-count">0</span> Undeclared</p>
+                        </div>
+                        <div class="accomplishment-rate" id="accomplishment-rate">0%</div>
+                    </div>
+                    <a class="see-all-link" onclick="App.nav.goto('account'); App.account.showAnalytics();">See All Results</a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Task Editor Page -->
+        <div id="page-editor" class="page">
+            <div class="editor-header">
+                <button class="editor-back" onclick="App.tasks.closeEditor()">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Back
+                </button>
+                <button class="editor-save" onclick="App.tasks.saveTask()">
+                    <i class="fa-solid fa-check"></i>
+                </button>
+            </div>
+            <div class="editor-body">
+                <input type="text" id="editor-title" class="editor-title" placeholder="Task Title" autocomplete="off">
+                <div id="editor-description" class="editor-description" contenteditable="true" data-placeholder="Task Description"></div>
+                
+                <div id="subtasks-container" class="subtasks-container"></div>
+                <div id="editor-tables-container" class="editor-tables-container"></div>
+            </div>
+
+            <div class="editor-sidebar" id="editor-sidebar">
+                <div class="sidebar-drag-handle" id="sidebar-drag-handle">
+                    <i class="fa-solid fa-grip-lines" style="font-size:0.8rem;"></i>
+                </div>
+                <button class="sidebar-tool" onclick="App.editor.toggleBold()" title="Bold" data-tool="bold"><i class="fa-solid fa-bold"></i></button>
+                <button class="sidebar-tool" onclick="App.editor.toggleItalic()" title="Italic" data-tool="italic"><i class="fa-solid fa-italic"></i></button>
+                <button class="sidebar-tool" onclick="App.editor.addSubtask()" title="Add Subtask" data-tool="subtask">
+                    <i class="fa-solid fa-list-check"></i>
+                </button>
+                <button class="sidebar-tool" onclick="App.editor.addSubtaskDescription()" title="Add Description" data-tool="description">
+                    <i class="fa-solid fa-align-left"></i>
+                </button>
+                <button class="sidebar-tool" onclick="App.editor.addTable()" title="Add Table" data-tool="table">
+                    <i class="fa-solid fa-table"></i>
+                </button>
+                <button class="sidebar-tool" onclick="App.editor.openPOConfig()" title="Progressive Overload" data-tool="po">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </button>
+                <button class="sidebar-tool" onclick="App.editor.openPriorityPicker()" title="Priority" data-tool="priority" id="btn-priority">
+                    <i class="fa-solid fa-list-ol"></i>
+                </button>
+                <button class="sidebar-tool" onclick="App.editor.openDatePicker()" title="Schedule" data-tool="schedule">
+                    <i class="fa-regular fa-calendar"></i>
+                </button>
+                <button class="sidebar-tool" onclick="App.editor.openTimePicker()" title="Time" data-tool="time">
+                    <i class="fa-regular fa-clock"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Calendar Page -->
+        <div id="page-calendar" class="page">
+            <div class="page-content">
+                <h1 class="page-title">Calendar</h1>
+                <div id="future-routines-back" class="future-routines-back" style="display:none;" onclick="App.calendar.exitFutureRoutines()">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Back</span>
+                </div>
+                <div class="calendar-header">
+                    <button class="cal-nav-btn" onclick="App.calendar.prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="cal-month-label" id="cal-month-label"></span>
+                    <button class="cal-nav-btn" onclick="App.calendar.nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="calendar-grid-wrapper" id="calendar-grid-wrapper">
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+                <div class="cal-day-tasks" id="cal-day-tasks"></div>
+            </div>
+        </div>
+
+        <!-- Daily Detail Page -->
+        <div id="page-daily-detail" class="page">
+            <div class="page-content">
+                <div class="daily-detail-header">
+                    <button class="daily-detail-nav" onclick="App.dailyDetail.prevDay()"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="day-label" id="daily-detail-label"></span>
+                    <button class="daily-detail-nav" onclick="App.dailyDetail.nextDay()"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div id="daily-detail-tasks" class="task-list"></div>
+                <p class="section-divider" id="daily-detail-end"></p>
+                <div class="accomplishment-card" id="daily-detail-accomplishment">
+                    <div class="accomplishment-header"><span>Results</span></div>
+                    <div class="accomplishment-body">
+                        <div class="accomplishment-stats">
+                            <p class="stat-done"><span id="dd-stat-done">0</span> Done</p>
+                            <p class="stat-failed"><span id="dd-stat-failed">0</span> Failed</p>
+                            <p class="stat-undeclared"><span id="dd-stat-undeclared">0</span> Undeclared</p>
+                        </div>
+                        <div class="accomplishment-rate" id="dd-accomplishment-rate">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Page -->
+        <div id="page-account" class="page">
+            <div class="page-content">
+                <div class="account-header"></div>
+
+                <div class="account-balance-card">
+                    <span class="balance-label">Balance</span>
+                    <span class="balance-value" id="account-balance">0</span>
+                    <span class="balance-unit">pts</span>
+                </div>
+
+                <div class="account-section">
+                    <p class="section-title">Settings</p>
+                    <div class="setting-row" onclick="App.account.toggleTheme()">
+                        <span>Dark Mode</span>
+                        <div class="toggle" id="toggle-theme"><div class="toggle-knob"></div></div>
+                    </div>
+                </div>
+
+                <div class="account-section" id="analytics-section">
+                    <p class="section-title">Analytics</p>
+                    <div class="analytics-filters">
+                        <div class="custom-dropdown" id="analytics-range-dropdown">
+                            <div class="custom-dropdown-trigger" onclick="App.ui.toggleDropdown('analytics-range-dropdown')">
+                                <span class="custom-dropdown-value">Last Week</span>
+                                <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i>
+                            </div>
+                            <div class="custom-dropdown-menu">
+                                <div class="custom-dropdown-option" data-value="today" onclick="App.account.selectAnalyticsRange(this)">Today</div>
+                                <div class="custom-dropdown-option active" data-value="week" onclick="App.account.selectAnalyticsRange(this)">Last Week</div>
+                                <div class="custom-dropdown-option" data-value="month" onclick="App.account.selectAnalyticsRange(this)">Last Month</div>
+                                <div class="custom-dropdown-option" data-value="3months" onclick="App.account.selectAnalyticsRange(this)">Last 3 Months</div>
+                                <div class="custom-dropdown-option" data-value="6months" onclick="App.account.selectAnalyticsRange(this)">Last 6 Months</div>
+                                <div class="custom-dropdown-option" data-value="year" onclick="App.account.selectAnalyticsRange(this)">Last Year</div>
+                                <div class="custom-dropdown-option" data-value="all" onclick="App.account.selectAnalyticsRange(this)">All Time</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="analytics-rates-row" id="analytics-rates-row">
+                        <div class="analytics-rate-item done">
+                            <span class="analytics-rate-value" id="analytics-done-rate">0%</span>
+                            <span class="analytics-rate-label">Completed</span>
+                        </div>
+                        <div class="analytics-rate-item failed">
+                            <span class="analytics-rate-value" id="analytics-failed-rate">0%</span>
+                            <span class="analytics-rate-label">Failed</span>
+                        </div>
+                        <div class="analytics-rate-item undeclared">
+                            <span class="analytics-rate-value" id="analytics-undeclared-rate">0%</span>
+                            <span class="analytics-rate-label">Undeclared</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <p class="section-title">Personal Records</p>
+                    <div class="records-list" id="records-list"></div>
+                    <button class="add-record-btn" onclick="App.account.addRecord()">+ Add Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAB - fixed add button -->
+        <button class="fab" id="fab-add" onclick="App.tasks.openEditor()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+
+        <!-- Bottom Nav -->
+        <nav class="bottom-nav" id="bottom-nav">
+            <div class="nav-tab active" data-page="main" onclick="App.nav.goto('main')">
+                <i class="fa-regular fa-lightbulb"></i>
+                <span>Today</span>
+            </div>
+            <div class="nav-tab" data-page="calendar" onclick="App.nav.goto('calendar')">
+                <i class="fa-regular fa-calendar"></i>
+                <span>Calendar</span>
+            </div>
+            <div class="nav-tab" data-page="account" onclick="App.nav.goto('account')">
+                <i class="fa-regular fa-user"></i>
+                <span>Account</span>
+            </div>
+        </nav>
+
+        <!-- Modal Overlay -->
+        <div class="modal-overlay" id="modal-overlay" onclick="App.modal.close()"></div>
+
+        <!-- Priority Modal -->
+        <div class="modal" id="modal-priority">
+            <div class="modal-header"><h3>Priority</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="priority-option" data-priority="usual" onclick="App.editor.setPriority('usual')">
+                    <span class="priority-option-radio"><i class="fa-regular fa-circle"></i></span>
+                    <span class="priority-option-label">Normal</span>
+                </div>
+                <div class="priority-option" data-priority="priority" onclick="App.editor.setPriority('priority')">
+                    <span class="priority-option-radio"><i class="fa-regular fa-circle"></i></span>
+                    <span class="priority-option-label">Important</span>
+                </div>
+                <div class="priority-option" data-priority="maximum" onclick="App.editor.setPriority('maximum')">
+                    <span class="priority-option-radio"><i class="fa-regular fa-circle"></i></span>
+                    <span class="priority-option-label">Obligatory</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Picker Modal -->
+        <div class="modal" id="modal-datepicker">
+            <div class="modal-header"><h3>Schedule</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <p class="dp-weekdays-label">Select recurring days:</p>
+                <div class="segment-control" id="dp-weekday-seg" style="margin-bottom:12px;">
+                    <button class="seg-btn" data-day="monday">Mon</button>
+                    <button class="seg-btn" data-day="tuesday">Tue</button>
+                    <button class="seg-btn" data-day="wednesday">Wed</button>
+                    <button class="seg-btn" data-day="thursday">Thu</button>
+                    <button class="seg-btn" data-day="friday">Fri</button>
+                    <button class="seg-btn" data-day="saturday">Sat</button>
+                    <button class="seg-btn" data-day="sunday">Sun</button>
+                </div>
+                <p class="dp-or">— or pick custom dates —</p>
+                <div class="dp-calendar-mini">
+                    <div class="dp-cal-header">
+                        <button onclick="App.editor.dpPrevMonth()" class="cal-nav-btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="dp-cal-label"></span>
+                        <button onclick="App.editor.dpNextMonth()" class="cal-nav-btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="dp-cal-grid" id="dp-cal-grid"></div>
+                </div>
+                <div id="dp-selected-dates" class="dp-selected-dates"></div>
+                <div id="recurrence-dates-section" class="recurrence-dates-section" style="display:none;">
+                    <div class="recurrence-dates-toggle" onclick="App.editor.toggleRecurrenceDates()">
+                        <span>Future scheduled dates</span>
+                        <i class="fa-solid fa-chevron-down" id="recurrence-toggle-icon"></i>
+                    </div>
+                    <div class="recurrence-dates-list" id="recurrence-dates-list"></div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveDates()"><i class="fa-solid fa-check"></i> Save</button></div>
+        </div>
+
+        <!-- Time Picker Modal -->
+        <div class="modal" id="modal-timepicker">
+            <div class="modal-header"><h3>Set Time</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="time-picker-custom">
+                    <div style="margin-bottom:8px;">
+                        <div class="time-mode-option selected" id="time-mode-same" onclick="App.editor.setTimeMode('same')">
+                            <i class="fa-regular fa-circle-dot"></i>
+                            <span>Same time for all days</span>
+                        </div>
+                        <div class="time-picker-row">
+                            <input type="time" id="time-all" class="time-picker-text" style="flex:1;">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="time-mode-option" id="time-mode-custom" onclick="App.editor.setTimeMode('custom')">
+                            <i class="fa-regular fa-circle"></i>
+                            <span>Custom per day</span>
+                        </div>
+                        <div id="time-per-day" class="time-per-day"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveTime()"><i class="fa-solid fa-check"></i> Save</button></div>
+        </div>
+
+        <!-- PO Config Modal -->
+        <div class="modal" id="modal-po">
+            <div class="modal-header"><h3>Progressive Overload</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <p class="po-info">Select a number in your subtask text, then configure its progression.</p>
+                <div class="po-field"><label>Selected Value</label><input type="number" id="po-base-value" class="po-input" readonly></div>
+                <div class="po-field">
+                    <label>Frequency</label>
+                    <div class="custom-dropdown" id="po-frequency-dropdown">
+                        <div class="custom-dropdown-trigger" onclick="App.ui.toggleDropdown('po-frequency-dropdown')">
+                            <span class="custom-dropdown-value">Every Check</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i>
+                        </div>
+                        <div class="custom-dropdown-menu">
+                            <div class="custom-dropdown-option active" data-value="every_check" onclick="App.ui.selectOption(this)">Every Check</div>
+                            <div class="custom-dropdown-option" data-value="daily" onclick="App.ui.selectOption(this)">Daily</div>
+                            <div class="custom-dropdown-option" data-value="weekly" onclick="App.ui.selectOption(this)">Weekly</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="po-frequency" value="every_check">
+                </div>
+                <div class="po-field"><label>Increase by</label><input type="number" id="po-load" class="po-input" value="1" min="1"></div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.savePO()"><i class="fa-solid fa-check"></i> Apply</button></div>
+        </div>
+
+        <!-- Record Modal -->
+        <div class="modal" id="modal-record">
+            <div class="modal-header"><h3>Personal Record</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="po-field"><label>Record Title</label><input type="text" id="record-title" class="po-input" placeholder="e.g. Pull Ups"></div>
+                <div class="po-field"><label>Value</label><input type="number" id="record-value" class="po-input" placeholder="10"></div>
+                <div class="po-field"><label>Unit</label><input type="text" id="record-unit" class="po-input" placeholder="reps"></div>
+                <div class="po-field">
+                    <label>Reminder Date (optional)</label>
+                    <input type="hidden" id="record-reminder" value="">
+                    <button class="record-reminder-btn" id="record-reminder-btn" onclick="App.account.openRecordCalendar()">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span id="record-reminder-label">Select date</span>
+                    </button>
+                </div>
+                <div class="po-field">
+                    <label>Reminder Hour (optional)</label>
+                    <input type="hidden" id="record-reminder-hour" value="">
+                    <div class="time-picker-custom" id="record-time-picker-section">
+                        <div class="time-picker-row">
+                            <input type="time" id="record-time-native" class="time-picker-text" style="flex:1;" onchange="App.account.onRecordTimeChange()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn-save" onclick="App.account.saveRecord()"><i class="fa-solid fa-check"></i> Save</button>
+                <div id="record-delete-wrapper" style="display:none;text-align:center;margin-top:8px;">
+                    <span class="record-delete-btn" onclick="App.account.deleteRecord()"><i class="fa-regular fa-trash-can"></i> Delete Record</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Record Calendar Modal -->
+        <div class="modal" id="modal-record-calendar" style="z-index:210;">
+            <div class="modal-header"><h3>Select Date</h3><button onclick="App.account.closeRecordCalendar()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="dp-cal-header">
+                    <button onclick="App.account.rcPrevMonth()" class="cal-nav-btn-sm"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span id="rc-cal-label"></span>
+                    <button onclick="App.account.rcNextMonth()" class="cal-nav-btn-sm"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="dp-cal-grid" id="rc-cal-grid"></div>
+            </div>
+        </div>
+
+        <!-- Table Create/Edit Modal -->
+        <div class="modal" id="modal-table">
+            <div class="modal-header"><h3 id="modal-table-title">Create Table</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="po-field"><label>Table Title</label><input type="text" id="table-title-input" class="po-input" placeholder="My Table"></div>
+                <div class="po-field"><label>Rows</label><input type="number" id="table-rows-input" class="po-input" placeholder="3" min="1" max="50" value="3"></div>
+                <div class="po-field"><label>Columns</label><input type="number" id="table-cols-input" class="po-input" placeholder="3" min="1" max="20" value="3"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn-save" onclick="App.editor.saveEditorTable()"><i class="fa-solid fa-check"></i> Save</button>
+                <div id="table-delete-wrapper" style="display:none;text-align:center;margin-top:8px;">
+                    <span class="record-delete-btn" onclick="App.editor.deleteEditorTable()"><i class="fa-regular fa-trash-can"></i> Delete Table</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Cell PO Modal -->
+        <div class="modal" id="modal-table-po">
+            <div class="modal-header"><h3>Cell Progressive Overload</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <p class="po-info">Configure progressive overload for the selected cell value.</p>
+                <div class="po-field"><label>Base Value</label><input type="number" id="table-po-base" class="po-input"></div>
+                <div class="po-field">
+                    <label>Frequency</label>
+                    <div class="custom-dropdown" id="table-po-freq-dropdown">
+                        <div class="custom-dropdown-trigger" onclick="App.ui.toggleDropdown('table-po-freq-dropdown')">
+                            <span class="custom-dropdown-value">Every Check</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i>
+                        </div>
+                        <div class="custom-dropdown-menu">
+                            <div class="custom-dropdown-option active" data-value="every_check" onclick="App.ui.selectOption(this)">Every Check</div>
+                            <div class="custom-dropdown-option" data-value="daily" onclick="App.ui.selectOption(this)">Daily</div>
+                            <div class="custom-dropdown-option" data-value="weekly" onclick="App.ui.selectOption(this)">Weekly</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="table-po-frequency" value="every_check">
+                </div>
+                <div class="po-field"><label>Increase by</label><input type="number" id="table-po-load" class="po-input" value="1" min="1"></div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveTableCellPO()"><i class="fa-solid fa-check"></i> Apply</button></div>
+        </div>
+    </div>
+
+<script>
+/* ==========================================
+   1Point - Offline Single-User App
+   All data stored in localStorage
+   ========================================== */
+
+const DB = {
+    _idb: null,
+    _cache: {},
+    async init() {
+        return new Promise((resolve) => {
+            for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables']) {
+                try { const v = localStorage.getItem('1p_' + key); if (v) this._cache[key] = JSON.parse(v); } catch {}
+            }
+            const req = indexedDB.open('1PointDB', 2);
+            req.onupgradeneeded = (e) => { const db = e.target.result; if (!db.objectStoreNames.contains('data')) db.createObjectStore('data'); };
+            req.onsuccess = (e) => {
+                this._idb = e.target.result;
+                const tx = this._idb.transaction('data', 'readonly');
+                const store = tx.objectStore('data');
+                for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables']) {
+                    const r = store.get(key);
+                    r.onsuccess = () => { if (r.result !== undefined) this._cache[key] = r.result; };
+                }
+                tx.oncomplete = () => resolve();
+            };
+            req.onerror = () => resolve();
+        });
+    },
+    get(key, fallback) { return this._cache[key] !== undefined ? this._cache[key] : fallback; },
+    set(key, val) {
+        this._cache[key] = val;
+        try { localStorage.setItem('1p_' + key, JSON.stringify(val)); } catch {}
+        if (this._idb) { try { const tx = this._idb.transaction('data', 'readwrite'); tx.objectStore('data').put(val, key); } catch {} }
+        AutoBackup.onDataChange();
+    },
+    getTasks() { return this.get('tasks', []); },
+    setTasks(t) { this.set('tasks', t); },
+    getRecords() { return this.get('records', []); },
+    setRecords(r) { this.set('records', r); },
+    getDailyLogs() { return this.get('daily_logs', {}); },
+    setDailyLogs(l) { this.set('daily_logs', l); },
+    getBalance() { return this.get('balance', 0); },
+    setBalance(b) { this.set('balance', b); },
+    getSettings() { return this.get('settings', { theme: 'light' }); },
+    setSettings(s) { this.set('settings', s); },
+    getTables() { return this.get('tables', []); },
+    setTables(t) { this.set('tables', t); },
+    getAll() { return { tasks: this.getTasks(), records: this.getRecords(), daily_logs: this.getDailyLogs(), balance: this.getBalance(), settings: this.getSettings(), tables: this.getTables(), exported: new Date().toISOString() }; }
+};
+
+const AutoBackup = {
+    _timer: null, _lastBackupDate: null,
+    init() { this._lastBackupDate = localStorage.getItem('1p_last_backup_date') || ''; this.checkDaily(); setInterval(() => this.checkDaily(), 60 * 60 * 1000); },
+    onDataChange() { clearTimeout(this._timer); this._timer = setTimeout(() => this.checkDaily(), 5000); },
+    checkDaily() {
+        const today = new Date().toISOString().split('T')[0];
+        if (this._lastBackupDate === today) return;
+        const data = DB.getAll();
+        if (!data.tasks.length && !data.records.length) return;
+        this.downloadBackup(data);
+        this._lastBackupDate = today;
+        localStorage.setItem('1p_last_backup_date', today);
+    },
+    downloadBackup(data) {
+        try {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+            a.download = `1point-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.style.display = 'none'; document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+        } catch (e) { console.warn('Auto-backup failed:', e); }
+    }
+};
+
+const Notifier = {
+    _permission: null,
+    async init() {
+        if ('Notification' in window) {
+            this._permission = Notification.permission;
+            if (this._permission === 'default') this._permission = await Notification.requestPermission();
+        }
+    },
+    schedule(title, body, dateStr, hour) {
+        if (!('Notification' in window) || this._permission !== 'granted') return;
+        const [y, m, d] = dateStr.split('-').map(Number);
+        const [hh, mm] = (hour || '09:00').split(':').map(Number);
+        const target = new Date(y, m - 1, d, hh, mm || 0);
+        const delay = target.getTime() - Date.now();
+        if (delay > 0 && delay < 86400000 * 30) {
+            setTimeout(() => { new Notification(title, { body, icon: 'logoLight.png' }); }, delay);
+        }
+    }
+};
+
+const App = {
+    state: {
+        tasks: [],
+        currentDate: new Date().toISOString().split('T')[0],
+        editingTask: null,
+        editorData: { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [], times: {}, days_of_week: [] }, notifications: [], excludedDates: [] },
+        calendarMonth: new Date().getMonth(),
+        calendarYear: new Date().getFullYear(),
+        dpMonth: new Date().getMonth(),
+        dpYear: new Date().getFullYear(),
+        dpSelectedDates: [],
+        dpSelectedDays: [],
+        dpExcludedDates: [],
+        clickTimers: {},
+        clickCounts: {},
+        subtaskClickTimers: {},
+        subtaskClickCounts: {},
+        expandedTasks: new Set(),
+        sidebarDrag: { active: false, startX: 0, startY: 0, origX: 0, origY: 0 },
+        dailyDetailDate: null,
+        rcMonth: new Date().getMonth(),
+        rcYear: new Date().getFullYear(),
+        recurrenceDatesOpen: false,
+        futureRoutinesMode: false,
+        futureRoutinesDate: null,
+        editingRecordId: null,
+        editingEditorTableId: null,
+        timeMode: 'same',
+        activeCellForPO: null
+    },
+
+    ui: {
+        toggleDropdown(id) {
+            const dd = document.getElementById(id); if (!dd) return;
+            document.querySelectorAll('.custom-dropdown.open').forEach(d => { if (d.id !== id) d.classList.remove('open'); });
+            dd.classList.toggle('open');
+        },
+        selectOption(optionEl) {
+            const dropdown = optionEl.closest('.custom-dropdown');
+            dropdown.querySelector('.custom-dropdown-value').textContent = optionEl.textContent.trim();
+            dropdown.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
+            optionEl.classList.add('active');
+            const hiddenInput = dropdown.nextElementSibling;
+            if (hiddenInput && hiddenInput.type === 'hidden') hiddenInput.value = optionEl.dataset.value;
+            dropdown.classList.remove('open');
+        },
+        closeAllDropdowns(e) { if (!e.target.closest('.custom-dropdown')) document.querySelectorAll('.custom-dropdown.open').forEach(d => d.classList.remove('open')); }
+    },
+
+    nav: {
+        goto(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            const pageEl = document.getElementById('page-' + page);
+            if (pageEl) pageEl.classList.add('active');
+            const tabEl = document.querySelector(`.nav-tab[data-page="${page}"]`);
+            if (tabEl) tabEl.classList.add('active');
+            const nav = document.getElementById('bottom-nav');
+            const fab = document.getElementById('fab-add');
+            if (page === 'editor' || page === 'daily-detail') { nav.classList.add('hidden'); if (fab) fab.style.display = 'none'; }
+            else { nav.classList.remove('hidden'); if (fab) fab.style.display = 'flex'; }
+            if (page === 'main') App.tasks.loadTasks();
+            if (page === 'calendar') { App.state.futureRoutinesMode = false; document.getElementById('future-routines-back').style.display = 'none'; App.calendar.render(); }
+            if (page === 'account') App.account.loadProfile();
+        }
+    },
+
+    modal: {
+        open(id) { document.getElementById('modal-overlay').classList.add('active'); document.getElementById(id).classList.add('active'); },
+        close() { document.getElementById('modal-overlay').classList.remove('active'); document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+    },
+
+    showError(msg) {
+        const el = document.createElement('div');
+        el.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#F44336;color:#fff;padding:12px 24px;border-radius:12px;z-index:999;font-size:0.9rem;font-weight:500;animation:slideUp 0.3s ease';
+        el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
+    },
+
+    showSuccess(msg) {
+        const el = document.createElement('div');
+        el.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#4CAF50;color:#fff;padding:12px 24px;border-radius:12px;z-index:999;font-size:0.9rem;font-weight:500;animation:slideUp 0.3s ease';
+        el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
+    },
+
+    // ==========================================
+    // Tasks
+    // ==========================================
+    tasks: {
+        loadTasks(date) {
+            const d = date || App.state.currentDate;
+            const allTasks = DB.getTasks();
+            App.state.tasks = this.getTasksForDate(allTasks, d);
+            this.render();
+            this.updateAccomplishment();
+        },
+
+        getTasksForDate(tasks, date) {
+            const dayOfWeek = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][new Date(date + 'T00:00').getDay()];
+            const result = [];
+            for (const task of tasks) {
+                const schedule = task.schedule || {};
+                if (task.overrides && task.overrides[date] && task.overrides[date].cancelled) continue;
+                if (task.excludedDates && task.excludedDates.includes(date)) continue;
+                const type = schedule.type || 'once';
+                const dates = schedule.dates || [];
+                const daysOfWeek = schedule.days_of_week || [];
+                let applicable = false;
+                if (type === 'once' && dates.includes(date)) applicable = true;
+                else if (type === 'recurring' && (daysOfWeek.includes(dayOfWeek) || dates.includes(date))) applicable = true;
+                else if (dates.includes(date)) applicable = true;
+                if (applicable) {
+                    const taskCopy = JSON.parse(JSON.stringify(task));
+                    if (task.overrides && task.overrides[date] && task.overrides[date].modifications) Object.assign(taskCopy, task.overrides[date].modifications);
+                    const times = schedule.times || {};
+                    taskCopy.time = times[date] || times['default'] || null;
+                    taskCopy.current_status = (task.status && task.status[date]) || 'undeclared';
+                    if (taskCopy.subtasks) {
+                        for (const st of taskCopy.subtasks) {
+                            st.current_status = (st.status && st.status[date]) || 'undeclared';
+                            st.display_text = this.calculatePODisplay(st, date);
+                        }
+                    }
+                    // Compute table cell PO values for this date
+                    if (taskCopy.tables) {
+                        for (const table of taskCopy.tables) {
+                            if (table.cells) {
+                                for (const key in table.cells) {
+                                    const cell = table.cells[key];
+                                    if (cell.po) {
+                                        cell.po._displayValue = this._computeTableCellPOForDate(cell.po, date);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    result.push(taskCopy);
+                }
+            }
+            result.sort((a, b) => {
+                const po = { maximum: 0, priority: 1, usual: 2 };
+                const pa = po[a.priority] ?? 2, pb = po[b.priority] ?? 2;
+                if (pa !== pb) return pa - pb;
+                return (a.time || '99:99').localeCompare(b.time || '99:99');
+            });
+            return result;
+        },
+
+        getTasksForFutureDate(tasks, targetDate) {
+            const dayOfWeek = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][new Date(targetDate + 'T00:00').getDay()];
+            const today = new Date().toISOString().split('T')[0];
+            const result = [];
+            for (const task of tasks) {
+                const schedule = task.schedule || {};
+                if (task.excludedDates && task.excludedDates.includes(targetDate)) continue;
+                const type = schedule.type || 'once';
+                const dates = schedule.dates || [];
+                const daysOfWeek = schedule.days_of_week || [];
+                let applicable = false;
+                if (type === 'once' && dates.includes(targetDate)) applicable = true;
+                else if (type === 'recurring' && (daysOfWeek.includes(dayOfWeek) || dates.includes(targetDate))) applicable = true;
+                else if (dates.includes(targetDate)) applicable = true;
+                if (applicable) {
+                    const taskCopy = JSON.parse(JSON.stringify(task));
+                    const times = schedule.times || {};
+                    taskCopy.time = times[targetDate] || times['default'] || null;
+                    taskCopy.current_status = 'undeclared';
+                    if (taskCopy.subtasks) {
+                        for (const st of taskCopy.subtasks) {
+                            st.current_status = 'undeclared';
+                            if (st.po_variables && st.po_variables.length > 0) {
+                                for (const po of st.po_variables) {
+                                    const freq = po.frequency || 'every_check';
+                                    const load = po.load || 1;
+                                    const currentVal = po.current_value != null ? po.current_value : po.base_value;
+                                    if (freq === 'every_check') {
+                                        const checksUntilTarget = this._countFutureChecks(task, today, targetDate);
+                                        po.current_value = currentVal + (checksUntilTarget * load);
+                                    } else if (freq === 'daily') {
+                                        // Use start_date for deterministic computation
+                                        const startDate = po.start_date || today;
+                                        const daysDiff = Math.max(0, Math.floor((new Date(targetDate + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                        po.current_value = po.base_value + (daysDiff * load);
+                                    } else if (freq === 'weekly') {
+                                        const startDate = po.start_date || today;
+                                        const daysDiff = Math.max(0, Math.floor((new Date(targetDate + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                        po.current_value = po.base_value + (Math.floor(daysDiff / 7) * load);
+                                    }
+                                }
+                            }
+                            st.display_text = this.calculatePODisplay(st, targetDate);
+                        }
+                    }
+                    // Compute future PO for table cells
+                    if (taskCopy.tables) {
+                        for (const table of taskCopy.tables) {
+                            if (table.cells) {
+                                for (const key in table.cells) {
+                                    const cell = table.cells[key];
+                                    if (cell.po) {
+                                        const freq = cell.po.frequency || 'every_check';
+                                        const load = cell.po.load || 1;
+                                        const startDate = cell.po.start_date || today;
+                                        if (freq === 'every_check') {
+                                            const checks = this._countFutureChecks(task, today, targetDate);
+                                            cell.po._displayValue = (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value) + (checks * load);
+                                        } else if (freq === 'daily') {
+                                            const daysDiff = Math.max(0, Math.floor((new Date(targetDate + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                            cell.po._displayValue = cell.po.base_value + (daysDiff * load);
+                                        } else if (freq === 'weekly') {
+                                            const daysDiff = Math.max(0, Math.floor((new Date(targetDate + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                            cell.po._displayValue = cell.po.base_value + (Math.floor(daysDiff / 7) * load);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    result.push(taskCopy);
+                }
+            }
+            result.sort((a, b) => {
+                const po = { maximum: 0, priority: 1, usual: 2 };
+                const pa = po[a.priority] ?? 2, pb = po[b.priority] ?? 2;
+                if (pa !== pb) return pa - pb;
+                return (a.time || '99:99').localeCompare(b.time || '99:99');
+            });
+            return result;
+        },
+
+        _countFutureChecks(task, fromDate, toDate) {
+            const schedule = task.schedule || {};
+            const daysOfWeek = schedule.days_of_week || [];
+            const dates = schedule.dates || [];
+            const excluded = task.excludedDates || [];
+            let count = 0;
+            const start = new Date(fromDate + 'T00:00');
+            const end = new Date(toDate + 'T00:00');
+            const current = new Date(start);
+            current.setDate(current.getDate() + 1);
+            while (current < end) {
+                const dateStr = current.toISOString().split('T')[0];
+                if (!excluded.includes(dateStr)) {
+                    const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][current.getDay()];
+                    if (daysOfWeek.includes(dayName) || dates.includes(dateStr)) count++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+            return count;
+        },
+
+        calculatePODisplay(subtask, date) {
+            let text = subtask.text || '';
+            if (!subtask.po_variables || !subtask.po_variables.length) return text;
+            for (const po of subtask.po_variables) {
+                const value = this._computePOValueForDate(po, date);
+                if (po.placeholder) text = text.split(po.placeholder).join(String(value));
+            }
+            return text;
+        },
+
+        // Core PO computation: returns the correct value for any given date
+        _computePOValueForDate(po, date) {
+            const base = po.base_value;
+            const load = po.load || 1;
+            const freq = po.frequency || 'every_check';
+            // For 'every_check', use stored current_value (incremented on each completion)
+            if (freq === 'every_check') {
+                return po.current_value != null ? po.current_value : base;
+            }
+            // For time-based frequencies, compute deterministically from start_date
+            const startDate = po.start_date || po.last_applied || null;
+            if (!startDate) {
+                return po.current_value != null ? po.current_value : base;
+            }
+            const msPerDay = 86400000;
+            const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(startDate + 'T00:00')) / msPerDay));
+            if (freq === 'daily') {
+                return base + (daysDiff * load);
+            } else if (freq === 'weekly') {
+                return base + (Math.floor(daysDiff / 7) * load);
+            }
+            return po.current_value != null ? po.current_value : base;
+        },
+
+        // Compute PO value for table cells (same logic)
+        _computeTableCellPOForDate(po, date) {
+            return this._computePOValueForDate(po, date);
+        },
+
+        render() {
+            const list = document.getElementById('task-list');
+            if (!list) return;
+            list.innerHTML = '';
+            App.state.tasks.forEach((task, idx) => { list.appendChild(this.createTaskElement(task, idx)); });
+            if (App.state.tasks.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:40px 0;font-size:0.9rem;">No tasks for today</p>';
+            }
+        },
+
+        // Determine if a task has any expandable content beyond just a title
+        _isExpandable(task) {
+            if (task.subtasks && task.subtasks.length > 0) return true;
+            if (task.description && task.description.trim()) return true;
+            if (task.descriptions && task.descriptions.length > 0) return true;
+            if (task.tables && task.tables.length > 0) return true;
+            if (task.time) return true;
+            if (task.priority && task.priority !== 'usual') return true;
+            return false;
+        },
+
+        createTaskElement(task, index) {
+            const div = document.createElement('div');
+            const status = task.current_status || 'undeclared';
+            const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+            const isExpandable = this._isExpandable(task);
+            const isExpanded = App.state.expandedTasks.has(task.id);
+            div.className = `task-item ${status} ${isExpandable ? 'expandable' : ''} ${isExpanded ? 'expanded' : ''}`;
+            div.style.animationDelay = `${index * 0.05}s`;
+            div.dataset.taskId = task.id;
+
+            let checkIcon = '<i class="fa-regular fa-circle"></i>';
+            if (status === 'done') checkIcon = '<i class="fa-regular fa-circle-check"></i>';
+            else if (status === 'failed') checkIcon = '<i class="fa-regular fa-circle-xmark"></i>';
+
+            const timeDisplay = !isExpandable && task.time ? `<span class="task-time">${task.time}</span>` : '';
+            const expandChevron = isExpandable ? `<span class="task-expand-chevron" onclick="event.stopPropagation(); App.tasks.toggleExpand('${task.id}')"><i class="fa-solid fa-chevron-down"></i></span>` : '';
+
+            let html = `<div class="task-row"><div class="task-check">${checkIcon}</div><span class="task-title">${this.escapeHtml(task.title)}</span>${timeDisplay}${expandChevron}</div>`;
+
+            if (isExpandable) {
+                html += `<div class="task-expanded-content">`;
+                // Description
+                if (task.description && task.description.trim()) {
+                    html += `<div class="task-expanded-description">${task.description}</div>`;
+                }
+                // Subtasks
+                if (hasSubtasks) {
+                    html += `<div class="subtask-list">`;
+                    const descriptions = task.descriptions || [];
+                    html += task.subtasks.map((st, stIdx) => {
+                        let stIcon = '<i class="fa-regular fa-circle"></i>';
+                        if (st.current_status === 'done') stIcon = '<i class="fa-regular fa-circle-check"></i>';
+                        else if (st.current_status === 'failed') stIcon = '<i class="fa-regular fa-circle-xmark"></i>';
+                        let descHtml = '';
+                        const desc = descriptions.find(d => d.position === stIdx);
+                        if (desc) descHtml = `<div style="padding:4px 0;font-size:0.8rem;color:var(--text-tertiary);font-style:italic;">${desc.text}</div>`;
+                        return `${descHtml}<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text">${this.formatSubtaskText(st)}</span></div>`;
+                    }).join('');
+                    html += `</div>`;
+                }
+                // Tables
+                if (task.tables && task.tables.length > 0) {
+                    task.tables.forEach(table => {
+                        html += `<div class="table-wrapper" style="margin-top:8px;"><table class="user-table">`;
+                        for (let r = 0; r < table.rows; r++) {
+                            html += '<tr>';
+                            for (let c = 0; c < table.cols; c++) {
+                                const cellKey = `${r}-${c}`;
+                                const cell = (table.cells && table.cells[cellKey]) || {};
+                                if (cell.mergedInto) continue;
+                                const rowspan = cell.rowspan || 1;
+                                const colspan = cell.colspan || 1;
+                                const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (cell.content || '');
+                                html += `<td${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                            }
+                            html += '</tr>';
+                        }
+                        html += '</table></div>';
+                    });
+                }
+                // Priority
+                if (task.priority && task.priority !== 'usual') {
+                    const prLabel = task.priority === 'maximum' ? 'Obligatory' : 'Important';
+                    html += `<div class="task-expanded-priority ${task.priority}">${prLabel}</div>`;
+                }
+                html += `<div class="task-actions">`;
+                if (task.time) html += `<div class="task-action-btn"><span class="task-timer">${task.time}</span></div>`;
+                html += `<div class="task-action-btn" onclick="event.stopPropagation(); App.tasks.openEditor('${task.id}')"><i class="fa-regular fa-pen-to-square"></i> Edit</div>`;
+                html += `<div class="task-action-btn" onclick="event.stopPropagation(); App.tasks.deleteTask('${task.id}')" style="color:var(--failed)"><i class="fa-regular fa-trash-can"></i> Delete</div>`;
+                html += `</div></div>`;
+            }
+
+            div.innerHTML = html;
+            div.querySelector('.task-row').addEventListener('click', (e) => {
+                if (e.target.closest('.task-expand-chevron')) return;
+                e.stopPropagation();
+                App.tasks.handleClick(task.id);
+            });
+            return div;
+        },
+
+        handleClick(taskId) {
+            if (!App.state.clickCounts[taskId]) App.state.clickCounts[taskId] = 0;
+            App.state.clickCounts[taskId]++;
+            clearTimeout(App.state.clickTimers[taskId]);
+            App.state.clickTimers[taskId] = setTimeout(() => {
+                const clicks = App.state.clickCounts[taskId];
+                App.state.clickCounts[taskId] = 0;
+                let newStatus;
+                if (clicks === 1) newStatus = 'done';
+                else if (clicks === 2) newStatus = 'failed';
+                else newStatus = 'undeclared';
+                App.tasks.setStatus(taskId, newStatus);
+            }, 350);
+        },
+
+        handleSubtaskClick(taskId, subtaskId) {
+            const key = taskId + '_' + subtaskId;
+            if (!App.state.subtaskClickCounts[key]) App.state.subtaskClickCounts[key] = 0;
+            App.state.subtaskClickCounts[key]++;
+            clearTimeout(App.state.subtaskClickTimers[key]);
+            App.state.subtaskClickTimers[key] = setTimeout(() => {
+                const clicks = App.state.subtaskClickCounts[key];
+                App.state.subtaskClickCounts[key] = 0;
+                let newStatus;
+                if (clicks === 1) newStatus = 'done';
+                else if (clicks === 2) newStatus = 'failed';
+                else newStatus = 'undeclared';
+                App.tasks.setSubtaskStatus(taskId, subtaskId, newStatus);
+            }, 350);
+        },
+
+        setSubtaskStatus(taskId, subtaskId, status) {
+            const allTasks = DB.getTasks();
+            const date = App.state.currentDate;
+            for (const task of allTasks) {
+                if (task.id === taskId && task.subtasks) {
+                    for (const st of task.subtasks) {
+                        if (st.id === subtaskId) {
+                            if (!st.status) st.status = {};
+                            st.status[date] = status;
+                            if (status === 'done') this.applyProgressiveOverload(st, date);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            DB.setTasks(allTasks);
+            this.loadTasks();
+        },
+
+        setStatus(taskId, status) {
+            const allTasks = DB.getTasks();
+            const date = App.state.currentDate;
+            for (const task of allTasks) {
+                if (task.id === taskId) {
+                    if (!task.status) task.status = {};
+                    task.status[date] = status;
+                    if (status === 'done') {
+                        if (task.subtasks) {
+                            for (const st of task.subtasks) this.applyProgressiveOverload(st, date);
+                        }
+                        this.applyTableCellPO(task, date);
+                    }
+                    break;
+                }
+            }
+            DB.setTasks(allTasks);
+            const el = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (el) {
+                el.className = el.className.replace(/\b(done|failed|undeclared)\b/g, '').trim();
+                el.classList.add(status);
+                const checkDiv = el.querySelector('.task-check');
+                if (checkDiv) {
+                    if (status === 'done') checkDiv.innerHTML = '<i class="fa-regular fa-circle-check"></i>';
+                    else if (status === 'failed') checkDiv.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
+                    else checkDiv.innerHTML = '<i class="fa-regular fa-circle"></i>';
+                }
+                el.style.transition = 'none'; el.style.transform = 'scale(0.97)';
+                requestAnimationFrame(() => { el.style.transition = 'all 0.3s ease'; el.style.transform = 'scale(1)'; });
+            }
+            const task = App.state.tasks.find(t => t.id === taskId);
+            if (task) task.current_status = status;
+            this.updateAccomplishment();
+            this.logDaily();
+        },
+
+        applyProgressiveOverload(subtask, date) {
+            if (!subtask.po_variables) return;
+            for (const po of subtask.po_variables) {
+                const freq = po.frequency || 'every_check';
+                // Ensure start_date is recorded for time-based frequencies
+                if (!po.start_date) po.start_date = date;
+                if (freq === 'every_check') {
+                    po.current_value = (po.current_value != null ? po.current_value : po.base_value) + (po.load || 1);
+                    po.last_applied = date;
+                } else if (freq === 'daily') {
+                    po.last_applied = date;
+                    const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(po.start_date + 'T00:00')) / 86400000));
+                    po.current_value = po.base_value + (daysDiff * (po.load || 1));
+                } else if (freq === 'weekly') {
+                    po.last_applied = date;
+                    const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(po.start_date + 'T00:00')) / 86400000));
+                    po.current_value = po.base_value + (Math.floor(daysDiff / 7) * (po.load || 1));
+                }
+            }
+        },
+
+        // Apply PO for table cells on task completion
+        applyTableCellPO(task, date) {
+            if (!task.tables) return;
+            for (const table of task.tables) {
+                if (!table.cells) continue;
+                for (const key in table.cells) {
+                    const cell = table.cells[key];
+                    if (cell.po) {
+                        if (!cell.po.start_date) cell.po.start_date = date;
+                        const freq = cell.po.frequency || 'every_check';
+                        const load = cell.po.load || 1;
+                        if (freq === 'every_check') {
+                            cell.po.current_value = (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value) + load;
+                        } else if (freq === 'daily') {
+                            const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(cell.po.start_date + 'T00:00')) / 86400000));
+                            cell.po.current_value = cell.po.base_value + (daysDiff * load);
+                        } else if (freq === 'weekly') {
+                            const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(cell.po.start_date + 'T00:00')) / 86400000));
+                            cell.po.current_value = cell.po.base_value + (Math.floor(daysDiff / 7) * load);
+                        }
+                        cell.po.last_applied = date;
+                    }
+                }
+            }
+        },
+
+        toggleExpand(taskId) {
+            if (App.state.expandedTasks.has(taskId)) App.state.expandedTasks.delete(taskId);
+            else App.state.expandedTasks.add(taskId);
+            const el = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (el) el.classList.toggle('expanded');
+        },
+
+        formatSubtaskText(subtask) {
+            const hasPO = subtask.po_variables && subtask.po_variables.length > 0;
+
+            // If we have html content, use it as the base
+            if (subtask.html) {
+                let text = subtask.html;
+                if (hasPO) {
+                    for (const po of subtask.po_variables) {
+                        const val = po.current_value != null ? po.current_value : po.base_value;
+                        if (po.placeholder) {
+                            text = text.split(po.placeholder).join(`<span class="po-value">${val}</span>`);
+                        }
+                    }
+                }
+                return text;
+            }
+
+            // Plain text fallback
+            let text = subtask.display_text || subtask.text || '';
+            text = this.escapeHtml(text);
+            if (hasPO) {
+                for (const po of subtask.po_variables) {
+                    const val = po.current_value != null ? po.current_value : po.base_value;
+                    if (po.placeholder) {
+                        text = text.split(this.escapeHtml(po.placeholder)).join(`<span class="po-value">${val}</span>`);
+                    }
+                }
+            }
+            return text;
+        },
+
+        updateAccomplishment() {
+            const tasks = App.state.tasks;
+            let done = 0, failed = 0, undeclared = 0;
+            tasks.forEach(t => { switch (t.current_status) { case 'done': done++; break; case 'failed': failed++; break; default: undeclared++; } });
+            const total = tasks.length;
+            const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+            document.getElementById('stat-done-count').textContent = done;
+            document.getElementById('stat-failed-count').textContent = failed;
+            document.getElementById('stat-undeclared-count').textContent = undeclared;
+            const rateEl = document.getElementById('accomplishment-rate');
+            this.animateCountUp(rateEl, rate);
+            rateEl.style.color = rate === 0 ? 'var(--failed)' : 'var(--done)';
+        },
+
+        animateCountUp(element, target) {
+            const current = parseInt(element.textContent) || 0;
+            if (current === target) { element.textContent = target + '%'; return; }
+            const startTime = performance.now();
+            const startVal = current;
+            function step(now) {
+                const progress = Math.min((now - startTime) / 600, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                element.textContent = Math.round(startVal + (target - startVal) * eased) + '%';
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        },
+
+        logDaily() {
+            const date = App.state.currentDate;
+            const tasks = App.state.tasks;
+            let done = 0, failed = 0;
+            tasks.forEach(t => { if (t.current_status === 'done') done++; if (t.current_status === 'failed') failed++; });
+            const total = tasks.length;
+            const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+            const logs = DB.getDailyLogs();
+            logs[date] = { rate, total, done, failed };
+            DB.setDailyLogs(logs);
+            let bal = 0;
+            for (const k of Object.keys(logs)) bal += logs[k].rate || 0;
+            DB.setBalance(bal);
+        },
+
+        async deleteTask(taskId) {
+            const el = document.querySelector(`[data-task-id="${taskId}"]`);
+            if (el) { el.classList.add('task-removing'); await new Promise(r => setTimeout(r, 350)); }
+            let allTasks = DB.getTasks();
+            allTasks = allTasks.filter(t => t.id !== taskId);
+            DB.setTasks(allTasks);
+            App.state.expandedTasks.delete(taskId);
+            this.loadTasks();
+        },
+
+        openEditor(taskId) {
+            if (taskId) {
+                const allTasks = DB.getTasks();
+                const task = allTasks.find(t => t.id === taskId);
+                if (!task) return;
+                App.state.editingTask = taskId;
+                App.state.editorData = {
+                    title: task.title, description: task.description || '',
+                    subtasks: JSON.parse(JSON.stringify(task.subtasks || [])),
+                    descriptions: JSON.parse(JSON.stringify(task.descriptions || [])),
+                    tables: JSON.parse(JSON.stringify(task.tables || [])),
+                    elements: JSON.parse(JSON.stringify(task.elements || [])),
+                    priority: task.priority || 'usual',
+                    schedule: JSON.parse(JSON.stringify(task.schedule || { type: 'once', dates: [], times: {}, days_of_week: [] })),
+                    notifications: [...(task.notifications || [])],
+                    excludedDates: [...(task.excludedDates || [])]
+                };
+            } else {
+                App.state.editingTask = null;
+                App.state.editorData = { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [App.state.currentDate], times: {}, days_of_week: [] }, notifications: [], excludedDates: [] };
+            }
+            document.getElementById('editor-title').value = App.state.editorData.title;
+            document.getElementById('editor-description').innerHTML = App.state.editorData.description;
+            App.editor.renderAllElements();
+            App.editor.updatePriorityBtn();
+            const sidebar = document.getElementById('editor-sidebar');
+            sidebar.style.left = ''; sidebar.style.top = ''; sidebar.style.right = '12px'; sidebar.style.transform = 'translateY(-50%)';
+            App.nav.goto('editor');
+        },
+
+        closeEditor() { App.nav.goto('main'); },
+
+        saveTask() {
+            const ed = App.state.editorData;
+            ed.title = document.getElementById('editor-title').value.trim();
+            ed.description = document.getElementById('editor-description').innerHTML;
+            if (!ed.title) { App.showError('Please enter a task title'); return; }
+            document.querySelectorAll('.subtask-editor-input').forEach((input) => {
+                const idx = parseInt(input.dataset.index);
+                if (ed.subtasks[idx]) {
+                    if (input.getAttribute('contenteditable') === 'true') {
+                        let rawText = input.textContent;
+                        let rawHtml = input.innerHTML;
+                        // Convert displayed PO values back to placeholders for storage
+                        // Process in REVERSE order so that replacing one value doesn't shift positions for others
+                        if (ed.subtasks[idx].po_variables && ed.subtasks[idx].po_variables.length > 0) {
+                            const poVars = ed.subtasks[idx].po_variables;
+                            // First pass: replace all styled PO spans back to placeholders in html
+                            for (const po of poVars) {
+                                const val = po.current_value != null ? po.current_value : po.base_value;
+                                if (po.placeholder) {
+                                    // Replace styled span with placeholder (exact match)
+                                    const spanPattern = `<span class="po-value">${val}</span>`;
+                                    // Only replace the FIRST occurrence for this specific PO variable
+                                    const spanIdx = rawHtml.indexOf(spanPattern);
+                                    if (spanIdx >= 0) {
+                                        rawHtml = rawHtml.substring(0, spanIdx) + po.placeholder + rawHtml.substring(spanIdx + spanPattern.length);
+                                    }
+                                }
+                            }
+                            // Second pass: for text content, replace values with placeholders
+                            // Build a working copy and replace one at a time to avoid collisions
+                            for (const po of poVars) {
+                                const val = po.current_value != null ? po.current_value : po.base_value;
+                                if (po.placeholder) {
+                                    const valStr = String(val);
+                                    const textIdx = rawText.indexOf(valStr);
+                                    if (textIdx >= 0) {
+                                        rawText = rawText.substring(0, textIdx) + po.placeholder + rawText.substring(textIdx + valStr.length);
+                                    }
+                                }
+                            }
+                        }
+                        ed.subtasks[idx].text = rawText;
+                        ed.subtasks[idx].html = rawHtml;
+                    } else {
+                        ed.subtasks[idx].text = input.value;
+                    }
+                }
+            });
+            document.querySelectorAll('.subtask-desc-input').forEach((div) => {
+                const pos = parseInt(div.dataset.position);
+                const existing = ed.descriptions.find(d => d.position === pos);
+                if (existing) existing.text = div.innerHTML;
+                else ed.descriptions.push({ position: pos, text: div.innerHTML });
+            });
+            // Save table cell contents from editor
+            App.editor.syncEditorTableCells();
+
+            // Rebuild element order from DOM
+            App.editor.syncElementOrder();
+
+            let allTasks = DB.getTasks();
+            if (App.state.editingTask) {
+                for (const task of allTasks) {
+                    if (task.id === App.state.editingTask) {
+                        task.title = ed.title; task.description = ed.description; task.subtasks = ed.subtasks;
+                        task.descriptions = ed.descriptions; task.tables = ed.tables;
+                        task.elements = ed.elements || [];
+                        task.priority = ed.priority; task.schedule = ed.schedule; task.notifications = ed.notifications;
+                        task.excludedDates = ed.excludedDates || [];
+                        task.updated = new Date().toISOString(); break;
+                    }
+                }
+            } else {
+                allTasks.push({
+                    id: crypto.randomUUID ? crypto.randomUUID().slice(0,16) : Math.random().toString(36).slice(2,18),
+                    title: ed.title, description: ed.description, subtasks: ed.subtasks, descriptions: ed.descriptions, tables: ed.tables,
+                    elements: ed.elements || [],
+                    priority: ed.priority,
+                    schedule: ed.schedule, notifications: ed.notifications, excludedDates: ed.excludedDates || [],
+                    status: {}, overrides: {},
+                    created: new Date().toISOString(), updated: new Date().toISOString()
+                });
+            }
+            DB.setTasks(allTasks);
+            App.nav.goto('main');
+        },
+
+        escapeHtml(str) { const div = document.createElement('div'); div.textContent = str; return div.innerHTML; }
+    },
+
+    // ==========================================
+    // Editor
+    // ==========================================
+    editor: {
+        toggleBold() {
+            const sel = window.getSelection();
+            const active = document.activeElement;
+            const isInEditable = active && active.getAttribute('contenteditable') === 'true';
+            const isSelectionInEditable = sel.anchorNode && (sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode).closest('[contenteditable="true"]');
+
+            if (isInEditable || isSelectionInEditable) {
+                document.execCommand('bold', false, null);
+            } else {
+                // Default to description field
+                document.getElementById('editor-description').focus();
+                document.execCommand('bold', false, null);
+            }
+            const boldBtn = document.querySelector('[data-tool="bold"]');
+            if (boldBtn) boldBtn.classList.toggle('active', document.queryCommandState('bold'));
+        },
+        toggleItalic() {
+            const sel = window.getSelection();
+            const active = document.activeElement;
+            const isInEditable = active && active.getAttribute('contenteditable') === 'true';
+            const isSelectionInEditable = sel.anchorNode && (sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode).closest('[contenteditable="true"]');
+
+            if (isInEditable || isSelectionInEditable) {
+                document.execCommand('italic', false, null);
+            } else {
+                document.getElementById('editor-description').focus();
+                document.execCommand('italic', false, null);
+            }
+            const italicBtn = document.querySelector('[data-tool="italic"]');
+            if (italicBtn) italicBtn.classList.toggle('active', document.queryCommandState('italic'));
+        },
+
+        addSubtask() {
+            const idx = App.state.editorData.subtasks.length;
+            App.state.editorData.subtasks.push({ id: Math.random().toString(36).substr(2, 8), text: '', html: '', po_variables: [], status: {} });
+            if (!App.state.editorData.elements) App.state.editorData.elements = [];
+            App.state.editorData.elements.push({ type: 'subtask', index: idx });
+            this.renderSubtasks();
+            setTimeout(() => { const inputs = document.querySelectorAll('.subtask-editor-input'); if (inputs.length) inputs[inputs.length - 1].focus(); }, 100);
+        },
+
+        addSubtaskDescription() {
+            if (!App.state.editorData.descriptions) App.state.editorData.descriptions = [];
+            // Use a unique position ID
+            const pos = Date.now();
+            App.state.editorData.descriptions.push({ position: pos, text: '' });
+            if (!App.state.editorData.elements) App.state.editorData.elements = [];
+            App.state.editorData.elements.push({ type: 'description', position: pos });
+            this.renderSubtasks();
+        },
+
+        renderSubtasks() {
+            this.renderAllElements();
+        },
+
+        // Unified element renderer - respects creation order via elements array
+        renderAllElements() {
+            const container = document.getElementById('subtasks-container');
+            const tablesContainer = document.getElementById('editor-tables-container');
+            if (!container) return;
+
+            const ed = App.state.editorData;
+            const elements = ed.elements || [];
+
+            // If no elements ordering exists, build it from legacy data
+            if (elements.length === 0 && (ed.subtasks.length > 0 || (ed.descriptions && ed.descriptions.length > 0) || ed.tables.length > 0)) {
+                ed.elements = [];
+                // Legacy: descriptions before their subtask, subtasks in order, then tables
+                const descriptions = ed.descriptions || [];
+                ed.subtasks.forEach((st, i) => {
+                    const desc = descriptions.find(d => d.position === i);
+                    if (desc) ed.elements.push({ type: 'description', position: i });
+                    ed.elements.push({ type: 'subtask', index: i });
+                });
+                const trailingDesc = descriptions.find(d => d.position === ed.subtasks.length);
+                if (trailingDesc) ed.elements.push({ type: 'description', position: ed.subtasks.length });
+                ed.tables.forEach((t, i) => {
+                    ed.elements.push({ type: 'table', index: i });
+                });
+            }
+
+            // Render unified elements into subtasks-container
+            let html = '';
+            // Track which subtasks and tables have been rendered
+            let renderedSubtasks = new Set();
+            let renderedDescs = new Set();
+            let renderedTables = new Set();
+
+            for (const el of ed.elements) {
+                if (el.type === 'subtask') {
+                    const i = el.index;
+                    const st = ed.subtasks[i];
+                    if (!st) continue;
+                    renderedSubtasks.add(i);
+                    // Compute display HTML: replace PO placeholders with styled values
+                    let displayHtml = st.html || App.tasks.escapeHtml(st.text || '');
+                    if (st.po_variables && st.po_variables.length > 0) {
+                        for (const po of st.po_variables) {
+                            const val = po.current_value != null ? po.current_value : po.base_value;
+                            if (po.placeholder) displayHtml = displayHtml.split(po.placeholder).join(`<span class="po-value">${val}</span>`);
+                        }
+                    }
+                    html += `<div class="subtask-editor editor-element" data-el-type="subtask" data-el-index="${i}" data-index="${i}">
+                        <div class="subtask-editor-check"></div>
+                        <div class="subtask-editor-input" contenteditable="true" data-placeholder="Subtask..." data-index="${i}">${displayHtml}</div>
+                        <button class="subtask-editor-duplicate" onclick="App.editor.duplicateSubtask(${i})" title="Duplicate"><i class="fa-regular fa-clone"></i></button>
+                        <button class="subtask-editor-delete" onclick="App.editor.removeSubtask(${i})" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>`;
+                } else if (el.type === 'description') {
+                    const pos = el.position;
+                    const descriptions = ed.descriptions || [];
+                    const desc = descriptions.find(d => d.position === pos);
+                    if (!desc) continue;
+                    renderedDescs.add(pos);
+                    html += `<div class="subtask-description-editor editor-element" data-el-type="description" data-el-position="${pos}">
+                        <div class="subtask-desc-input" contenteditable="true" data-placeholder="Description..." data-position="${pos}">${desc.text || ''}</div>
+                        <button style="color:var(--text-tertiary);font-size:0.75rem;" onclick="App.editor.removeDescription(${pos})"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`;
+                } else if (el.type === 'table') {
+                    const tIdx = el.index;
+                    const table = ed.tables[tIdx];
+                    if (!table) continue;
+                    renderedTables.add(tIdx);
+                    html += this._renderEditorTableHTML(table, tIdx);
+                }
+            }
+
+            // Render any subtasks/descriptions/tables not yet in the elements array (safety fallback)
+            ed.subtasks.forEach((st, i) => {
+                if (!renderedSubtasks.has(i)) {
+                    let fallbackHtml = st.html || App.tasks.escapeHtml(st.text || '');
+                    if (st.po_variables && st.po_variables.length > 0) {
+                        for (const po of st.po_variables) {
+                            const val = po.current_value != null ? po.current_value : po.base_value;
+                            if (po.placeholder) fallbackHtml = fallbackHtml.split(po.placeholder).join(`<span class="po-value">${val}</span>`);
+                        }
+                    }
+                    html += `<div class="subtask-editor editor-element" data-el-type="subtask" data-el-index="${i}" data-index="${i}">
+                        <div class="subtask-editor-check"></div>
+                        <div class="subtask-editor-input" contenteditable="true" data-placeholder="Subtask..." data-index="${i}">${fallbackHtml}</div>
+                        <button class="subtask-editor-duplicate" onclick="App.editor.duplicateSubtask(${i})" title="Duplicate"><i class="fa-regular fa-clone"></i></button>
+                        <button class="subtask-editor-delete" onclick="App.editor.removeSubtask(${i})" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
+                    </div>`;
+                }
+            });
+            (ed.descriptions || []).forEach(d => {
+                if (!renderedDescs.has(d.position)) {
+                    html += `<div class="subtask-description-editor editor-element" data-el-type="description" data-el-position="${d.position}">
+                        <div class="subtask-desc-input" contenteditable="true" data-placeholder="Description..." data-position="${d.position}">${d.text || ''}</div>
+                        <button style="color:var(--text-tertiary);font-size:0.75rem;" onclick="App.editor.removeDescription(${d.position})"><i class="fa-solid fa-xmark"></i></button>
+                    </div>`;
+                }
+            });
+
+            container.innerHTML = html;
+            // Clear tables container since tables are now in unified container
+            if (tablesContainer) tablesContainer.innerHTML = '';
+
+            // Render remaining unrendered tables into the unified container
+            ed.tables.forEach((table, tIdx) => {
+                if (!renderedTables.has(tIdx)) {
+                    container.insertAdjacentHTML('beforeend', this._renderEditorTableHTML(table, tIdx));
+                }
+            });
+
+            // Bind subtask input events
+            container.querySelectorAll('.subtask-editor-input').forEach(input => {
+                input.addEventListener('input', (e) => {
+                    const idx = parseInt(e.target.dataset.index);
+                    if (App.state.editorData.subtasks[idx]) {
+                        App.state.editorData.subtasks[idx].text = e.target.textContent;
+                        App.state.editorData.subtasks[idx].html = e.target.innerHTML;
+                    }
+                });
+            });
+        },
+
+        // Helper to render a single editor table as HTML string
+        _renderEditorTableHTML(table, tIdx) {
+            let html = `<div class="table-container editor-element" data-el-type="table" data-el-index="${tIdx}">`;
+            html += `<div class="table-title-bar" onclick="App.editor.editEditorTable(${tIdx})"><span>${App.tasks.escapeHtml(table.title)}</span><i class="fa-solid fa-gear"></i></div>`;
+            html += `<div class="table-wrapper"><table class="user-table" data-table-idx="${tIdx}">`;
+            for (let r = 0; r < table.rows; r++) {
+                html += '<tr>';
+                for (let c = 0; c < table.cols; c++) {
+                    const cellKey = `${r}-${c}`;
+                    const cell = (table.cells && table.cells[cellKey]) || {};
+                    if (cell.mergedInto) continue;
+                    const rowspan = cell.rowspan || 1;
+                    const colspan = cell.colspan || 1;
+                    const displayContent = cell.po ? `<span class="po-value">${cell.po.current_value != null ? cell.po.current_value : cell.po.base_value}</span>` : (cell.content || '');
+                    html += `<td contenteditable="true" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                }
+                html += '</tr>';
+            }
+            html += '</table></div></div>';
+            return html;
+        },
+
+        // Sync element order from DOM
+        syncElementOrder() {
+            const container = document.getElementById('subtasks-container');
+            if (!container) return;
+            const newElements = [];
+            container.querySelectorAll('.editor-element').forEach(el => {
+                const type = el.dataset.elType;
+                if (type === 'subtask') {
+                    newElements.push({ type: 'subtask', index: parseInt(el.dataset.elIndex) });
+                } else if (type === 'description') {
+                    newElements.push({ type: 'description', position: parseInt(el.dataset.elPosition) });
+                } else if (type === 'table') {
+                    newElements.push({ type: 'table', index: parseInt(el.dataset.elIndex) });
+                }
+            });
+            App.state.editorData.elements = newElements;
+        },
+
+        removeDescription(position) {
+            App.state.editorData.descriptions = (App.state.editorData.descriptions || []).filter(d => d.position !== position);
+            if (App.state.editorData.elements) {
+                App.state.editorData.elements = App.state.editorData.elements.filter(el => !(el.type === 'description' && el.position === position));
+            }
+            this.renderSubtasks();
+        },
+
+        removeSubtask(index) {
+            const el = document.querySelectorAll('.subtask-editor')[index];
+            if (el) { el.style.transition = 'all 0.25s ease'; el.style.opacity = '0'; el.style.transform = 'translateX(-20px)';
+                setTimeout(() => {
+                    App.state.editorData.subtasks.splice(index, 1);
+                    // Remove from elements and update indices
+                    if (App.state.editorData.elements) {
+                        App.state.editorData.elements = App.state.editorData.elements.filter(el => !(el.type === 'subtask' && el.index === index));
+                        App.state.editorData.elements.forEach(el => {
+                            if (el.type === 'subtask' && el.index > index) el.index--;
+                        });
+                    }
+                    if (App.state.editorData.descriptions) {
+                        App.state.editorData.descriptions = App.state.editorData.descriptions.filter(d => d.position !== index).map(d => {
+                            if (d.position > index) d.position--;
+                            return d;
+                        });
+                    }
+                    this.renderSubtasks();
+                }, 250);
+            }
+        },
+
+        duplicateSubtask(index) {
+            const original = App.state.editorData.subtasks[index]; if (!original) return;
+            const clone = JSON.parse(JSON.stringify(original));
+            clone.id = Math.random().toString(36).substr(2, 8);
+            App.state.editorData.subtasks.splice(index + 1, 0, clone);
+            // Update element indices
+            if (App.state.editorData.elements) {
+                App.state.editorData.elements.forEach(el => {
+                    if (el.type === 'subtask' && el.index > index) el.index++;
+                });
+                // Insert clone element right after original in elements array
+                const origElIdx = App.state.editorData.elements.findIndex(el => el.type === 'subtask' && el.index === index);
+                if (origElIdx >= 0) {
+                    App.state.editorData.elements.splice(origElIdx + 1, 0, { type: 'subtask', index: index + 1 });
+                } else {
+                    App.state.editorData.elements.push({ type: 'subtask', index: index + 1 });
+                }
+            }
+            if (App.state.editorData.descriptions) {
+                App.state.editorData.descriptions = App.state.editorData.descriptions.map(d => {
+                    if (d.position > index) d.position++;
+                    return d;
+                });
+            }
+            this.renderSubtasks();
+        },
+
+        // ==========================================
+        // Tables in Editor
+        // ==========================================
+        addTable() {
+            App.state.editingEditorTableId = null;
+            App.state._addTableToElements = true; // flag to add to elements on save
+            document.getElementById('modal-table-title').textContent = 'Create Table';
+            document.getElementById('table-title-input').value = '';
+            document.getElementById('table-rows-input').value = '3';
+            document.getElementById('table-cols-input').value = '3';
+            document.getElementById('table-delete-wrapper').style.display = 'none';
+            App.modal.open('modal-table');
+        },
+
+        editEditorTable(tableIdx) {
+            const table = App.state.editorData.tables[tableIdx];
+            if (!table) return;
+            App.state.editingEditorTableId = tableIdx;
+            document.getElementById('modal-table-title').textContent = 'Edit Table';
+            document.getElementById('table-title-input').value = table.title;
+            document.getElementById('table-rows-input').value = table.rows;
+            document.getElementById('table-cols-input').value = table.cols;
+            document.getElementById('table-delete-wrapper').style.display = 'block';
+            App.modal.open('modal-table');
+        },
+
+        saveEditorTable() {
+            const title = document.getElementById('table-title-input').value.trim() || 'Untitled Table';
+            const rows = Math.max(1, Math.min(50, parseInt(document.getElementById('table-rows-input').value) || 3));
+            const cols = Math.max(1, Math.min(20, parseInt(document.getElementById('table-cols-input').value) || 3));
+            if (!App.state.editorData.tables) App.state.editorData.tables = [];
+
+            if (App.state.editingEditorTableId !== null) {
+                const t = App.state.editorData.tables[App.state.editingEditorTableId];
+                if (t) { t.title = title; t.rows = rows; t.cols = cols; }
+            } else {
+                const newIdx = App.state.editorData.tables.length;
+                App.state.editorData.tables.push({ id: Math.random().toString(36).slice(2, 14), title, rows, cols, cells: {} });
+                if (!App.state.editorData.elements) App.state.editorData.elements = [];
+                App.state.editorData.elements.push({ type: 'table', index: newIdx });
+            }
+            App.modal.close();
+            this.renderAllElements();
+        },
+
+        deleteEditorTable() {
+            if (App.state.editingEditorTableId !== null) {
+                const delIdx = App.state.editingEditorTableId;
+                App.state.editorData.tables.splice(delIdx, 1);
+                // Remove from elements and update indices
+                if (App.state.editorData.elements) {
+                    App.state.editorData.elements = App.state.editorData.elements.filter(el => !(el.type === 'table' && el.index === delIdx));
+                    App.state.editorData.elements.forEach(el => {
+                        if (el.type === 'table' && el.index > delIdx) el.index--;
+                    });
+                }
+                App.state.editingEditorTableId = null;
+                App.modal.close();
+                this.renderAllElements();
+            }
+        },
+
+        syncEditorTableCells() {
+            // Tables may be in either container due to unified rendering
+            document.querySelectorAll('#subtasks-container .user-table, #editor-tables-container .user-table').forEach(tableEl => {
+                const tableIdx = parseInt(tableEl.dataset.tableIdx);
+                const table = App.state.editorData.tables[tableIdx];
+                if (!table) return;
+                if (!table.cells) table.cells = {};
+                tableEl.querySelectorAll('td[contenteditable]').forEach(td => {
+                    const r = parseInt(td.dataset.row);
+                    const c = parseInt(td.dataset.col);
+                    const key = `${r}-${c}`;
+                    if (!table.cells[key]) table.cells[key] = {};
+                    table.cells[key].content = td.innerHTML;
+                });
+            });
+        },
+
+        renderEditorTables() {
+            const container = document.getElementById('editor-tables-container');
+            if (!container) return;
+            const tables = App.state.editorData.tables || [];
+            if (tables.length === 0) { container.innerHTML = ''; return; }
+            container.innerHTML = tables.map((table, tIdx) => {
+                let html = `<div class="table-container">`;
+                html += `<div class="table-title-bar" onclick="App.editor.editEditorTable(${tIdx})"><span>${App.tasks.escapeHtml(table.title)}</span><i class="fa-solid fa-gear"></i></div>`;
+                html += `<div class="table-wrapper"><table class="user-table" data-table-idx="${tIdx}">`;
+                for (let r = 0; r < table.rows; r++) {
+                    html += '<tr>';
+                    for (let c = 0; c < table.cols; c++) {
+                        const cellKey = `${r}-${c}`;
+                        const cell = (table.cells && table.cells[cellKey]) || {};
+                        if (cell.mergedInto) continue;
+                        const rowspan = cell.rowspan || 1;
+                        const colspan = cell.colspan || 1;
+                        const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (cell.content || '');
+                        html += `<td contenteditable="true" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                    }
+                    html += '</tr>';
+                }
+                html += '</table></div></div>';
+                return html;
+            }).join('');
+        },
+
+        saveTableCellPO() {
+            const { tableIdx, row, col } = App.state.activeCellForPO || {};
+            if (tableIdx === undefined) return;
+            const baseValue = parseInt(document.getElementById('table-po-base').value);
+            const frequency = document.getElementById('table-po-frequency').value;
+            const load = parseInt(document.getElementById('table-po-load').value) || 1;
+            if (isNaN(baseValue)) { App.showError('Enter a base value'); return; }
+            const table = App.state.editorData.tables[tableIdx];
+            if (!table) return;
+            if (!table.cells) table.cells = {};
+            const key = `${row}-${col}`;
+            if (!table.cells[key]) table.cells[key] = {};
+            table.cells[key].po = { base_value: baseValue, current_value: baseValue, frequency, load, last_applied: null, start_date: new Date().toISOString().split('T')[0] };
+            table.cells[key].content = `<span class="po-value">${baseValue}</span>`;
+            App.modal.close();
+            this.renderEditorTables();
+        },
+
+        openPriorityPicker() {
+            document.querySelectorAll('.priority-option').forEach(opt => {
+                const isSelected = opt.dataset.priority === App.state.editorData.priority;
+                opt.classList.toggle('selected', isSelected);
+                const radio = opt.querySelector('.priority-option-radio i');
+                if (radio) radio.className = isSelected ? 'fa-regular fa-circle-dot' : 'fa-regular fa-circle';
+            });
+            App.modal.open('modal-priority');
+        },
+
+        setPriority(priority) { App.state.editorData.priority = priority; this.updatePriorityBtn(); App.modal.close(); },
+
+        updatePriorityBtn() {
+            const btn = document.getElementById('btn-priority'); btn.className = 'sidebar-tool';
+            switch (App.state.editorData.priority) { case 'priority': btn.classList.add('priority-high'); break; case 'maximum': btn.classList.add('priority-max'); break; default: btn.classList.add('priority-usual'); }
+        },
+
+        openDatePicker() {
+            App.state.dpSelectedDates = [...(App.state.editorData.schedule.dates || [])];
+            App.state.dpSelectedDays = [...(App.state.editorData.schedule.days_of_week || [])];
+            App.state.dpExcludedDates = [...(App.state.editorData.excludedDates || [])];
+            App.state.dpMonth = new Date().getMonth(); App.state.dpYear = new Date().getFullYear();
+            App.state.recurrenceDatesOpen = false;
+            document.querySelectorAll('#dp-weekday-seg .seg-btn').forEach(btn => {
+                btn.classList.toggle('active', App.state.dpSelectedDays.includes(btn.dataset.day));
+                btn.onclick = () => {
+                    btn.classList.toggle('active');
+                    const day = btn.dataset.day;
+                    if (App.state.dpSelectedDays.includes(day)) App.state.dpSelectedDays = App.state.dpSelectedDays.filter(d => d !== day);
+                    else App.state.dpSelectedDays.push(day);
+                    this.updateRecurrenceDates();
+                };
+            });
+            this.renderDPCalendar(); this.renderDPSelectedDates(); this.updateRecurrenceDates();
+            App.modal.open('modal-datepicker');
+        },
+
+        renderDPCalendar() {
+            const grid = document.getElementById('dp-cal-grid'); const label = document.getElementById('dp-cal-label');
+            const year = App.state.dpYear, month = App.state.dpMonth;
+            label.textContent = new Date(year, month).toLocaleDateString('en', { month: 'long', year: 'numeric' });
+            const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startOffset = (firstDay + 6) % 7;
+            let html = ''; ['M','T','W','T','F','S','S'].forEach(d => { html += `<div style="font-size:0.7rem;color:var(--text-tertiary);padding:4px;font-weight:600">${d}</div>`; });
+            for (let i = 0; i < startOffset; i++) html += '<div class="dp-cal-day other-month"></div>';
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const selected = App.state.dpSelectedDates.includes(dateStr) ? ' selected' : '';
+                html += `<div class="dp-cal-day${selected}" data-date="${dateStr}" onclick="App.editor.dpToggleDate('${dateStr}')">${d}</div>`;
+            }
+            grid.innerHTML = html;
+        },
+
+        dpToggleDate(dateStr) {
+            const idx = App.state.dpSelectedDates.indexOf(dateStr);
+            if (idx >= 0) App.state.dpSelectedDates.splice(idx, 1); else App.state.dpSelectedDates.push(dateStr);
+            this.renderDPCalendar(); this.renderDPSelectedDates(); this.updateRecurrenceDates();
+        },
+
+        renderDPSelectedDates() {
+            document.getElementById('dp-selected-dates').innerHTML = App.state.dpSelectedDates.map(d => {
+                const formatted = new Date(d + 'T00:00').toLocaleDateString('en', { month: 'short', day: 'numeric' });
+                return `<div class="dp-date-chip">${formatted} <span class="dp-date-chip-remove" onclick="App.editor.dpToggleDate('${d}')"><i class="fa-solid fa-xmark" style="font-size:0.65rem;"></i></span></div>`;
+            }).join('');
+        },
+
+        dpPrevMonth() { App.state.dpMonth--; if (App.state.dpMonth < 0) { App.state.dpMonth = 11; App.state.dpYear--; } this.renderDPCalendar(); },
+        dpNextMonth() { App.state.dpMonth++; if (App.state.dpMonth > 11) { App.state.dpMonth = 0; App.state.dpYear++; } this.renderDPCalendar(); },
+
+        updateRecurrenceDates() {
+            const section = document.getElementById('recurrence-dates-section');
+            const list = document.getElementById('recurrence-dates-list');
+            const allDates = this.generateFutureDates();
+            if (allDates.length === 0) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+            list.innerHTML = allDates.map(d => {
+                const formatted = new Date(d + 'T00:00').toLocaleDateString('en', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+                const isExcluded = App.state.dpExcludedDates.includes(d);
+                return `<div class="recurrence-date-row ${isExcluded ? 'recurrence-date-excluded' : ''}">
+                    <span>${formatted}</span>
+                    <span class="recurrence-date-exclude" onclick="App.editor.toggleExcludeDate('${d}')">${isExcluded ? 'Include' : 'Exclude'}</span>
+                </div>`;
+            }).join('');
+            list.classList.toggle('open', App.state.recurrenceDatesOpen);
+        },
+
+        generateFutureDates() {
+            const dates = [];
+            const today = new Date();
+            const daysOfWeek = App.state.dpSelectedDays;
+            for (let i = 0; i < 60; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() + i);
+                const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][d.getDay()];
+                const dateStr = d.toISOString().split('T')[0];
+                if (daysOfWeek.includes(dayName) || App.state.dpSelectedDates.includes(dateStr)) {
+                    if (!dates.includes(dateStr)) dates.push(dateStr);
+                }
+            }
+            return dates.sort();
+        },
+
+        toggleExcludeDate(dateStr) {
+            const idx = App.state.dpExcludedDates.indexOf(dateStr);
+            if (idx >= 0) App.state.dpExcludedDates.splice(idx, 1);
+            else App.state.dpExcludedDates.push(dateStr);
+            this.updateRecurrenceDates();
+        },
+
+        toggleRecurrenceDates() {
+            App.state.recurrenceDatesOpen = !App.state.recurrenceDatesOpen;
+            document.getElementById('recurrence-dates-list').classList.toggle('open', App.state.recurrenceDatesOpen);
+            const icon = document.getElementById('recurrence-toggle-icon');
+            icon.style.transform = App.state.recurrenceDatesOpen ? 'rotate(180deg)' : '';
+        },
+
+        saveDates() {
+            const schedule = App.state.editorData.schedule;
+            schedule.dates = [...App.state.dpSelectedDates]; schedule.days_of_week = [...App.state.dpSelectedDays];
+            schedule.type = schedule.days_of_week.length > 0 ? 'recurring' : 'once';
+            App.state.editorData.excludedDates = [...App.state.dpExcludedDates];
+            App.modal.close();
+        },
+
+        setTimeMode(mode) {
+            App.state.timeMode = mode;
+            const sameEl = document.getElementById('time-mode-same');
+            const customEl = document.getElementById('time-mode-custom');
+            if (mode === 'same') {
+                sameEl.classList.add('selected'); sameEl.querySelector('i').className = 'fa-regular fa-circle-dot';
+                customEl.classList.remove('selected'); customEl.querySelector('i').className = 'fa-regular fa-circle';
+            } else {
+                customEl.classList.add('selected'); customEl.querySelector('i').className = 'fa-regular fa-circle-dot';
+                sameEl.classList.remove('selected'); sameEl.querySelector('i').className = 'fa-regular fa-circle';
+            }
+        },
+
+        openTimePicker() {
+            App.state.timeMode = 'same';
+            this.setTimeMode('same');
+            const times = App.state.editorData.schedule.times || {};
+            const defaultTime = times['default'] || '';
+            document.getElementById('time-all').value = defaultTime;
+            const perDay = document.getElementById('time-per-day');
+            const dates = App.state.editorData.schedule.dates || []; const days = App.state.editorData.schedule.days_of_week || [];
+            const allDates = [...new Set([...dates, ...days])];
+            if (allDates.length > 0) {
+                perDay.innerHTML = allDates.map(d => `<div class="time-day-row"><span class="time-day-label">${d}</span><input type="time" class="time-picker-text" data-day="${d}" value="${times[d] || ''}" style="flex:1;"></div>`).join('');
+            } else { perDay.innerHTML = '<p style="font-size:0.85rem;color:var(--text-tertiary)">Set dates first</p>'; }
+            App.modal.open('modal-timepicker');
+        },
+
+        saveTime() {
+            const mode = App.state.timeMode;
+            const times = {};
+            if (mode === 'same') {
+                const timeVal = document.getElementById('time-all').value;
+                if (timeVal) times['default'] = timeVal;
+            } else document.querySelectorAll('#time-per-day .time-picker-text').forEach(input => { if (input.value) times[input.dataset.day] = input.value; });
+            App.state.editorData.schedule.times = times; App.modal.close();
+        },
+
+        openPOConfig() {
+            const sel = window.getSelection();
+            const selectedText = sel.toString().trim();
+            if (selectedText && !isNaN(selectedText)) {
+                // Check if selection is inside a table cell
+                const anchorNode = sel.anchorNode;
+                const parentCell = anchorNode ? (anchorNode.nodeType === 3 ? anchorNode.parentElement : anchorNode).closest('td[contenteditable]') : null;
+                if (parentCell && parentCell.dataset.tableIdx !== undefined) {
+                    App.state.activeCellForPO = {
+                        tableIdx: parseInt(parentCell.dataset.tableIdx),
+                        row: parseInt(parentCell.dataset.row),
+                        col: parseInt(parentCell.dataset.col)
+                    };
+                    document.getElementById('table-po-base').value = parseInt(selectedText);
+                    const dd = document.getElementById('table-po-freq-dropdown');
+                    dd.querySelector('.custom-dropdown-value').textContent = 'Every Check';
+                    dd.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
+                    dd.querySelector('[data-value="every_check"]').classList.add('active');
+                    document.getElementById('table-po-frequency').value = 'every_check';
+                    document.getElementById('table-po-load').value = 1;
+                    App.modal.open('modal-table-po');
+                    return;
+                }
+                // Determine which subtask the selection is inside
+                const parentSubtaskInput = anchorNode ? (anchorNode.nodeType === 3 ? anchorNode.parentElement : anchorNode).closest('.subtask-editor-input') : null;
+                let targetSubtaskIdx = -1;
+                if (parentSubtaskInput && parentSubtaskInput.dataset.index !== undefined) {
+                    targetSubtaskIdx = parseInt(parentSubtaskInput.dataset.index);
+                }
+                // Store the PO target context so savePO knows exactly where to apply
+                App.state._poTargetContext = {
+                    subtaskIndex: targetSubtaskIdx,
+                    selectedValue: parseInt(selectedText)
+                };
+                document.getElementById('po-base-value').value = parseInt(selectedText);
+                const dd = document.getElementById('po-frequency-dropdown');
+                dd.querySelector('.custom-dropdown-value').textContent = 'Every Check';
+                dd.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
+                dd.querySelector('[data-value="every_check"]').classList.add('active');
+                document.getElementById('po-frequency').value = 'every_check';
+                document.getElementById('po-load').value = 1;
+                App.modal.open('modal-po');
+            } else {
+                App.showError('Select a number in a subtask, description, or table cell first');
+            }
+        },
+
+        savePO() {
+            const baseValue = parseInt(document.getElementById('po-base-value').value);
+            const frequency = document.getElementById('po-frequency').value;
+            const load = parseInt(document.getElementById('po-load').value);
+            if (isNaN(baseValue)) { App.showError('Invalid base value'); return; }
+
+            const ctx = App.state._poTargetContext;
+            if (!ctx || ctx.subtaskIndex < 0) {
+                App.showError('Could not determine target subtask. Select a number first.');
+                App.modal.close();
+                return;
+            }
+
+            const targetIdx = ctx.subtaskIndex;
+            const subtask = App.state.editorData.subtasks[targetIdx];
+            if (!subtask) { App.showError('Subtask not found'); App.modal.close(); return; }
+
+            if (!subtask.po_variables) subtask.po_variables = [];
+
+            // Generate a unique placeholder using a timestamp-based ID to prevent collisions
+            const uniqueId = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
+            const placeholder = `{{PO_${uniqueId}}}`;
+
+            subtask.po_variables.push({
+                base_value: baseValue,
+                current_value: baseValue,
+                frequency,
+                load,
+                placeholder,
+                last_applied: null,
+                start_date: new Date().toISOString().split('T')[0]
+            });
+
+            // Read current state of the contenteditable input
+            const input = document.querySelectorAll('.subtask-editor')[targetIdx]?.querySelector('.subtask-editor-input');
+            if (input && input.getAttribute('contenteditable') === 'true') {
+                // Get current text and html content
+                let currentText = input.textContent;
+                let currentHtml = input.innerHTML;
+
+                // We need to replace the FIRST occurrence of the base value string
+                // in this specific subtask's text with the placeholder.
+                // But first, convert any existing PO display spans back to their placeholders
+                // so we don't accidentally match displayed PO values.
+                let workText = currentText;
+                let workHtml = currentHtml;
+
+                // Replace the first occurrence of the base value number in the text with the placeholder
+                const valStr = String(baseValue);
+                const textIdx = workText.indexOf(valStr);
+                if (textIdx >= 0) {
+                    workText = workText.substring(0, textIdx) + placeholder + workText.substring(textIdx + valStr.length);
+                }
+
+                // For html: replace the first occurrence that is NOT inside a po-value span
+                // First, temporarily protect existing PO spans
+                const poSpanRegex = /<span class="po-value">(\d+(?:\.\d+)?)<\/span>/g;
+                const protectedTokens = [];
+                let protectedHtml = workHtml.replace(poSpanRegex, (match) => {
+                    const token = `__PO_PROTECT_${protectedTokens.length}__`;
+                    protectedTokens.push(match);
+                    return token;
+                });
+
+                // Now replace the first occurrence of the value in the unprotected html
+                const htmlIdx = protectedHtml.indexOf(valStr);
+                if (htmlIdx >= 0) {
+                    protectedHtml = protectedHtml.substring(0, htmlIdx) + placeholder + protectedHtml.substring(htmlIdx + valStr.length);
+                }
+
+                // Restore protected tokens
+                protectedTokens.forEach((original, i) => {
+                    protectedHtml = protectedHtml.replace(`__PO_PROTECT_${i}__`, original);
+                });
+
+                workHtml = protectedHtml;
+
+                // Store in subtask data
+                subtask.text = workText;
+                subtask.html = workHtml;
+
+                // Update display: replace all placeholders with styled values
+                let displayHtml = subtask.html;
+                for (const po of subtask.po_variables) {
+                    const val = po.current_value != null ? po.current_value : po.base_value;
+                    if (po.placeholder) {
+                        displayHtml = displayHtml.split(po.placeholder).join(`<span class="po-value">${val}</span>`);
+                    }
+                }
+                input.innerHTML = displayHtml;
+
+                // Update stored html to have placeholders (for persistence)
+                subtask.html = workHtml;
+            }
+
+            App.state._poTargetContext = null;
+            App.modal.close();
+        },
+
+        initSidebarDrag() {
+            const sidebar = document.getElementById('editor-sidebar'); const handle = document.getElementById('sidebar-drag-handle');
+            if (!sidebar || !handle) return;
+            const onStart = (cx, cy) => { const r = sidebar.getBoundingClientRect(); App.state.sidebarDrag = { active: true, startX: cx, startY: cy, origX: r.left, origY: r.top }; sidebar.style.transition = 'none'; };
+            const onMove = (cx, cy) => { if (!App.state.sidebarDrag.active) return; const dx = cx - App.state.sidebarDrag.startX; const dy = cy - App.state.sidebarDrag.startY;
+                sidebar.style.right = 'auto'; sidebar.style.transform = 'none';
+                sidebar.style.left = Math.max(0, Math.min(App.state.sidebarDrag.origX + dx, window.innerWidth - sidebar.offsetWidth)) + 'px';
+                sidebar.style.top = Math.max(0, Math.min(App.state.sidebarDrag.origY + dy, window.innerHeight - sidebar.offsetHeight)) + 'px'; };
+            const onEnd = () => { App.state.sidebarDrag.active = false; sidebar.style.transition = ''; };
+            handle.addEventListener('mousedown', (e) => { e.preventDefault(); onStart(e.clientX, e.clientY); });
+            document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+            document.addEventListener('mouseup', onEnd);
+            handle.addEventListener('touchstart', (e) => { const t = e.touches[0]; onStart(t.clientX, t.clientY); }, { passive: true });
+            document.addEventListener('touchmove', (e) => { if (!App.state.sidebarDrag.active) return; const t = e.touches[0]; onMove(t.clientX, t.clientY); }, { passive: true });
+            document.addEventListener('touchend', onEnd);
+        }
+    },
+
+    // ==========================================
+    // Calendar
+    // ==========================================
+    calendar: {
+        _touchStartX: 0,
+        _touchStartY: 0,
+        _transitioning: false,
+
+        render() {
+            const grid = document.getElementById('calendar-grid'); const label = document.getElementById('cal-month-label');
+            if (!grid || !label) return;
+            const year = App.state.calendarYear, month = App.state.calendarMonth;
+            const today = new Date().toISOString().split('T')[0];
+            label.textContent = new Date(year, month).toLocaleDateString('en', { month: 'long', year: 'numeric' });
+            const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startOffset = (firstDay + 6) % 7;
+            let html = '<div class="cal-day-header">Mon</div><div class="cal-day-header">Tue</div><div class="cal-day-header">Wed</div><div class="cal-day-header">Thu</div><div class="cal-day-header">Fri</div><div class="cal-day-header">Sat</div><div class="cal-day-header">Sun</div>';
+            const prevMonth = new Date(year, month, 0).getDate();
+            for (let i = startOffset - 1; i >= 0; i--) html += `<div class="cal-day other-month">${prevMonth - i}</div>`;
+
+            const allTasks = DB.getTasks();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const taskCount = App.tasks.getTasksForDate(allTasks, dateStr).length;
+                const dot = taskCount > 0 ? `<span style="font-size:0.45rem;color:var(--done);position:absolute;top:4px;">●</span>` : '';
+                html += `<div class="cal-day ${dateStr === today ? 'today' : ''}" data-date="${dateStr}" onclick="App.calendar.openDailyDetail('${dateStr}')">${d}${dot}</div>`;
+            }
+            const totalCells = startOffset + daysInMonth; const remaining = (7 - (totalCells % 7)) % 7;
+            for (let i = 1; i <= remaining; i++) html += `<div class="cal-day other-month">${i}</div>`;
+            grid.innerHTML = html;
+
+            if (App.state.futureRoutinesMode && App.state.futureRoutinesDate) {
+                this.showFutureRoutines(App.state.futureRoutinesDate);
+            }
+        },
+
+        openDailyDetail(dateStr) {
+            const today = new Date().toISOString().split('T')[0];
+            if (dateStr > today) {
+                App.state.futureRoutinesMode = true;
+                App.state.futureRoutinesDate = dateStr;
+                document.getElementById('future-routines-back').style.display = 'flex';
+                this.showFutureRoutines(dateStr);
+                return;
+            }
+            // Past or today: use daily detail page
+            App.state.dailyDetailDate = dateStr;
+            App.dailyDetail.render();
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-daily-detail').classList.add('active');
+            document.getElementById('bottom-nav').classList.add('hidden');
+            const fab = document.getElementById('fab-add'); if (fab) fab.style.display = 'none';
+        },
+
+        showFutureRoutines(dateStr) {
+            const container = document.getElementById('cal-day-tasks');
+            const allTasks = DB.getTasks();
+            const tasks = App.tasks.getTasksForFutureDate(allTasks, dateStr);
+            const formatted = new Date(dateStr + 'T00:00').toLocaleDateString('en', { weekday: 'long', month: 'long', day: 'numeric' });
+            let html = `<div class="cal-day-tasks-header">${formatted}</div>`;
+            if (tasks.length === 0) {
+                html += '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;font-size:0.85rem;">No tasks scheduled</p>';
+            } else {
+                html += '<div class="task-list">';
+                tasks.forEach((task, idx) => {
+                    const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+                    const isExpandable = App.tasks._isExpandable(task);
+                    html += `<div class="future-task-item" style="animation-delay:${idx * 0.05}s;animation:taskSlideIn 0.35s ease-out backwards;">`;
+                    html += `<div class="task-row"><span class="task-title">${App.tasks.escapeHtml(task.title)}</span>${task.time ? `<span class="task-time">${task.time}</span>` : ''}`;
+                    html += `</div>`;
+                    if (task.description && task.description.trim()) {
+                        html += `<div class="task-expanded-description" style="margin-left:0;">${task.description}</div>`;
+                    }
+                    if (hasSubtasks) {
+                        html += '<div style="margin-left:16px;margin-top:4px;">';
+                        const descriptions = task.descriptions || [];
+                        task.subtasks.forEach((st, stIdx) => {
+                            const desc = descriptions.find(d => d.position === stIdx);
+                            if (desc) html += `<div style="padding:3px 0;font-size:0.8rem;color:var(--text-tertiary);font-style:italic;">${desc.text}</div>`;
+                            html += `<div style="padding:3px 0;font-size:0.85rem;color:var(--text-secondary);">${App.tasks.formatSubtaskText(st)}</div>`;
+                        });
+                        html += '</div>';
+                    }
+                    if (task.tables && task.tables.length > 0) {
+                        task.tables.forEach(table => {
+                            html += `<div class="table-wrapper" style="margin-top:8px;"><table class="user-table">`;
+                            for (let r = 0; r < table.rows; r++) {
+                                html += '<tr>';
+                                for (let c = 0; c < table.cols; c++) {
+                                    const cellKey = `${r}-${c}`;
+                                    const cell = (table.cells && table.cells[cellKey]) || {};
+                                    if (cell.mergedInto) continue;
+                                    const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (cell.content || '');
+                                    html += `<td${(cell.rowspan||1) > 1 ? ` rowspan="${cell.rowspan}"` : ''}${(cell.colspan||1) > 1 ? ` colspan="${cell.colspan}"` : ''}>${displayContent}</td>`;
+                                }
+                                html += '</tr>';
+                            }
+                            html += '</table></div>';
+                        });
+                    }
+                    if (task.priority && task.priority !== 'usual') {
+                        const prLabel = task.priority === 'maximum' ? 'Obligatory' : 'Important';
+                        html += `<div class="task-expanded-priority ${task.priority}">${prLabel}</div>`;
+                    }
+                    html += '</div>';
+                });
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        },
+
+        exitFutureRoutines() {
+            App.state.futureRoutinesMode = false;
+            App.state.futureRoutinesDate = null;
+            document.getElementById('future-routines-back').style.display = 'none';
+            document.getElementById('cal-day-tasks').innerHTML = '';
+            this.render();
+        },
+
+        prevMonth() {
+            if (this._transitioning) return;
+            this._transitioning = true;
+            const grid = document.getElementById('calendar-grid');
+            grid.style.transform = 'translateX(100%)'; grid.style.opacity = '0';
+            setTimeout(() => {
+                App.state.calendarMonth--; if (App.state.calendarMonth < 0) { App.state.calendarMonth = 11; App.state.calendarYear--; }
+                this.render();
+                grid.style.transition = 'none'; grid.style.transform = 'translateX(-100%)';
+                requestAnimationFrame(() => { requestAnimationFrame(() => {
+                    grid.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                    grid.style.transform = ''; grid.style.opacity = '1';
+                    setTimeout(() => { this._transitioning = false; }, 300);
+                }); });
+            }, 150);
+        },
+        nextMonth() {
+            if (this._transitioning) return;
+            this._transitioning = true;
+            const grid = document.getElementById('calendar-grid');
+            grid.style.transform = 'translateX(-100%)'; grid.style.opacity = '0';
+            setTimeout(() => {
+                App.state.calendarMonth++; if (App.state.calendarMonth > 11) { App.state.calendarMonth = 0; App.state.calendarYear++; }
+                this.render();
+                grid.style.transition = 'none'; grid.style.transform = 'translateX(100%)';
+                requestAnimationFrame(() => { requestAnimationFrame(() => {
+                    grid.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+                    grid.style.transform = ''; grid.style.opacity = '1';
+                    setTimeout(() => { this._transitioning = false; }, 300);
+                }); });
+            }, 150);
+        },
+
+        initSwipe() {
+            const wrapper = document.getElementById('calendar-grid-wrapper');
+            if (!wrapper) return;
+            wrapper.addEventListener('touchstart', (e) => { this._touchStartX = e.touches[0].clientX; this._touchStartY = e.touches[0].clientY; }, { passive: true });
+            wrapper.addEventListener('touchend', (e) => {
+                const dx = e.changedTouches[0].clientX - this._touchStartX;
+                const dy = e.changedTouches[0].clientY - this._touchStartY;
+                if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) { if (dx > 0) this.prevMonth(); else this.nextMonth(); }
+            }, { passive: true });
+        }
+    },
+
+    // ==========================================
+    // Daily Detail View
+    // ==========================================
+    dailyDetail: {
+        render() {
+            const dateStr = App.state.dailyDetailDate;
+            if (!dateStr) return;
+            const formatted = new Date(dateStr + 'T00:00').toLocaleDateString('en', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('daily-detail-label').textContent = formatted;
+            document.getElementById('daily-detail-end').textContent = `End of ${formatted}`;
+            const allTasks = DB.getTasks();
+            const tasks = App.tasks.getTasksForDate(allTasks, dateStr);
+            const list = document.getElementById('daily-detail-tasks');
+            list.innerHTML = '';
+            if (tasks.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:var(--text-tertiary);padding:40px 0;font-size:0.9rem;">No tasks for this day</p>';
+            } else {
+                tasks.forEach((task, idx) => { list.appendChild(App.tasks.createTaskElement(task, idx)); });
+            }
+            let done = 0, failed = 0, undeclared = 0;
+            tasks.forEach(t => { switch (t.current_status) { case 'done': done++; break; case 'failed': failed++; break; default: undeclared++; } });
+            const total = tasks.length;
+            const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+            document.getElementById('dd-stat-done').textContent = done;
+            document.getElementById('dd-stat-failed').textContent = failed;
+            document.getElementById('dd-stat-undeclared').textContent = undeclared;
+            const rateEl = document.getElementById('dd-accomplishment-rate');
+            rateEl.textContent = rate + '%';
+            rateEl.style.color = rate === 0 ? 'var(--failed)' : 'var(--done)';
+        },
+
+        prevDay() {
+            const d = new Date(App.state.dailyDetailDate + 'T00:00');
+            d.setDate(d.getDate() - 1);
+            App.state.dailyDetailDate = d.toISOString().split('T')[0];
+            this.render();
+        },
+        nextDay() {
+            const d = new Date(App.state.dailyDetailDate + 'T00:00');
+            d.setDate(d.getDate() + 1);
+            App.state.dailyDetailDate = d.toISOString().split('T')[0];
+            this.render();
+        }
+    },
+
+    // ==========================================
+    // Account & Analytics
+    // ==========================================
+    account: {
+        loadProfile() {
+            document.getElementById('account-balance').textContent = DB.getBalance();
+            const settings = DB.getSettings();
+            if (settings.theme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('toggle-theme').classList.add('on'); }
+            this.loadAnalytics('week');
+            this.loadRecords();
+        },
+
+        showAnalytics() { document.getElementById('analytics-section')?.scrollIntoView({ behavior: 'smooth' }); },
+
+        toggleTheme() {
+            const toggle = document.getElementById('toggle-theme'); const isDark = toggle.classList.toggle('on');
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            const settings = DB.getSettings(); settings.theme = theme; DB.setSettings(settings);
+            App.updateThemeIcon(theme);
+        },
+
+        selectAnalyticsRange(optionEl) {
+            const dropdown = optionEl.closest('.custom-dropdown');
+            dropdown.querySelector('.custom-dropdown-value').textContent = optionEl.textContent.trim();
+            dropdown.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
+            optionEl.classList.add('active');
+            dropdown.classList.remove('open');
+            this.loadAnalytics(optionEl.dataset.value);
+        },
+
+        loadAnalytics(range) {
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            let start;
+            switch (range) {
+                case 'today': start = new Date(today); break;
+                case 'week': start = new Date(today); start.setDate(start.getDate() - 7); break;
+                case 'month': start = new Date(today); start.setDate(start.getDate() - 30); break;
+                case '3months': start = new Date(today); start.setDate(start.getDate() - 90); break;
+                case '6months': start = new Date(today); start.setDate(start.getDate() - 180); break;
+                case 'year': start = new Date(today); start.setDate(start.getDate() - 365); break;
+                case 'all': start = new Date(2020, 0, 1); break;
+                default: start = new Date(today); start.setDate(start.getDate() - 7);
+            }
+            const logs = DB.getDailyLogs();
+            const allTasks = DB.getTasks();
+
+            // Compute average of DAILY rates using mean formula:
+            // Sum of each day's rate ÷ number of days (cardinality)
+            // Only include past/present days. Exclude all future dates.
+            // Only count days that actually had tasks scheduled.
+            let sumDoneRate = 0, sumFailedRate = 0, sumUndeclaredRate = 0;
+            let dayCount = 0;
+            const current = new Date(start);
+
+            while (current <= today) {
+                const dateStr = current.toISOString().split('T')[0];
+                // Strictly exclude any future date
+                if (dateStr > todayStr) { current.setDate(current.getDate() + 1); continue; }
+
+                let dayTotal = 0, dayDone = 0, dayFailed = 0;
+
+                // First check if we have a daily log for this date (recorded when user interacted)
+                if (logs[dateStr]) {
+                    const log = logs[dateStr];
+                    dayTotal = log.total || 0;
+                    dayDone = log.done || 0;
+                    dayFailed = log.failed || 0;
+                } else {
+                    // No log exists — compute from actual task data for this past date
+                    // This covers days the user may not have interacted but tasks were scheduled
+                    const tasks = App.tasks.getTasksForDate(allTasks, dateStr);
+                    dayTotal = tasks.length;
+                    tasks.forEach(t => {
+                        if (t.current_status === 'done') dayDone++;
+                        if (t.current_status === 'failed') dayFailed++;
+                    });
+                }
+
+                // Only include days that actually had tasks
+                if (dayTotal > 0) {
+                    const dayUndeclared = Math.max(0, dayTotal - dayDone - dayFailed);
+                    sumDoneRate += (dayDone / dayTotal) * 100;
+                    sumFailedRate += (dayFailed / dayTotal) * 100;
+                    sumUndeclaredRate += (dayUndeclared / dayTotal) * 100;
+                    dayCount++;
+                }
+                current.setDate(current.getDate() + 1);
+            }
+
+            // Mean of daily rates
+            const doneRate = dayCount > 0 ? Math.round(sumDoneRate / dayCount) : 0;
+            const failedRate = dayCount > 0 ? Math.round(sumFailedRate / dayCount) : 0;
+            const undeclaredRate = dayCount > 0 ? Math.round(sumUndeclaredRate / dayCount) : 0;
+
+            this._animateRate('analytics-done-rate', doneRate);
+            this._animateRate('analytics-failed-rate', failedRate);
+            this._animateRate('analytics-undeclared-rate', undeclaredRate);
+        },
+
+        _animateRate(elementId, target) {
+            const el = document.getElementById(elementId);
+            if (!el) return;
+            const current = parseInt(el.textContent) || 0;
+            if (current === target) { el.textContent = target + '%'; return; }
+            const startTime = performance.now();
+            const startVal = current;
+            function step(now) {
+                const progress = Math.min((now - startTime) / 600, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(startVal + (target - startVal) * eased) + '%';
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        },
+
+        loadRecords() {
+            const records = DB.getRecords();
+            document.getElementById('records-list').innerHTML = records.map(r => {
+                const reminderInfo = r.reminder ? `<div class="record-reminder-info"><span class="record-reminder-label">Reminder: </span> ${new Date(r.reminder + 'T00:00').toLocaleDateString('en', { month: 'short', day: 'numeric' })}${r.reminderHour ? ' at ' + r.reminderHour : ''}</div>` : '';
+                return `<div class="record-item" onclick="App.account.editRecord('${r.id}')">
+                    <div><div class="record-title">${App.tasks.escapeHtml(r.title)}</div><div class="record-date"><span class="record-date-label">Published: </span>${new Date(r.date + 'T00:00').toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })}</div>${reminderInfo}</div>
+                    <div><span class="record-value">${r.value}</span><span class="record-unit">${App.tasks.escapeHtml(r.unit || '')}</span></div>
+                </div>`;
+            }).join('');
+        },
+
+        addRecord() {
+            document.getElementById('record-title').value = '';
+            document.getElementById('record-value').value = '';
+            document.getElementById('record-unit').value = '';
+            document.getElementById('record-reminder').value = '';
+            document.getElementById('record-reminder-hour').value = '';
+            document.getElementById('record-reminder-label').textContent = 'Select date';
+            document.getElementById('record-delete-wrapper').style.display = 'none';
+            document.getElementById('record-title').readOnly = false;
+            document.getElementById('record-time-native').value = '';
+            App.state.editingRecordId = null;
+            App.modal.open('modal-record');
+        },
+
+        editRecord(id) {
+            const records = DB.getRecords();
+            const record = records.find(r => r.id === id);
+            if (record) {
+                document.getElementById('record-title').value = record.title || '';
+                document.getElementById('record-title').readOnly = false;
+                document.getElementById('record-value').value = record.value || '';
+                document.getElementById('record-unit').value = record.unit || '';
+                document.getElementById('record-reminder').value = record.reminder || '';
+                document.getElementById('record-reminder-hour').value = record.reminderHour || '';
+                document.getElementById('record-reminder-label').textContent = record.reminder ? new Date(record.reminder + 'T00:00').toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Select date';
+                document.getElementById('record-delete-wrapper').style.display = 'block';
+                // Set time picker values
+                if (record.reminderHour) {
+                    document.getElementById('record-time-native').value = record.reminderHour;
+                } else {
+                    document.getElementById('record-time-native').value = '';
+                }
+            }
+            App.state.editingRecordId = id;
+            App.modal.open('modal-record');
+        },
+
+        onRecordTimeChange() {
+            // Native time input handles value directly
+        },
+
+        _getRecordReminderHour() {
+            const native = document.getElementById('record-time-native').value;
+            if (native) return native;
+            return null;
+        },
+
+        saveRecord() {
+            const title = document.getElementById('record-title').value.trim();
+            const value = parseFloat(document.getElementById('record-value').value);
+            const unit = document.getElementById('record-unit').value.trim();
+            const reminder = document.getElementById('record-reminder').value || null;
+            const reminderHour = this._getRecordReminderHour();
+            if (!title || isNaN(value)) { App.showError('Fill in title and value'); return; }
+
+            let records = DB.getRecords();
+            if (App.state.editingRecordId) {
+                for (const r of records) {
+                    if (r.id === App.state.editingRecordId) {
+                        r.title = title; r.value = value; r.unit = unit;
+                        r.date = new Date().toISOString().split('T')[0];
+                        r.history.push({ value, date: r.date });
+                        if (reminder) r.reminder = reminder; else delete r.reminder;
+                        if (reminderHour) r.reminderHour = reminderHour; else delete r.reminderHour;
+                        break;
+                    }
+                }
+            } else {
+                records.push({
+                    id: Math.random().toString(36).slice(2, 18),
+                    title, value, unit,
+                    date: new Date().toISOString().split('T')[0],
+                    reminder, reminderHour,
+                    history: [{ value, date: new Date().toISOString().split('T')[0] }]
+                });
+            }
+            DB.setRecords(records);
+            if (reminder) Notifier.schedule(`Record Reminder: ${title}`, `Current value: ${value} ${unit}`, reminder, reminderHour || '09:00');
+            App.modal.close(); this.loadRecords();
+        },
+
+        deleteRecord() {
+            if (!App.state.editingRecordId) return;
+            let records = DB.getRecords();
+            records = records.filter(r => r.id !== App.state.editingRecordId);
+            DB.setRecords(records);
+            App.state.editingRecordId = null;
+            App.modal.close();
+            this.loadRecords();
+        },
+
+        openRecordCalendar() {
+            App.state.rcMonth = new Date().getMonth();
+            App.state.rcYear = new Date().getFullYear();
+            this.renderRecordCalendar();
+            document.getElementById('modal-record-calendar').classList.add('active');
+        },
+
+        closeRecordCalendar() { document.getElementById('modal-record-calendar').classList.remove('active'); },
+
+        renderRecordCalendar() {
+            const grid = document.getElementById('rc-cal-grid'); const label = document.getElementById('rc-cal-label');
+            const year = App.state.rcYear, month = App.state.rcMonth;
+            label.textContent = new Date(year, month).toLocaleDateString('en', { month: 'long', year: 'numeric' });
+            const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const startOffset = (firstDay + 6) % 7;
+            const selectedDate = document.getElementById('record-reminder').value;
+            let html = ''; ['M','T','W','T','F','S','S'].forEach(d => { html += `<div style="font-size:0.7rem;color:var(--text-tertiary);padding:4px;font-weight:600">${d}</div>`; });
+            for (let i = 0; i < startOffset; i++) html += '<div class="dp-cal-day other-month"></div>';
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const selected = dateStr === selectedDate ? ' selected' : '';
+                html += `<div class="dp-cal-day${selected}" onclick="App.account.selectRecordDate('${dateStr}')">${d}</div>`;
+            }
+            grid.innerHTML = html;
+        },
+
+        selectRecordDate(dateStr) {
+            document.getElementById('record-reminder').value = dateStr;
+            document.getElementById('record-reminder-label').textContent = new Date(dateStr + 'T00:00').toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' });
+            this.closeRecordCalendar();
+        },
+
+        rcPrevMonth() { App.state.rcMonth--; if (App.state.rcMonth < 0) { App.state.rcMonth = 11; App.state.rcYear--; } this.renderRecordCalendar(); },
+        rcNextMonth() { App.state.rcMonth++; if (App.state.rcMonth > 11) { App.state.rcMonth = 0; App.state.rcYear++; } this.renderRecordCalendar(); }
+    },
+
+    // Theme icon management
+    updateThemeIcon(theme) {
+        const favicon = document.getElementById('favicon');
+        const appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]');
+        if (theme === 'dark') {
+            if (favicon) favicon.href = 'logoDark.png';
+            if (appleTouchIcon) appleTouchIcon.href = 'logoDark.png';
+        } else {
+            if (favicon) favicon.href = 'logoLight.png';
+            if (appleTouchIcon) appleTouchIcon.href = 'logoLight.png';
+        }
+    }
+};
+
+// Init
+document.addEventListener('DOMContentLoaded', async () => {
+    await DB.init();
+
+    if ('serviceWorker' in navigator) {
+        try { await navigator.serviceWorker.register('./sw.js'); }
+        catch (e) { console.warn('SW registration failed:', e); }
+    }
+
+    AutoBackup.init();
+    Notifier.init();
+    document.addEventListener('click', App.ui.closeAllDropdowns);
+    App.editor.initSidebarDrag();
+    App.calendar.initSwipe();
+
+    const settings = DB.getSettings();
+    if (settings.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('toggle-theme').classList.add('on');
+    }
+    App.updateThemeIcon(settings.theme || 'light');
+
+    // Bold/Italic state tracking for all contenteditable elements (subtasks, descriptions, table cells)
+    const _updateFormattingState = () => {
+        const boldBtn = document.querySelector('[data-tool="bold"]');
+        const italicBtn = document.querySelector('[data-tool="italic"]');
+        if (boldBtn) boldBtn.classList.toggle('active', document.queryCommandState('bold'));
+        if (italicBtn) italicBtn.classList.toggle('active', document.queryCommandState('italic'));
+    };
+    document.addEventListener('keyup', (e) => {
+        if (e.target.getAttribute('contenteditable') === 'true' || e.target.closest('[contenteditable="true"]')) {
+            _updateFormattingState();
+        }
+    });
+    document.addEventListener('mouseup', (e) => {
+        if (e.target.getAttribute('contenteditable') === 'true' || e.target.closest('[contenteditable="true"]')) {
+            _updateFormattingState();
+        }
+    });
+    document.addEventListener('touchend', (e) => {
+        if (e.target.getAttribute('contenteditable') === 'true' || e.target.closest('[contenteditable="true"]')) {
+            setTimeout(_updateFormattingState, 50);
+        }
+    });
+    // Keyboard shortcuts: Ctrl/Cmd + B and Ctrl/Cmd + I within editor page
+    document.addEventListener('keydown', (e) => {
+        if (!document.getElementById('page-editor')?.classList.contains('active')) return;
+        const target = e.target;
+        const isEditable = target.getAttribute('contenteditable') === 'true' || target.closest('[contenteditable="true"]');
+        if (!isEditable) return;
+        if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+            e.preventDefault();
+            document.execCommand('bold', false, null);
+            _updateFormattingState();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'i') {
+            e.preventDefault();
+            document.execCommand('italic', false, null);
+            _updateFormattingState();
+        }
+    });
+
+    // Schedule pending record reminders on load
+    const records = DB.getRecords();
+    records.forEach(r => {
+        if (r.reminder) Notifier.schedule(`Record Reminder: ${r.title}`, `Current value: ${r.value} ${r.unit || ''}`, r.reminder, r.reminderHour || '09:00');
+    });
+
+    App.tasks.loadTasks();
+});
+</script>
+</body>
+</html>
