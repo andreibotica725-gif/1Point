@@ -241,11 +241,6 @@ input[type="number"] { -moz-appearance: textfield; }
 .cal-day-tasks { padding: 16px 0; }
 .cal-day-tasks-header { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; margin-bottom: 12px; }
 
-/* Future routines back button */
-.future-routines-back { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; font-weight: 500; color: var(--text-secondary); padding: 8px 0; cursor: pointer; transition: color var(--transition); margin-bottom: 8px; }
-.future-routines-back:hover { color: var(--text-primary); }
-.future-routines-back i { font-size: 0.8rem; }
-
 /* Daily Detail View */
 .daily-detail-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 0 16px; }
 .daily-detail-header .day-label { font-family: var(--font-heading); font-size: 1.1rem; font-weight: 600; text-align: center; flex: 1; }
@@ -352,6 +347,14 @@ input[type="number"] { -moz-appearance: textfield; }
 
 /* PO Config */
 .po-info { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5; }
+
+/* Notification chips in time picker */
+.notification-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.notif-option { cursor: pointer; }
+.notif-option input[type="checkbox"] { display: none; }
+.notif-chip { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 500; background: var(--bg-secondary); border: 1.5px solid var(--border); color: var(--text-secondary); transition: all var(--transition); user-select: none; }
+.notif-option input[type="checkbox"]:checked + .notif-chip { background: var(--accent); color: var(--bg-primary); border-color: var(--accent); }
+.notif-chip:active { transform: scale(0.95); }
 .po-field { margin-bottom: 16px; }
 .po-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; }
 .po-input, .po-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; -webkit-appearance: none; appearance: none; }
@@ -364,6 +367,14 @@ input[type="number"] { -moz-appearance: textfield; }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 .task-removing { animation: taskRemove 0.35s ease-in forwards; }
 @keyframes taskRemove { to { opacity: 0; transform: translateX(-100%); height: 0; padding: 0; margin: 0; } }
+
+/* Toast Notifications */
+.toast-notification { position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-100%); padding: 14px 28px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); z-index: 999; font-size: 0.88rem; font-weight: 500; font-family: var(--font); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 24px rgba(0,0,0,0.1); animation: toastIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; max-width: 98vw; text-align: center; letter-spacing: 0.2px; }
+.toast-notification.toast-success { background: rgba(76, 175, 80, 0.92); color: #fff; }
+.toast-notification.toast-error { background: rgba(244, 67, 54, 0.92); color: #fff; }
+.toast-notification.toast-exit { animation: toastOut 0.35s cubic-bezier(0.4, 0, 1, 1) forwards; }
+@keyframes toastIn { from { transform: translateX(-50%) translateY(-100%); } to { transform: translateX(-50%) translateY(0); } }
+@keyframes toastOut { from { transform: translateX(-50%) translateY(0); opacity: 1; } to { transform: translateX(-50%) translateY(-100%); opacity: 0; } }
 
 /* ==========================================
    TABLE FEATURE STYLES (embedded in editor)
@@ -419,7 +430,7 @@ input[type="number"] { -moz-appearance: textfield; }
   font-size: 1.2rem;
 }
 .time-per-day .time-picker-text {
-  max-width: 18rem;
+  max-width: 17rem;
 }
 #record-delete-wrapper {
   padding: 14px;
@@ -432,6 +443,35 @@ input[type="number"] { -moz-appearance: textfield; }
 }
 .recurrence-date-exclude:hover {
   background: none;
+}
+.notification-section p {
+  font-weight: 500 !important;
+}
+#notification-options {
+  gap: 0px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.notif-option {
+  width: 100%;
+}
+.notif-chip {
+  border: none;
+  border-radius: 0px;
+  width: 100%;
+text-align: center;
+}
+.notification-section i {
+  display: none;
+}
+#table-delete-wrapper {
+  padding: 14px;
+}
+.notification-options {
+  gap: 0px;
+  border-radius: 20px;
+  overflow: hidden;
+  flex-wrap: nowrap !important;
 }
 </style>
 </head>
@@ -515,10 +555,6 @@ input[type="number"] { -moz-appearance: textfield; }
         <div id="page-calendar" class="page">
             <div class="page-content">
                 <h1 class="page-title">Calendar</h1>
-                <div id="future-routines-back" class="future-routines-back" style="display:none;" onclick="App.calendar.exitFutureRoutines()">
-                    <i class="fa-solid fa-chevron-left"></i>
-                    <span>Back</span>
-                </div>
                 <div class="calendar-header">
                     <button class="cal-nav-btn" onclick="App.calendar.prevMonth()"><i class="fa-solid fa-chevron-left"></i></button>
                     <span class="cal-month-label" id="cal-month-label"></span>
@@ -534,6 +570,10 @@ input[type="number"] { -moz-appearance: textfield; }
         <!-- Daily Detail Page -->
         <div id="page-daily-detail" class="page">
             <div class="page-content">
+                <div class="future-routines-back" onclick="App.dailyDetail.goBack()" style="margin-bottom:4px;">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span>Calendar</span>
+                </div>
                 <div class="daily-detail-header">
                     <button class="daily-detail-nav" onclick="App.dailyDetail.prevDay()"><i class="fa-solid fa-chevron-left"></i></button>
                     <span class="day-label" id="daily-detail-label"></span>
@@ -717,32 +757,27 @@ input[type="number"] { -moz-appearance: textfield; }
                         <div id="time-per-day" class="time-per-day"></div>
                     </div>
                 </div>
+                <div class="notification-section" style="margin-top:16px;border-top:1px solid var(--border-light);padding-top:16px;">
+                    <p style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:10px;"><i class="fa-regular fa-bell" style="margin-right:6px;"></i>Notify me before</p>
+                    <div class="notification-options" id="notification-options">
+                        <label class="notif-option" data-minutes="10"><input type="checkbox" value="10"><span class="notif-chip">10 min</span></label>
+                        <label class="notif-option" data-minutes="30"><input type="checkbox" value="30"><span class="notif-chip">30 min</span></label>
+                        <label class="notif-option" data-minutes="60"><input type="checkbox" value="60"><span class="notif-chip">1 hour</span></label>
+                        <label class="notif-option" data-minutes="180"><input type="checkbox" value="180"><span class="notif-chip">3 hours</span></label>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveTime()"><i class="fa-solid fa-check"></i> Save</button></div>
         </div>
 
-        <!-- PO Config Modal -->
+        <!-- PO Config Modal (simplified, no frequency) -->
         <div class="modal" id="modal-po">
             <div class="modal-header"><h3>Progressive Overload</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="modal-body">
-                <p class="po-info">Select a number in your subtask text, then configure its progression.</p>
+                <p class="po-info">The value's progression frequency matches the task's recurrence frequency.</p>
                 <div class="po-field"><label>Selected Value</label><input type="number" id="po-base-value" class="po-input" readonly></div>
-                <div class="po-field">
-                    <label>Frequency</label>
-                    <div class="custom-dropdown" id="po-frequency-dropdown">
-                        <div class="custom-dropdown-trigger" onclick="App.ui.toggleDropdown('po-frequency-dropdown')">
-                            <span class="custom-dropdown-value">Every Check</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i>
-                        </div>
-                        <div class="custom-dropdown-menu">
-                            <div class="custom-dropdown-option active" data-value="every_check" onclick="App.ui.selectOption(this)">Every Check</div>
-                            <div class="custom-dropdown-option" data-value="daily" onclick="App.ui.selectOption(this)">Daily</div>
-                            <div class="custom-dropdown-option" data-value="weekly" onclick="App.ui.selectOption(this)">Weekly</div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="po-frequency" value="every_check">
-                </div>
-                <div class="po-field"><label>Increase by</label><input type="number" id="po-load" class="po-input" value="1" min="1"></div>
+                <div class="po-field"><label>Increase by</label><input type="number" id="po-load" class="po-input" value="1" min="0" oninput="App.editor.onPOIncrementChange()"></div>
+                <div class="po-field"><label>Decrease by</label><input type="number" id="po-decrement" class="po-input" value="0" min="0" oninput="App.editor.onPODecrementChange()"></div>
             </div>
             <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.savePO()"><i class="fa-solid fa-check"></i> Apply</button></div>
         </div>
@@ -809,28 +844,14 @@ input[type="number"] { -moz-appearance: textfield; }
             </div>
         </div>
 
-        <!-- Table Cell PO Modal -->
+        <!-- Table Cell PO Modal (simplified, no frequency) -->
         <div class="modal" id="modal-table-po">
             <div class="modal-header"><h3>Cell Progressive Overload</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="modal-body">
                 <p class="po-info">Configure progressive overload for the selected cell value.</p>
                 <div class="po-field"><label>Base Value</label><input type="number" id="table-po-base" class="po-input"></div>
-                <div class="po-field">
-                    <label>Frequency</label>
-                    <div class="custom-dropdown" id="table-po-freq-dropdown">
-                        <div class="custom-dropdown-trigger" onclick="App.ui.toggleDropdown('table-po-freq-dropdown')">
-                            <span class="custom-dropdown-value">Every Check</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size:0.7rem;"></i>
-                        </div>
-                        <div class="custom-dropdown-menu">
-                            <div class="custom-dropdown-option active" data-value="every_check" onclick="App.ui.selectOption(this)">Every Check</div>
-                            <div class="custom-dropdown-option" data-value="daily" onclick="App.ui.selectOption(this)">Daily</div>
-                            <div class="custom-dropdown-option" data-value="weekly" onclick="App.ui.selectOption(this)">Weekly</div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="table-po-frequency" value="every_check">
-                </div>
-                <div class="po-field"><label>Increase by</label><input type="number" id="table-po-load" class="po-input" value="1" min="1"></div>
+                <div class="po-field"><label>Increase by</label><input type="number" id="table-po-load" class="po-input" value="1" min="0" oninput="App.editor.onTablePOIncrementChange()"></div>
+                <div class="po-field"><label>Decrease by</label><input type="number" id="table-po-decrement" class="po-input" value="0" min="0" oninput="App.editor.onTablePODecrementChange()"></div>
             </div>
             <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveTableCellPO()"><i class="fa-solid fa-check"></i> Apply</button></div>
         </div>
@@ -911,8 +932,51 @@ const AutoBackup = {
     }
 };
 
+const DailyFinalizer = {
+    init() {
+        this.finalizePastDays();
+        this.scheduleTonight();
+        // Re-check every 30 minutes in case app was asleep
+        setInterval(() => { this.finalizePastDays(); this.scheduleTonight(); }, 30 * 60 * 1000);
+    },
+    finalizePastDays() {
+        const logs = DB.getDailyLogs();
+        const today = new Date().toISOString().split('T')[0];
+        let changed = false;
+        for (const dateStr of Object.keys(logs)) {
+            if (dateStr < today && !logs[dateStr].finalized) {
+                logs[dateStr].finalRate = logs[dateStr].rate;
+                logs[dateStr].finalized = true;
+                changed = true;
+            }
+        }
+        if (changed) DB.setDailyLogs(logs);
+    },
+    scheduleTonight() {
+        const now = new Date();
+        const tonight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 0);
+        let delay = tonight.getTime() - now.getTime();
+        if (delay < 0) delay += 86400000; // already past 23:59 today
+        setTimeout(() => {
+            this.finalizeToday();
+            // Schedule for next day
+            this.scheduleTonight();
+        }, delay);
+    },
+    finalizeToday() {
+        const today = new Date().toISOString().split('T')[0];
+        const logs = DB.getDailyLogs();
+        if (logs[today]) {
+            logs[today].finalRate = logs[today].rate;
+            logs[today].finalized = true;
+            DB.setDailyLogs(logs);
+        }
+    }
+};
+
 const Notifier = {
     _permission: null,
+    _scheduledTimers: [],
     async init() {
         if ('Notification' in window) {
             this._permission = Notification.permission;
@@ -923,11 +987,88 @@ const Notifier = {
         if (!('Notification' in window) || this._permission !== 'granted') return;
         const [y, m, d] = dateStr.split('-').map(Number);
         const [hh, mm] = (hour || '09:00').split(':').map(Number);
-        const target = new Date(y, m - 1, d, hh, mm || 0);
+        const target = new Date(Date.UTC(y, m-1, d, hh, mm));
         const delay = target.getTime() - Date.now();
         if (delay > 0 && delay < 86400000 * 30) {
-            setTimeout(() => { new Notification(title, { body, icon: 'logoLight.png' }); }, delay);
+            const timer = setTimeout(() => { this._showNotification(title, body); }, delay);
+            this._scheduledTimers.push(timer);
         }
+    },
+    scheduleTask(task, date) {
+        if (!('Notification' in window) || this._permission !== 'granted') return;
+        const notifications = task.notifications || [];
+        if (notifications.length === 0) return;
+        const schedule = task.schedule || {};
+        const times = schedule.times || {};
+        const timeStr = times[date] || times['default'] || null;
+        if (!timeStr) return;
+        const [hh, mm] = timeStr.split(':').map(Number);
+        const [y, m, d] = date.split('-').map(Number);
+        const taskTime = new Date(Date.UTC(y, m-1, d, hh, mm));
+        for (const minutesBefore of notifications) {
+            const notifTime = new Date(taskTime.getTime() - minutesBefore * 60000);
+            const delay = notifTime.getTime() - Date.now();
+            if (delay > 0 && delay < 86400000 * 2) {
+                const label = minutesBefore >= 60 ? `${minutesBefore / 60}h` : `${minutesBefore}min`;
+                const timer = setTimeout(() => {
+                    this._showNotification(
+                        `Upcoming Task`,
+                        `${task.title} — in ${label} (${timeStr})`
+                    );
+                }, delay);
+                this._scheduledTimers.push(timer);
+            }
+        }
+    },
+    scheduleRecordNotification(record) {
+        if (!record.reminder) return;
+        this.schedule(
+            `Record Reminder`,
+            `${record.title}: ${record.value} ${record.unit || ''}`,
+            record.reminder,
+            record.reminderHour || '09:00'
+        );
+    },
+    _showNotification(title, body) {
+        if (!('Notification' in window) || Notification.permission !== 'granted') return;
+        try {
+            if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.ready.then(reg => {
+                    reg.showNotification(title, { body, icon: 'logoLight.png', badge: 'logoLight.png', vibrate: [100, 50, 100], tag: title + '-' + Date.now() });
+                }).catch(() => { new Notification(title, { body, icon: 'logoLight.png' }); });
+            } else {
+                new Notification(title, { body, icon: 'logoLight.png' });
+            }
+        } catch (e) { try { new Notification(title, { body, icon: 'logoLight.png' }); } catch (e2) {} }
+    },
+    scheduleAllTaskNotifications() {
+        // Clear previous timers
+        this._scheduledTimers.forEach(t => clearTimeout(t));
+        this._scheduledTimers = [];
+        const today = new Date().toISOString().split('T')[0];
+        const allTasks = DB.getTasks();
+        for (const task of allTasks) {
+            if (!task.notifications || task.notifications.length === 0) continue;
+            const schedule = task.schedule || {};
+            const type = schedule.type || 'once';
+            const dates = schedule.dates || [];
+            const daysOfWeek = schedule.days_of_week || [];
+            // Check today and tomorrow
+            for (let offset = 0; offset <= 1; offset++) {
+                const d = new Date(); d.setDate(d.getDate() + offset);
+                const dateStr = d.toISOString().split('T')[0];
+                const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][d.getDay()];
+                let applicable = false;
+                if (type === 'once' && dates.includes(dateStr)) applicable = true;
+                else if (type === 'recurring' && (daysOfWeek.includes(dayName) || dates.includes(dateStr))) applicable = true;
+                else if (dates.includes(dateStr)) applicable = true;
+                if (task.excludedDates && task.excludedDates.includes(dateStr)) applicable = false;
+                if (applicable) this.scheduleTask(task, dateStr);
+            }
+        }
+        // Also schedule record reminders
+        const records = DB.getRecords();
+        records.forEach(r => { if (r.reminder) this.scheduleRecordNotification(r); });
     }
 };
 
@@ -954,12 +1095,11 @@ const App = {
         rcMonth: new Date().getMonth(),
         rcYear: new Date().getFullYear(),
         recurrenceDatesOpen: false,
-        futureRoutinesMode: false,
-        futureRoutinesDate: null,
         editingRecordId: null,
         editingEditorTableId: null,
         timeMode: 'same',
-        activeCellForPO: null
+        activeCellForPO: null,
+        analyticsRange: 'week'   // persisted selected range
     },
 
     ui: {
@@ -993,7 +1133,7 @@ const App = {
             if (page === 'editor' || page === 'daily-detail') { nav.classList.add('hidden'); if (fab) fab.style.display = 'none'; }
             else { nav.classList.remove('hidden'); if (fab) fab.style.display = 'flex'; }
             if (page === 'main') App.tasks.loadTasks();
-            if (page === 'calendar') { App.state.futureRoutinesMode = false; document.getElementById('future-routines-back').style.display = 'none'; App.calendar.render(); }
+            if (page === 'calendar') { App.calendar.render(); }
             if (page === 'account') App.account.loadProfile();
         }
     },
@@ -1005,14 +1145,18 @@ const App = {
 
     showError(msg) {
         const el = document.createElement('div');
-        el.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#F44336;color:#fff;padding:12px 24px;border-radius:12px;z-index:999;font-size:0.9rem;font-weight:500;animation:slideUp 0.3s ease';
-        el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
+        el.className = 'toast-notification toast-error';
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => { el.classList.add('toast-exit'); setTimeout(() => el.remove(), 400); }, 2800);
     },
 
     showSuccess(msg) {
         const el = document.createElement('div');
-        el.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#4CAF50;color:#fff;padding:12px 24px;border-radius:12px;z-index:999;font-size:0.9rem;font-weight:500;animation:slideUp 0.3s ease';
-        el.textContent = msg; document.body.appendChild(el); setTimeout(() => el.remove(), 3000);
+        el.className = 'toast-notification toast-success';
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => { el.classList.add('toast-exit'); setTimeout(() => el.remove(), 400); }, 2800);
     },
 
     // ==========================================
@@ -1047,9 +1191,33 @@ const App = {
                     const times = schedule.times || {};
                     taskCopy.time = times[date] || times['default'] || null;
                     taskCopy.current_status = (task.status && task.status[date]) || 'undeclared';
+                    const today = new Date().toISOString().split('T')[0];
+                    const isFuture = date > today;
                     if (taskCopy.subtasks) {
                         for (const st of taskCopy.subtasks) {
                             st.current_status = (st.status && st.status[date]) || 'undeclared';
+                            // Project PO values for future/current dates
+                            if (isFuture && st.po_variables && st.po_variables.length > 0) {
+                                for (const po of st.po_variables) {
+                                    const freq = po.frequency || 'every_check';
+                                    const load = po.load || 1;
+                                    if (freq === 'every_check') {
+                                        // Count all scheduled occurrences from start_date to target (exclusive)
+                                        // This gives the number of completions that would have happened before this date
+                                        const startDate = po.start_date || today;
+                                        const totalChecks = this._countFutureChecks(task, startDate, date);
+                                        po.current_value = po.base_value + (totalChecks * load);
+                                    } else if (freq === 'daily') {
+                                        const startDate = po.start_date || today;
+                                        const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                        po.current_value = po.base_value + (daysDiff * load);
+                                    } else if (freq === 'weekly') {
+                                        const startDate = po.start_date || today;
+                                        const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                        po.current_value = po.base_value + (Math.floor(daysDiff / 7) * load);
+                                    }
+                                }
+                            }
                             st.display_text = this.calculatePODisplay(st, date);
                         }
                     }
@@ -1060,7 +1228,24 @@ const App = {
                                 for (const key in table.cells) {
                                     const cell = table.cells[key];
                                     if (cell.po) {
-                                        cell.po._displayValue = this._computeTableCellPOForDate(cell.po, date);
+                                        if (isFuture) {
+                                            const freq = cell.po.frequency || 'every_check';
+                                            const load = cell.po.load || 1;
+                                            const startDate = cell.po.start_date || today;
+                                            if (freq === 'every_check') {
+                                                const cellStartDate = cell.po.start_date || today;
+                                                const checks = this._countFutureChecks(task, cellStartDate, date);
+                                                cell.po._displayValue = cell.po.base_value + (checks * load);
+                                            } else if (freq === 'daily') {
+                                                const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                                cell.po._displayValue = cell.po.base_value + (daysDiff * load);
+                                            } else if (freq === 'weekly') {
+                                                const daysDiff = Math.max(0, Math.floor((new Date(date + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
+                                                cell.po._displayValue = cell.po.base_value + (Math.floor(daysDiff / 7) * load);
+                                            }
+                                        } else {
+                                            cell.po._displayValue = this._computeTableCellPOForDate(cell.po, date);
+                                        }
                                     }
                                 }
                             }
@@ -1104,10 +1289,10 @@ const App = {
                                 for (const po of st.po_variables) {
                                     const freq = po.frequency || 'every_check';
                                     const load = po.load || 1;
-                                    const currentVal = po.current_value != null ? po.current_value : po.base_value;
                                     if (freq === 'every_check') {
-                                        const checksUntilTarget = this._countFutureChecks(task, today, targetDate);
-                                        po.current_value = currentVal + (checksUntilTarget * load);
+                                        const startDate = po.start_date || today;
+                                        const totalChecks = this._countFutureChecks(task, startDate, targetDate);
+                                        po.current_value = po.base_value + (totalChecks * load);
                                     } else if (freq === 'daily') {
                                         // Use start_date for deterministic computation
                                         const startDate = po.start_date || today;
@@ -1134,8 +1319,9 @@ const App = {
                                         const load = cell.po.load || 1;
                                         const startDate = cell.po.start_date || today;
                                         if (freq === 'every_check') {
-                                            const checks = this._countFutureChecks(task, today, targetDate);
-                                            cell.po._displayValue = (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value) + (checks * load);
+                                            const cellStartDate = cell.po.start_date || today;
+                                            const checks = this._countFutureChecks(task, cellStartDate, targetDate);
+                                            cell.po._displayValue = cell.po.base_value + (checks * load);
                                         } else if (freq === 'daily') {
                                             const daysDiff = Math.max(0, Math.floor((new Date(targetDate + 'T00:00') - new Date(startDate + 'T00:00')) / 86400000));
                                             cell.po._displayValue = cell.po.base_value + (daysDiff * load);
@@ -1170,7 +1356,8 @@ const App = {
             const end = new Date(toDate + 'T00:00');
             const current = new Date(start);
             current.setDate(current.getDate() + 1);
-            while (current < end) {
+            // Count scheduled occurrences from day after fromDate up to AND including toDate
+            while (current <= end) {
                 const dateStr = current.toISOString().split('T')[0];
                 if (!excluded.includes(dateStr)) {
                     const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][current.getDay()];
@@ -1355,7 +1542,8 @@ const App = {
 
         setSubtaskStatus(taskId, subtaskId, status) {
             const allTasks = DB.getTasks();
-            const date = App.state.currentDate;
+            const ddPage = document.getElementById('page-daily-detail');
+            const date = (ddPage && ddPage.classList.contains('active') && App.state.dailyDetailDate) ? App.state.dailyDetailDate : App.state.currentDate;
             for (const task of allTasks) {
                 if (task.id === taskId && task.subtasks) {
                     for (const st of task.subtasks) {
@@ -1375,7 +1563,9 @@ const App = {
 
         setStatus(taskId, status) {
             const allTasks = DB.getTasks();
-            const date = App.state.currentDate;
+            // Use dailyDetailDate when daily-detail page is active, otherwise currentDate
+            const ddPage = document.getElementById('page-daily-detail');
+            const date = (ddPage && ddPage.classList.contains('active') && App.state.dailyDetailDate) ? App.state.dailyDetailDate : App.state.currentDate;
             for (const task of allTasks) {
                 if (task.id === taskId) {
                     if (!task.status) task.status = {};
@@ -1390,7 +1580,8 @@ const App = {
                 }
             }
             DB.setTasks(allTasks);
-            const el = document.querySelector(`[data-task-id="${taskId}"]`);
+            const activePage = document.querySelector('.page.active');
+            const el = activePage ? activePage.querySelector(`[data-task-id="${taskId}"]`) : document.querySelector(`[data-task-id="${taskId}"]`);
             if (el) {
                 el.className = el.className.replace(/\b(done|failed|undeclared)\b/g, '').trim();
                 el.classList.add(status);
@@ -1459,7 +1650,9 @@ const App = {
         toggleExpand(taskId) {
             if (App.state.expandedTasks.has(taskId)) App.state.expandedTasks.delete(taskId);
             else App.state.expandedTasks.add(taskId);
-            const el = document.querySelector(`[data-task-id="${taskId}"]`);
+            // Scope to the currently active page to avoid matching hidden page elements
+            const activePage = document.querySelector('.page.active');
+            const el = activePage ? activePage.querySelector(`[data-task-id="${taskId}"]`) : document.querySelector(`[data-task-id="${taskId}"]`);
             if (el) el.classList.toggle('expanded');
         },
 
@@ -1530,10 +1723,13 @@ const App = {
             const total = tasks.length;
             const rate = total > 0 ? Math.round((done / total) * 100) : 0;
             const logs = DB.getDailyLogs();
-            logs[date] = { rate, total, done, failed };
+            logs[date] = { rate, total, done, failed, finalized: false };
             DB.setDailyLogs(logs);
             let bal = 0;
-            for (const k of Object.keys(logs)) bal += logs[k].rate || 0;
+            for (const k of Object.keys(logs)) {
+                // Use finalized rate if available, otherwise current rate
+                bal += logs[k].finalRate != null ? logs[k].finalRate : (logs[k].rate || 0);
+            }
             DB.setBalance(bal);
         },
 
@@ -1663,6 +1859,7 @@ const App = {
                 });
             }
             DB.setTasks(allTasks);
+            Notifier.scheduleAllTaskNotifications();
             App.nav.goto('main');
         },
 
@@ -1853,7 +2050,7 @@ const App = {
         // Helper to render a single editor table as HTML string
         _renderEditorTableHTML(table, tIdx) {
             let html = `<div class="table-container editor-element" data-el-type="table" data-el-index="${tIdx}">`;
-            html += `<div class="table-title-bar" onclick="App.editor.editEditorTable(${tIdx})"><span>${App.tasks.escapeHtml(table.title)}</span><i class="fa-solid fa-gear"></i></div>`;
+            html += `<div class="table-title-bar" onclick="App.editor.editEditorTable(${tIdx})"><span>${App.tasks.escapeHtml(table.title)}</span><i class="fa-regular fa-pen-to-square"></i></div>`;
             html += `<div class="table-wrapper"><table class="user-table" data-table-idx="${tIdx}">`;
             for (let r = 0; r < table.rows; r++) {
                 html += '<tr>';
@@ -2058,18 +2255,20 @@ const App = {
             const { tableIdx, row, col } = App.state.activeCellForPO || {};
             if (tableIdx === undefined) return;
             const baseValue = parseInt(document.getElementById('table-po-base').value);
-            const frequency = document.getElementById('table-po-frequency').value;
-            const load = parseInt(document.getElementById('table-po-load').value) || 1;
+            const increment = parseInt(document.getElementById('table-po-load').value) || 0;
+            const decrement = parseInt(document.getElementById('table-po-decrement').value) || 0;
+            const load = decrement > 0 ? -Math.abs(decrement) : (increment || 1);
             if (isNaN(baseValue)) { App.showError('Enter a base value'); return; }
             const table = App.state.editorData.tables[tableIdx];
             if (!table) return;
             if (!table.cells) table.cells = {};
             const key = `${row}-${col}`;
             if (!table.cells[key]) table.cells[key] = {};
-            table.cells[key].po = { base_value: baseValue, current_value: baseValue, frequency, load, last_applied: null, start_date: new Date().toISOString().split('T')[0] };
+            // Always use frequency 'every_check'
+            table.cells[key].po = { base_value: baseValue, current_value: baseValue, frequency: 'every_check', load, last_applied: null, start_date: new Date().toISOString().split('T')[0] };
             table.cells[key].content = `<span class="po-value">${baseValue}</span>`;
             App.modal.close();
-            this.renderEditorTables();
+            this.renderAllElements();
         },
 
         openPriorityPicker() {
@@ -2221,6 +2420,11 @@ const App = {
             if (allDates.length > 0) {
                 perDay.innerHTML = allDates.map(d => `<div class="time-day-row"><span class="time-day-label">${d}</span><input type="time" class="time-picker-text" data-day="${d}" value="${times[d] || ''}" style="flex:1;"></div>`).join('');
             } else { perDay.innerHTML = '<p style="font-size:0.85rem;color:var(--text-tertiary)">Set dates first</p>'; }
+            // Load notification preferences
+            const notifications = App.state.editorData.notifications || [];
+            document.querySelectorAll('#notification-options input[type="checkbox"]').forEach(cb => {
+                cb.checked = notifications.includes(parseInt(cb.value));
+            });
             App.modal.open('modal-timepicker');
         },
 
@@ -2231,7 +2435,32 @@ const App = {
                 const timeVal = document.getElementById('time-all').value;
                 if (timeVal) times['default'] = timeVal;
             } else document.querySelectorAll('#time-per-day .time-picker-text').forEach(input => { if (input.value) times[input.dataset.day] = input.value; });
-            App.state.editorData.schedule.times = times; App.modal.close();
+            App.state.editorData.schedule.times = times;
+            // Save notification preferences
+            const notifications = [];
+            document.querySelectorAll('#notification-options input[type="checkbox"]:checked').forEach(cb => {
+                notifications.push(parseInt(cb.value));
+            });
+            App.state.editorData.notifications = notifications;
+            App.modal.close();
+        },
+
+        // PO increment/decrement mutual exclusivity handlers
+        onPOIncrementChange() {
+            const val = parseFloat(document.getElementById('po-load').value) || 0;
+            if (val > 0) document.getElementById('po-decrement').value = 0;
+        },
+        onPODecrementChange() {
+            const val = parseFloat(document.getElementById('po-decrement').value) || 0;
+            if (val > 0) document.getElementById('po-load').value = 0;
+        },
+        onTablePOIncrementChange() {
+            const val = parseFloat(document.getElementById('table-po-load').value) || 0;
+            if (val > 0) document.getElementById('table-po-decrement').value = 0;
+        },
+        onTablePODecrementChange() {
+            const val = parseFloat(document.getElementById('table-po-decrement').value) || 0;
+            if (val > 0) document.getElementById('table-po-load').value = 0;
         },
 
         openPOConfig() {
@@ -2248,12 +2477,8 @@ const App = {
                         col: parseInt(parentCell.dataset.col)
                     };
                     document.getElementById('table-po-base').value = parseInt(selectedText);
-                    const dd = document.getElementById('table-po-freq-dropdown');
-                    dd.querySelector('.custom-dropdown-value').textContent = 'Every Check';
-                    dd.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
-                    dd.querySelector('[data-value="every_check"]').classList.add('active');
-                    document.getElementById('table-po-frequency').value = 'every_check';
                     document.getElementById('table-po-load').value = 1;
+                    document.getElementById('table-po-decrement').value = 0;
                     App.modal.open('modal-table-po');
                     return;
                 }
@@ -2269,12 +2494,8 @@ const App = {
                     selectedValue: parseInt(selectedText)
                 };
                 document.getElementById('po-base-value').value = parseInt(selectedText);
-                const dd = document.getElementById('po-frequency-dropdown');
-                dd.querySelector('.custom-dropdown-value').textContent = 'Every Check';
-                dd.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
-                dd.querySelector('[data-value="every_check"]').classList.add('active');
-                document.getElementById('po-frequency').value = 'every_check';
                 document.getElementById('po-load').value = 1;
+                document.getElementById('po-decrement').value = 0;
                 App.modal.open('modal-po');
             } else {
                 App.showError('Select a number in a subtask, description, or table cell first');
@@ -2283,8 +2504,10 @@ const App = {
 
         savePO() {
             const baseValue = parseInt(document.getElementById('po-base-value').value);
-            const frequency = document.getElementById('po-frequency').value;
-            const load = parseInt(document.getElementById('po-load').value);
+            const increment = parseInt(document.getElementById('po-load').value) || 0;
+            const decrement = parseInt(document.getElementById('po-decrement').value) || 0;
+            // Compute effective load: positive for increment, negative for decrement
+            const load = decrement > 0 ? -Math.abs(decrement) : (increment || 1);
             if (isNaN(baseValue)) { App.showError('Invalid base value'); return; }
 
             const ctx = App.state._poTargetContext;
@@ -2304,10 +2527,11 @@ const App = {
             const uniqueId = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
             const placeholder = `{{PO_${uniqueId}}}`;
 
+            // Always use frequency 'every_check'
             subtask.po_variables.push({
                 base_value: baseValue,
                 current_value: baseValue,
-                frequency,
+                frequency: 'every_check',
                 load,
                 placeholder,
                 last_applied: null,
@@ -2428,93 +2652,21 @@ const App = {
             const totalCells = startOffset + daysInMonth; const remaining = (7 - (totalCells % 7)) % 7;
             for (let i = 1; i <= remaining; i++) html += `<div class="cal-day other-month">${i}</div>`;
             grid.innerHTML = html;
-
-            if (App.state.futureRoutinesMode && App.state.futureRoutinesDate) {
-                this.showFutureRoutines(App.state.futureRoutinesDate);
-            }
         },
 
         openDailyDetail(dateStr) {
             const today = new Date().toISOString().split('T')[0];
-            if (dateStr > today) {
-                App.state.futureRoutinesMode = true;
-                App.state.futureRoutinesDate = dateStr;
-                document.getElementById('future-routines-back').style.display = 'flex';
-                this.showFutureRoutines(dateStr);
+            if (dateStr === today) {
+                App.nav.goto('main');
                 return;
             }
-            // Past or today: use daily detail page
+            // Any other date (past or future) opens daily detail page
             App.state.dailyDetailDate = dateStr;
             App.dailyDetail.render();
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-daily-detail').classList.add('active');
             document.getElementById('bottom-nav').classList.add('hidden');
             const fab = document.getElementById('fab-add'); if (fab) fab.style.display = 'none';
-        },
-
-        showFutureRoutines(dateStr) {
-            const container = document.getElementById('cal-day-tasks');
-            const allTasks = DB.getTasks();
-            const tasks = App.tasks.getTasksForFutureDate(allTasks, dateStr);
-            const formatted = new Date(dateStr + 'T00:00').toLocaleDateString('en', { weekday: 'long', month: 'long', day: 'numeric' });
-            let html = `<div class="cal-day-tasks-header">${formatted}</div>`;
-            if (tasks.length === 0) {
-                html += '<p style="text-align:center;color:var(--text-tertiary);padding:20px 0;font-size:0.85rem;">No tasks scheduled</p>';
-            } else {
-                html += '<div class="task-list">';
-                tasks.forEach((task, idx) => {
-                    const hasSubtasks = task.subtasks && task.subtasks.length > 0;
-                    const isExpandable = App.tasks._isExpandable(task);
-                    html += `<div class="future-task-item" style="animation-delay:${idx * 0.05}s;animation:taskSlideIn 0.35s ease-out backwards;">`;
-                    html += `<div class="task-row"><span class="task-title">${App.tasks.escapeHtml(task.title)}</span>${task.time ? `<span class="task-time">${task.time}</span>` : ''}`;
-                    html += `</div>`;
-                    if (task.description && task.description.trim()) {
-                        html += `<div class="task-expanded-description" style="margin-left:0;">${task.description}</div>`;
-                    }
-                    if (hasSubtasks) {
-                        html += '<div style="margin-left:16px;margin-top:4px;">';
-                        const descriptions = task.descriptions || [];
-                        task.subtasks.forEach((st, stIdx) => {
-                            const desc = descriptions.find(d => d.position === stIdx);
-                            if (desc) html += `<div style="padding:3px 0;font-size:0.8rem;color:var(--text-tertiary);font-style:italic;">${desc.text}</div>`;
-                            html += `<div style="padding:3px 0;font-size:0.85rem;color:var(--text-secondary);">${App.tasks.formatSubtaskText(st)}</div>`;
-                        });
-                        html += '</div>';
-                    }
-                    if (task.tables && task.tables.length > 0) {
-                        task.tables.forEach(table => {
-                            html += `<div class="table-wrapper" style="margin-top:8px;"><table class="user-table">`;
-                            for (let r = 0; r < table.rows; r++) {
-                                html += '<tr>';
-                                for (let c = 0; c < table.cols; c++) {
-                                    const cellKey = `${r}-${c}`;
-                                    const cell = (table.cells && table.cells[cellKey]) || {};
-                                    if (cell.mergedInto) continue;
-                                    const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (cell.content || '');
-                                    html += `<td${(cell.rowspan||1) > 1 ? ` rowspan="${cell.rowspan}"` : ''}${(cell.colspan||1) > 1 ? ` colspan="${cell.colspan}"` : ''}>${displayContent}</td>`;
-                                }
-                                html += '</tr>';
-                            }
-                            html += '</table></div>';
-                        });
-                    }
-                    if (task.priority && task.priority !== 'usual') {
-                        const prLabel = task.priority === 'maximum' ? 'Obligatory' : 'Important';
-                        html += `<div class="task-expanded-priority ${task.priority}">${prLabel}</div>`;
-                    }
-                    html += '</div>';
-                });
-                html += '</div>';
-            }
-            container.innerHTML = html;
-        },
-
-        exitFutureRoutines() {
-            App.state.futureRoutinesMode = false;
-            App.state.futureRoutinesDate = null;
-            document.getElementById('future-routines-back').style.display = 'none';
-            document.getElementById('cal-day-tasks').innerHTML = '';
-            this.render();
         },
 
         prevMonth() {
@@ -2584,7 +2736,18 @@ const App = {
             let done = 0, failed = 0, undeclared = 0;
             tasks.forEach(t => { switch (t.current_status) { case 'done': done++; break; case 'failed': failed++; break; default: undeclared++; } });
             const total = tasks.length;
-            const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+            let rate = total > 0 ? Math.round((done / total) * 100) : 0;
+            // For past dates, prefer the finalized rate from daily logs
+            const todayCheck = new Date().toISOString().split('T')[0];
+            if (dateStr < todayCheck) {
+                const logs = DB.getDailyLogs();
+                if (logs[dateStr] && logs[dateStr].finalized && logs[dateStr].finalRate != null) {
+                    rate = logs[dateStr].finalRate;
+                    done = logs[dateStr].done || done;
+                    failed = logs[dateStr].failed || failed;
+                    undeclared = Math.max(0, (logs[dateStr].total || total) - done - failed);
+                }
+            }
             document.getElementById('dd-stat-done').textContent = done;
             document.getElementById('dd-stat-failed').textContent = failed;
             document.getElementById('dd-stat-undeclared').textContent = undeclared;
@@ -2594,16 +2757,21 @@ const App = {
         },
 
         prevDay() {
-            const d = new Date(App.state.dailyDetailDate + 'T00:00');
-            d.setDate(d.getDate() - 1);
-            App.state.dailyDetailDate = d.toISOString().split('T')[0];
+            const [y, m, d] = App.state.dailyDetailDate.split('-').map(Number);
+            const date = new Date(Date.UTC(y, m-1, d));
+            date.setUTCDate(date.getUTCDate() - 1);
+            App.state.dailyDetailDate = date.toISOString().split('T')[0];
             this.render();
         },
         nextDay() {
-            const d = new Date(App.state.dailyDetailDate + 'T00:00');
-            d.setDate(d.getDate() + 1);
-            App.state.dailyDetailDate = d.toISOString().split('T')[0];
+            const [y, m, d] = App.state.dailyDetailDate.split('-').map(Number);
+            const date = new Date(Date.UTC(y, m-1, d));
+            date.setUTCDate(date.getUTCDate() + 1);
+            App.state.dailyDetailDate = date.toISOString().split('T')[0];
             this.render();
+        },
+        goBack() {
+            App.nav.goto('calendar');
         }
     },
 
@@ -2615,7 +2783,8 @@ const App = {
             document.getElementById('account-balance').textContent = DB.getBalance();
             const settings = DB.getSettings();
             if (settings.theme === 'dark') { document.documentElement.setAttribute('data-theme', 'dark'); document.getElementById('toggle-theme').classList.add('on'); }
-            this.loadAnalytics('week');
+            this.updateAnalyticsDropdown(); // set dropdown text from stored range
+            this.loadAnalytics(App.state.analyticsRange);
             this.loadRecords();
         },
 
@@ -2635,7 +2804,19 @@ const App = {
             dropdown.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
             optionEl.classList.add('active');
             dropdown.classList.remove('open');
-            this.loadAnalytics(optionEl.dataset.value);
+            App.state.analyticsRange = optionEl.dataset.value;
+            this.loadAnalytics(App.state.analyticsRange);
+        },
+
+        updateAnalyticsDropdown() {
+            const dropdown = document.getElementById('analytics-range-dropdown');
+            const value = App.state.analyticsRange;
+            const option = dropdown.querySelector(`.custom-dropdown-option[data-value="${value}"]`);
+            if (option) {
+                dropdown.querySelector('.custom-dropdown-value').textContent = option.textContent.trim();
+                dropdown.querySelectorAll('.custom-dropdown-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+            }
         },
 
         loadAnalytics(range) {
@@ -2676,6 +2857,18 @@ const App = {
                     dayTotal = log.total || 0;
                     dayDone = log.done || 0;
                     dayFailed = log.failed || 0;
+                    // If finalized, use the finalized snapshot
+                    if (log.finalized && log.finalRate != null) {
+                        // Use the stored final rate directly
+                        if (dayTotal > 0) {
+                            sumDoneRate += log.finalRate;
+                            sumFailedRate += dayTotal > 0 ? (dayFailed / dayTotal) * 100 : 0;
+                            sumUndeclaredRate += dayTotal > 0 ? (Math.max(0, dayTotal - dayDone - dayFailed) / dayTotal) * 100 : 0;
+                            dayCount++;
+                        }
+                        current.setDate(current.getDate() + 1);
+                        continue;
+                    }
                 } else {
                     // No log exists — compute from actual task data for this past date
                     // This covers days the user may not have interacted but tasks were scheduled
@@ -2812,7 +3005,7 @@ const App = {
                 });
             }
             DB.setRecords(records);
-            if (reminder) Notifier.schedule(`Record Reminder: ${title}`, `Current value: ${value} ${unit}`, reminder, reminderHour || '09:00');
+            if (reminder) Notifier.scheduleRecordNotification({ title, value, unit, reminder, reminderHour });
             App.modal.close(); this.loadRecords();
         },
 
@@ -2886,6 +3079,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     AutoBackup.init();
+    DailyFinalizer.init();
     Notifier.init();
     document.addEventListener('click', App.ui.closeAllDropdowns);
     App.editor.initSidebarDrag();
@@ -2939,10 +3133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Schedule pending record reminders on load
-    const records = DB.getRecords();
-    records.forEach(r => {
-        if (r.reminder) Notifier.schedule(`Record Reminder: ${r.title}`, `Current value: ${r.value} ${r.unit || ''}`, r.reminder, r.reminderHour || '09:00');
-    });
+    Notifier.scheduleAllTaskNotifications();
 
     App.tasks.loadTasks();
 });
