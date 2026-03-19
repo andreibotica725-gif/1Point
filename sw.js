@@ -1,4 +1,4 @@
-const CACHE_NAME = '1point-v1';
+const CACHE_NAME = '1point-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -37,16 +37,31 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request).then((cached) => {
       if (cached) return cached;
       return fetch(event.request).then((response) => {
-        // Cache font files and CSS from CDNs as they load
         if (response.ok && (event.request.url.includes('fonts.g') || event.request.url.includes('cdnjs.'))) {
           const clone = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return response;
       }).catch(() => {
-        // If offline and not cached, return the main page
         return caches.match('./index.html');
       });
+    })
+  );
+});
+
+// Handle notification clicks
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url.includes('index.html') && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow('./index.html');
+      }
     })
   );
 });
