@@ -74,6 +74,9 @@
 html { font-size: 16px; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
 body { font-family: var(--font); background: var(--bg-primary); color: var(--text-primary); min-height: 100dvh; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 input, button, select, textarea { font-family: inherit; font-size: inherit; }
+/* Disable spellcheck red underlines globally */
+[contenteditable], input, textarea { -webkit-spellcheck: false; spellcheck: false; }
+[contenteditable] { -webkit-user-modify: read-write; }
 button { border: none; background: none; cursor: pointer; color: inherit; }
 a { color: inherit; text-decoration: none; }
 * { scrollbar-width: none; -ms-overflow-style: none; }
@@ -369,7 +372,7 @@ input[type="number"] { -moz-appearance: textfield; }
 @keyframes taskRemove { to { opacity: 0; transform: translateX(-100%); height: 0; padding: 0; margin: 0; } }
 
 /* Toast Notifications */
-.toast-notification { position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-100%); padding: 14px 28px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); z-index: 999; font-size: 0.88rem; font-weight: 500; font-family: var(--font); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 24px rgba(0,0,0,0.1); animation: toastIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; max-width: 98vw; text-align: center; letter-spacing: 0.2px; }
+.toast-notification { position: fixed; top: 0; left: 50%; transform: translateX(-50%) translateY(-100%); padding: 14px 28px; border-radius: 0 0 var(--radius-lg) var(--radius-lg); z-index: 999; font-size: 0.88rem; font-weight: 500; font-family: var(--font); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 24px rgba(0,0,0,0.1); animation: toastIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; width: 98vw; max-width: 98vw; text-align: center; letter-spacing: 0.2px; }
 .toast-notification.toast-success { background: rgba(76, 175, 80, 0.92); color: #fff; }
 .toast-notification.toast-error { background: rgba(244, 67, 54, 0.92); color: #fff; }
 .toast-notification.toast-exit { animation: toastOut 0.35s cubic-bezier(0.4, 0, 1, 1) forwards; }
@@ -473,6 +476,12 @@ text-align: center;
   overflow: hidden;
   flex-wrap: nowrap !important;
 }
+/* Disabled PO button when editing description */
+.sidebar-tool.po-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: default;
+}
 </style>
 </head>
 <body>
@@ -514,8 +523,8 @@ text-align: center;
                 </button>
             </div>
             <div class="editor-body">
-                <input type="text" id="editor-title" class="editor-title" placeholder="Task Title" autocomplete="off">
-                <div id="editor-description" class="editor-description" contenteditable="true" data-placeholder="Task Description"></div>
+                <input type="text" id="editor-title" class="editor-title" placeholder="Task Title" autocomplete="off" spellcheck="false">
+                <div id="editor-description" class="editor-description" contenteditable="true" spellcheck="false" data-placeholder="Task Description"></div>
                 
                 <div id="subtasks-container" class="subtasks-container"></div>
                 <div id="editor-tables-container" class="editor-tables-container"></div>
@@ -746,7 +755,7 @@ text-align: center;
                             <span>Same time for all days</span>
                         </div>
                         <div class="time-picker-row">
-                            <input type="time" id="time-all" class="time-picker-text" style="flex:1;">
+                            <input type="time" id="time-all" class="time-picker-text" style="flex:1;" oninput="App.editor.onTimeAllChange()">
                         </div>
                     </div>
                     <div>
@@ -786,9 +795,9 @@ text-align: center;
         <div class="modal" id="modal-record">
             <div class="modal-header"><h3>Personal Record</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="modal-body">
-                <div class="po-field"><label>Record Title</label><input type="text" id="record-title" class="po-input" placeholder="e.g. Pull Ups"></div>
+                <div class="po-field"><label>Record Title</label><input type="text" id="record-title" class="po-input" placeholder="e.g. Pull Ups" spellcheck="false"></div>
                 <div class="po-field"><label>Value</label><input type="number" id="record-value" class="po-input" placeholder="10"></div>
-                <div class="po-field"><label>Unit</label><input type="text" id="record-unit" class="po-input" placeholder="reps"></div>
+                <div class="po-field"><label>Unit</label><input type="text" id="record-unit" class="po-input" placeholder="reps" spellcheck="false"></div>
                 <div class="po-field">
                     <label>Reminder Date (optional)</label>
                     <input type="hidden" id="record-reminder" value="">
@@ -832,7 +841,7 @@ text-align: center;
         <div class="modal" id="modal-table">
             <div class="modal-header"><h3 id="modal-table-title">Create Table</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="modal-body">
-                <div class="po-field"><label>Table Title</label><input type="text" id="table-title-input" class="po-input" placeholder="My Table"></div>
+                <div class="po-field"><label>Table Title</label><input type="text" id="table-title-input" class="po-input" placeholder="My Table" spellcheck="false"></div>
                 <div class="po-field"><label>Rows</label><input type="number" id="table-rows-input" class="po-input" placeholder="3" min="1" max="50" value="3"></div>
                 <div class="po-field"><label>Columns</label><input type="number" id="table-cols-input" class="po-input" placeholder="3" min="1" max="20" value="3"></div>
             </div>
@@ -862,6 +871,17 @@ text-align: center;
    1Point - Offline Single-User App
    All data stored in localStorage
    ========================================== */
+
+// Romania timezone utility — all date logic uses Europe/Bucharest
+function getTodayRO() {
+    return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Bucharest' });
+}
+function getNowRO() {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Bucharest' }));
+}
+function toDateStrRO(date) {
+    return date.toLocaleDateString('sv-SE', { timeZone: 'Europe/Bucharest' });
+}
 
 const DB = {
     _idb: null,
@@ -913,7 +933,7 @@ const AutoBackup = {
     init() { this._lastBackupDate = localStorage.getItem('1p_last_backup_date') || ''; this.checkDaily(); setInterval(() => this.checkDaily(), 60 * 60 * 1000); },
     onDataChange() { clearTimeout(this._timer); this._timer = setTimeout(() => this.checkDaily(), 5000); },
     checkDaily() {
-        const today = new Date().toISOString().split('T')[0];
+        const today = getTodayRO();
         if (this._lastBackupDate === today) return;
         const data = DB.getAll();
         if (!data.tasks.length && !data.records.length) return;
@@ -925,7 +945,7 @@ const AutoBackup = {
         try {
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = `1point-backup-${new Date().toISOString().split('T')[0]}.json`;
+            a.download = `1point-backup-${getTodayRO()}.json`;
             a.style.display = 'none'; document.body.appendChild(a); a.click();
             setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
         } catch (e) { console.warn('Auto-backup failed:', e); }
@@ -941,7 +961,7 @@ const DailyFinalizer = {
     },
     finalizePastDays() {
         const logs = DB.getDailyLogs();
-        const today = new Date().toISOString().split('T')[0];
+        const today = getTodayRO();
         let changed = false;
         for (const dateStr of Object.keys(logs)) {
             if (dateStr < today && !logs[dateStr].finalized) {
@@ -964,7 +984,7 @@ const DailyFinalizer = {
         }, delay);
     },
     finalizeToday() {
-        const today = new Date().toISOString().split('T')[0];
+        const today = getTodayRO();
         const logs = DB.getDailyLogs();
         if (logs[today]) {
             logs[today].finalRate = logs[today].rate;
@@ -977,21 +997,47 @@ const DailyFinalizer = {
 const Notifier = {
     _permission: null,
     _scheduledTimers: [],
+    _checkInterval: null,
     async init() {
         if ('Notification' in window) {
             this._permission = Notification.permission;
             if (this._permission === 'default') this._permission = await Notification.requestPermission();
+        }
+        // Start periodic check every 30 seconds for due notifications (works while app is open)
+        this._checkInterval = setInterval(() => this._checkPendingNotifications(), 30000);
+        // Also pass notification data to service worker for background checking
+        this._syncToServiceWorker();
+    },
+    // Persist notification schedule to localStorage so SW can access it
+    _persistSchedule(notifications) {
+        try { localStorage.setItem('1p_scheduled_notifications', JSON.stringify(notifications)); } catch {}
+    },
+    _getPersistedSchedule() {
+        try { return JSON.parse(localStorage.getItem('1p_scheduled_notifications') || '[]'); } catch { return []; }
+    },
+    _syncToServiceWorker() {
+        if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+            const pending = this._getPersistedSchedule();
+            navigator.serviceWorker.controller.postMessage({
+                type: 'SYNC_NOTIFICATIONS',
+                notifications: pending
+            });
         }
     },
     schedule(title, body, dateStr, hour) {
         if (!('Notification' in window) || this._permission !== 'granted') return;
         const [y, m, d] = dateStr.split('-').map(Number);
         const [hh, mm] = (hour || '09:00').split(':').map(Number);
-        const target = new Date(Date.UTC(y, m-1, d, hh, mm));
+        const target = new Date(y, m-1, d, hh, mm);
         const delay = target.getTime() - Date.now();
         if (delay > 0 && delay < 86400000 * 30) {
+            // Foreground timer
             const timer = setTimeout(() => { this._showNotification(title, body); }, delay);
             this._scheduledTimers.push(timer);
+            // Also persist for background/SW checking
+            const pending = this._getPersistedSchedule();
+            pending.push({ title, body, fireAt: target.getTime(), id: Date.now() + Math.random() });
+            this._persistSchedule(pending);
         }
     },
     scheduleTask(task, date) {
@@ -1004,20 +1050,32 @@ const Notifier = {
         if (!timeStr) return;
         const [hh, mm] = timeStr.split(':').map(Number);
         const [y, m, d] = date.split('-').map(Number);
-        const taskTime = new Date(Date.UTC(y, m-1, d, hh, mm));
+        const taskTime = new Date(y, m-1, d, hh, mm);
         for (const minutesBefore of notifications) {
             const notifTime = new Date(taskTime.getTime() - minutesBefore * 60000);
             const delay = notifTime.getTime() - Date.now();
             if (delay > 0 && delay < 86400000 * 2) {
                 const label = minutesBefore >= 60 ? `${minutesBefore / 60}h` : `${minutesBefore}min`;
-                const timer = setTimeout(() => {
-                    this._showNotification(
-                        `Upcoming Task`,
-                        `${task.title} — in ${label} (${timeStr})`
-                    );
-                }, delay);
+                const title = 'Upcoming Task';
+                const body = `${task.title} — in ${label} (${timeStr})`;
+                const timer = setTimeout(() => { this._showNotification(title, body); }, delay);
                 this._scheduledTimers.push(timer);
+                // Persist for background
+                const pending = this._getPersistedSchedule();
+                pending.push({ title, body, fireAt: notifTime.getTime(), id: Date.now() + Math.random() });
+                this._persistSchedule(pending);
             }
+        }
+        // Also schedule an "at time" notification
+        const atDelay = taskTime.getTime() - Date.now();
+        if (atDelay > 0 && atDelay < 86400000 * 2) {
+            const title = 'Task Now';
+            const body = `${task.title} — scheduled for ${timeStr}`;
+            const timer = setTimeout(() => { this._showNotification(title, body); }, atDelay);
+            this._scheduledTimers.push(timer);
+            const pending = this._getPersistedSchedule();
+            pending.push({ title, body, fireAt: taskTime.getTime(), id: Date.now() + Math.random() });
+            this._persistSchedule(pending);
         }
     },
     scheduleRecordNotification(record) {
@@ -1029,12 +1087,29 @@ const Notifier = {
             record.reminderHour || '09:00'
         );
     },
+    _checkPendingNotifications() {
+        // Check and fire any due persisted notifications
+        let pending = this._getPersistedSchedule();
+        const now = Date.now();
+        const due = pending.filter(n => n.fireAt <= now);
+        const remaining = pending.filter(n => n.fireAt > now);
+        if (due.length > 0) {
+            due.forEach(n => this._showNotification(n.title, n.body));
+            this._persistSchedule(remaining);
+            this._syncToServiceWorker();
+        }
+        // Clean up any very old entries (more than 1 day past)
+        const cleaned = remaining.filter(n => n.fireAt > now - 86400000);
+        if (cleaned.length !== remaining.length) {
+            this._persistSchedule(cleaned);
+        }
+    },
     _showNotification(title, body) {
         if (!('Notification' in window) || Notification.permission !== 'granted') return;
         try {
             if (navigator.serviceWorker && navigator.serviceWorker.controller) {
                 navigator.serviceWorker.ready.then(reg => {
-                    reg.showNotification(title, { body, icon: 'logoLight.png', badge: 'logoLight.png', vibrate: [100, 50, 100], tag: title + '-' + Date.now() });
+                    reg.showNotification(title, { body, icon: 'logoLight.png', badge: 'logoLight.png', vibrate: [200, 100, 200], tag: title + '-' + Date.now(), renotify: true });
                 }).catch(() => { new Notification(title, { body, icon: 'logoLight.png' }); });
             } else {
                 new Notification(title, { body, icon: 'logoLight.png' });
@@ -1042,10 +1117,11 @@ const Notifier = {
         } catch (e) { try { new Notification(title, { body, icon: 'logoLight.png' }); } catch (e2) {} }
     },
     scheduleAllTaskNotifications() {
-        // Clear previous timers
+        // Clear previous timers and persisted schedule
         this._scheduledTimers.forEach(t => clearTimeout(t));
         this._scheduledTimers = [];
-        const today = new Date().toISOString().split('T')[0];
+        this._persistSchedule([]);
+
         const allTasks = DB.getTasks();
         for (const task of allTasks) {
             if (!task.notifications || task.notifications.length === 0) continue;
@@ -1053,10 +1129,10 @@ const Notifier = {
             const type = schedule.type || 'once';
             const dates = schedule.dates || [];
             const daysOfWeek = schedule.days_of_week || [];
-            // Check today and tomorrow
-            for (let offset = 0; offset <= 1; offset++) {
+            // Check today and next 6 days for wider coverage
+            for (let offset = 0; offset <= 6; offset++) {
                 const d = new Date(); d.setDate(d.getDate() + offset);
-                const dateStr = d.toISOString().split('T')[0];
+                const dateStr = toDateStrRO(d);
                 const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][d.getDay()];
                 let applicable = false;
                 if (type === 'once' && dates.includes(dateStr)) applicable = true;
@@ -1069,19 +1145,21 @@ const Notifier = {
         // Also schedule record reminders
         const records = DB.getRecords();
         records.forEach(r => { if (r.reminder) this.scheduleRecordNotification(r); });
+        // Sync to SW
+        this._syncToServiceWorker();
     }
 };
 
 const App = {
     state: {
         tasks: [],
-        currentDate: new Date().toISOString().split('T')[0],
+        currentDate: getTodayRO(),
         editingTask: null,
         editorData: { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [], times: {}, days_of_week: [] }, notifications: [], excludedDates: [] },
-        calendarMonth: new Date().getMonth(),
-        calendarYear: new Date().getFullYear(),
-        dpMonth: new Date().getMonth(),
-        dpYear: new Date().getFullYear(),
+        calendarMonth: getNowRO().getMonth(),
+        calendarYear: getNowRO().getFullYear(),
+        dpMonth: getNowRO().getMonth(),
+        dpYear: getNowRO().getFullYear(),
         dpSelectedDates: [],
         dpSelectedDays: [],
         dpExcludedDates: [],
@@ -1092,8 +1170,8 @@ const App = {
         expandedTasks: new Set(),
         sidebarDrag: { active: false, startX: 0, startY: 0, origX: 0, origY: 0 },
         dailyDetailDate: null,
-        rcMonth: new Date().getMonth(),
-        rcYear: new Date().getFullYear(),
+        rcMonth: getNowRO().getMonth(),
+        rcYear: getNowRO().getFullYear(),
         recurrenceDatesOpen: false,
         editingRecordId: null,
         editingEditorTableId: null,
@@ -1191,7 +1269,7 @@ const App = {
                     const times = schedule.times || {};
                     taskCopy.time = times[date] || times['default'] || null;
                     taskCopy.current_status = (task.status && task.status[date]) || 'undeclared';
-                    const today = new Date().toISOString().split('T')[0];
+                    const today = getTodayRO();
                     const isFuture = date > today;
                     if (taskCopy.subtasks) {
                         for (const st of taskCopy.subtasks) {
@@ -1265,7 +1343,7 @@ const App = {
 
         getTasksForFutureDate(tasks, targetDate) {
             const dayOfWeek = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][new Date(targetDate + 'T00:00').getDay()];
-            const today = new Date().toISOString().split('T')[0];
+            const today = getTodayRO();
             const result = [];
             for (const task of tasks) {
                 const schedule = task.schedule || {};
@@ -1358,7 +1436,7 @@ const App = {
             current.setDate(current.getDate() + 1);
             // Count scheduled occurrences from day after fromDate up to AND including toDate
             while (current <= end) {
-                const dateStr = current.toISOString().split('T')[0];
+                const dateStr = toDateStrRO(current);
                 if (!excluded.includes(dateStr)) {
                     const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][current.getDay()];
                     if (daysOfWeek.includes(dayName) || dates.includes(dateStr)) count++;
@@ -1449,28 +1527,50 @@ const App = {
 
             if (isExpandable) {
                 html += `<div class="task-expanded-content">`;
-                // Description
+                // Top-level description
                 if (task.description && task.description.trim()) {
                     html += `<div class="task-expanded-description">${task.description}</div>`;
                 }
-                // Subtasks
-                if (hasSubtasks) {
-                    html += `<div class="subtask-list">`;
-                    const descriptions = task.descriptions || [];
-                    html += task.subtasks.map((st, stIdx) => {
+                // Build elements array if not present (legacy data migration)
+                let elements = task.elements || [];
+                const descriptions = task.descriptions || [];
+                if (elements.length === 0 && ((task.subtasks && task.subtasks.length > 0) || descriptions.length > 0 || (task.tables && task.tables.length > 0))) {
+                    elements = [];
+                    const subtasks = task.subtasks || [];
+                    subtasks.forEach((st, i) => {
+                        const desc = descriptions.find(d => d.position === i);
+                        if (desc) elements.push({ type: 'description', position: i });
+                        elements.push({ type: 'subtask', index: i });
+                    });
+                    // Trailing descriptions (position >= subtask count)
+                    descriptions.forEach(d => {
+                        if (d.position >= subtasks.length || !subtasks.some((_, i) => i === d.position)) {
+                            if (!elements.some(el => el.type === 'description' && el.position === d.position)) {
+                                elements.push({ type: 'description', position: d.position });
+                            }
+                        }
+                    });
+                    (task.tables || []).forEach((t, i) => {
+                        elements.push({ type: 'table', index: i });
+                    });
+                }
+                // Render all elements in order
+                for (const el of elements) {
+                    if (el.type === 'subtask') {
+                        const st = (task.subtasks || [])[el.index];
+                        if (!st) continue;
                         let stIcon = '<i class="fa-regular fa-circle"></i>';
                         if (st.current_status === 'done') stIcon = '<i class="fa-regular fa-circle-check"></i>';
                         else if (st.current_status === 'failed') stIcon = '<i class="fa-regular fa-circle-xmark"></i>';
-                        let descHtml = '';
-                        const desc = descriptions.find(d => d.position === stIdx);
-                        if (desc) descHtml = `<div style="padding:4px 0;font-size:0.8rem;color:var(--text-tertiary);font-style:italic;">${desc.text}</div>`;
-                        return `${descHtml}<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text">${this.formatSubtaskText(st)}</span></div>`;
-                    }).join('');
-                    html += `</div>`;
-                }
-                // Tables
-                if (task.tables && task.tables.length > 0) {
-                    task.tables.forEach(table => {
+                        html += `<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text">${this.formatSubtaskText(st)}</span></div>`;
+                    } else if (el.type === 'description') {
+                        const desc = descriptions.find(d => d.position === el.position);
+                        if (desc && desc.text) {
+                            html += `<div class="task-expanded-description" style="font-size:0.8rem;color:var(--text-tertiary);padding:6px 0;line-height:1.5;">${desc.text}</div>`;
+                        }
+                    } else if (el.type === 'table') {
+                        const table = (task.tables || [])[el.index];
+                        if (!table) continue;
                         html += `<div class="table-wrapper" style="margin-top:8px;"><table class="user-table">`;
                         for (let r = 0; r < table.rows; r++) {
                             html += '<tr>';
@@ -1486,7 +1586,7 @@ const App = {
                             html += '</tr>';
                         }
                         html += '</table></div>';
-                    });
+                    }
                 }
                 // Priority
                 if (task.priority && task.priority !== 'usual') {
@@ -1766,6 +1866,16 @@ const App = {
             }
             document.getElementById('editor-title').value = App.state.editorData.title;
             document.getElementById('editor-description').innerHTML = App.state.editorData.description;
+            // Bind main description focus/blur to disable PO button
+            const edDesc = document.getElementById('editor-description');
+            edDesc.addEventListener('focus', () => {
+                const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+                if (poBtn) poBtn.classList.add('po-disabled');
+            });
+            edDesc.addEventListener('blur', () => {
+                const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+                if (poBtn) poBtn.classList.remove('po-disabled');
+            });
             App.editor.renderAllElements();
             App.editor.updatePriorityBtn();
             const sidebar = document.getElementById('editor-sidebar');
@@ -1922,7 +2032,59 @@ const App = {
         },
 
         renderSubtasks() {
+            this.syncLiveDOM();
             this.renderAllElements();
+        },
+
+        // Sync all live DOM contenteditable values back into editorData before re-rendering
+        syncLiveDOM() {
+            const ed = App.state.editorData;
+            // Sync subtask inputs
+            document.querySelectorAll('.subtask-editor-input').forEach((input) => {
+                const idx = parseInt(input.dataset.index);
+                if (ed.subtasks[idx]) {
+                    if (input.getAttribute('contenteditable') === 'true') {
+                        let rawText = input.textContent;
+                        let rawHtml = input.innerHTML;
+                        if (ed.subtasks[idx].po_variables && ed.subtasks[idx].po_variables.length > 0) {
+                            const poVars = ed.subtasks[idx].po_variables;
+                            for (const po of poVars) {
+                                const val = po.current_value != null ? po.current_value : po.base_value;
+                                if (po.placeholder) {
+                                    const spanPattern = `<span class="po-value">${val}</span>`;
+                                    const spanIdx = rawHtml.indexOf(spanPattern);
+                                    if (spanIdx >= 0) {
+                                        rawHtml = rawHtml.substring(0, spanIdx) + po.placeholder + rawHtml.substring(spanIdx + spanPattern.length);
+                                    }
+                                }
+                            }
+                            for (const po of poVars) {
+                                const val = po.current_value != null ? po.current_value : po.base_value;
+                                if (po.placeholder) {
+                                    const valStr = String(val);
+                                    const textIdx = rawText.indexOf(valStr);
+                                    if (textIdx >= 0) {
+                                        rawText = rawText.substring(0, textIdx) + po.placeholder + rawText.substring(textIdx + valStr.length);
+                                    }
+                                }
+                            }
+                        }
+                        ed.subtasks[idx].text = rawText;
+                        ed.subtasks[idx].html = rawHtml;
+                    } else {
+                        ed.subtasks[idx].text = input.value;
+                    }
+                }
+            });
+            // Sync description inputs
+            document.querySelectorAll('.subtask-desc-input').forEach((div) => {
+                const pos = parseInt(div.dataset.position);
+                if (!ed.descriptions) ed.descriptions = [];
+                const existing = ed.descriptions.find(d => d.position === pos);
+                if (existing) existing.text = div.innerHTML;
+            });
+            // Sync table cells
+            this.syncEditorTableCells();
         },
 
         // Unified element renderer - respects creation order via elements array
@@ -1974,7 +2136,7 @@ const App = {
                     }
                     html += `<div class="subtask-editor editor-element" data-el-type="subtask" data-el-index="${i}" data-index="${i}">
                         <div class="subtask-editor-check"></div>
-                        <div class="subtask-editor-input" contenteditable="true" data-placeholder="Subtask..." data-index="${i}">${displayHtml}</div>
+                        <div class="subtask-editor-input" contenteditable="true" spellcheck="false" data-placeholder="Subtask..." data-index="${i}">${displayHtml}</div>
                         <button class="subtask-editor-duplicate" onclick="App.editor.duplicateSubtask(${i})" title="Duplicate"><i class="fa-regular fa-clone"></i></button>
                         <button class="subtask-editor-delete" onclick="App.editor.removeSubtask(${i})" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
                     </div>`;
@@ -1985,7 +2147,7 @@ const App = {
                     if (!desc) continue;
                     renderedDescs.add(pos);
                     html += `<div class="subtask-description-editor editor-element" data-el-type="description" data-el-position="${pos}">
-                        <div class="subtask-desc-input" contenteditable="true" data-placeholder="Description..." data-position="${pos}">${desc.text || ''}</div>
+                        <div class="subtask-desc-input" contenteditable="true" spellcheck="false" data-placeholder="Description..." data-position="${pos}">${desc.text || ''}</div>
                         <button style="color:var(--text-tertiary);font-size:0.75rem;" onclick="App.editor.removeDescription(${pos})"><i class="fa-solid fa-xmark"></i></button>
                     </div>`;
                 } else if (el.type === 'table') {
@@ -2009,7 +2171,7 @@ const App = {
                     }
                     html += `<div class="subtask-editor editor-element" data-el-type="subtask" data-el-index="${i}" data-index="${i}">
                         <div class="subtask-editor-check"></div>
-                        <div class="subtask-editor-input" contenteditable="true" data-placeholder="Subtask..." data-index="${i}">${fallbackHtml}</div>
+                        <div class="subtask-editor-input" contenteditable="true" spellcheck="false" data-placeholder="Subtask..." data-index="${i}">${fallbackHtml}</div>
                         <button class="subtask-editor-duplicate" onclick="App.editor.duplicateSubtask(${i})" title="Duplicate"><i class="fa-regular fa-clone"></i></button>
                         <button class="subtask-editor-delete" onclick="App.editor.removeSubtask(${i})" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
                     </div>`;
@@ -2018,7 +2180,7 @@ const App = {
             (ed.descriptions || []).forEach(d => {
                 if (!renderedDescs.has(d.position)) {
                     html += `<div class="subtask-description-editor editor-element" data-el-type="description" data-el-position="${d.position}">
-                        <div class="subtask-desc-input" contenteditable="true" data-placeholder="Description..." data-position="${d.position}">${d.text || ''}</div>
+                        <div class="subtask-desc-input" contenteditable="true" spellcheck="false" data-placeholder="Description..." data-position="${d.position}">${d.text || ''}</div>
                         <button style="color:var(--text-tertiary);font-size:0.75rem;" onclick="App.editor.removeDescription(${d.position})"><i class="fa-solid fa-xmark"></i></button>
                     </div>`;
                 }
@@ -2044,6 +2206,22 @@ const App = {
                         App.state.editorData.subtasks[idx].html = e.target.innerHTML;
                     }
                 });
+                // Re-enable PO when focusing a subtask
+                input.addEventListener('focus', () => {
+                    const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+                    if (poBtn) poBtn.classList.remove('po-disabled');
+                });
+            });
+            // Bind description focus/blur to disable/enable PO button
+            container.querySelectorAll('.subtask-desc-input').forEach(descInput => {
+                descInput.addEventListener('focus', () => {
+                    const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+                    if (poBtn) poBtn.classList.add('po-disabled');
+                });
+                descInput.addEventListener('blur', () => {
+                    const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+                    if (poBtn) poBtn.classList.remove('po-disabled');
+                });
             });
         },
 
@@ -2061,7 +2239,7 @@ const App = {
                     const rowspan = cell.rowspan || 1;
                     const colspan = cell.colspan || 1;
                     const displayContent = cell.po ? `<span class="po-value">${cell.po.current_value != null ? cell.po.current_value : cell.po.base_value}</span>` : (cell.content || '');
-                    html += `<td contenteditable="true" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                    html += `<td contenteditable="true" spellcheck="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
                 }
                 html += '</tr>';
             }
@@ -2187,11 +2365,13 @@ const App = {
                 App.state.editorData.elements.push({ type: 'table', index: newIdx });
             }
             App.modal.close();
+            this.syncLiveDOM();
             this.renderAllElements();
         },
 
         deleteEditorTable() {
             if (App.state.editingEditorTableId !== null) {
+                this.syncLiveDOM();
                 const delIdx = App.state.editingEditorTableId;
                 App.state.editorData.tables.splice(delIdx, 1);
                 // Remove from elements and update indices
@@ -2242,7 +2422,7 @@ const App = {
                         const rowspan = cell.rowspan || 1;
                         const colspan = cell.colspan || 1;
                         const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (cell.content || '');
-                        html += `<td contenteditable="true" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                        html += `<td contenteditable="true" spellcheck="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
                     }
                     html += '</tr>';
                 }
@@ -2265,9 +2445,10 @@ const App = {
             const key = `${row}-${col}`;
             if (!table.cells[key]) table.cells[key] = {};
             // Always use frequency 'every_check'
-            table.cells[key].po = { base_value: baseValue, current_value: baseValue, frequency: 'every_check', load, last_applied: null, start_date: new Date().toISOString().split('T')[0] };
+            table.cells[key].po = { base_value: baseValue, current_value: baseValue, frequency: 'every_check', load, last_applied: null, start_date: getTodayRO() };
             table.cells[key].content = `<span class="po-value">${baseValue}</span>`;
             App.modal.close();
+            this.syncLiveDOM();
             this.renderAllElements();
         },
 
@@ -2292,7 +2473,7 @@ const App = {
             App.state.dpSelectedDates = [...(App.state.editorData.schedule.dates || [])];
             App.state.dpSelectedDays = [...(App.state.editorData.schedule.days_of_week || [])];
             App.state.dpExcludedDates = [...(App.state.editorData.excludedDates || [])];
-            App.state.dpMonth = new Date().getMonth(); App.state.dpYear = new Date().getFullYear();
+            App.state.dpMonth = getNowRO().getMonth(); App.state.dpYear = getNowRO().getFullYear();
             App.state.recurrenceDatesOpen = false;
             document.querySelectorAll('#dp-weekday-seg .seg-btn').forEach(btn => {
                 btn.classList.toggle('active', App.state.dpSelectedDays.includes(btn.dataset.day));
@@ -2365,7 +2546,7 @@ const App = {
                 const d = new Date(today);
                 d.setDate(d.getDate() + i);
                 const dayName = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'][d.getDay()];
-                const dateStr = d.toISOString().split('T')[0];
+                const dateStr = toDateStrRO(d);
                 if (daysOfWeek.includes(dayName) || App.state.dpSelectedDates.includes(dateStr)) {
                     if (!dates.includes(dateStr)) dates.push(dateStr);
                 }
@@ -2408,18 +2589,39 @@ const App = {
             }
         },
 
+        // Instantly fill all per-day time inputs when the "same time" value changes
+        onTimeAllChange() {
+            const val = document.getElementById('time-all').value;
+            document.querySelectorAll('#time-per-day .time-picker-text').forEach(input => {
+                input.value = val;
+            });
+        },
+
         openTimePicker() {
             App.state.timeMode = 'same';
             this.setTimeMode('same');
             const times = App.state.editorData.schedule.times || {};
             const defaultTime = times['default'] || '';
-            document.getElementById('time-all').value = defaultTime;
+            const timeAllInput = document.getElementById('time-all');
+            timeAllInput.value = defaultTime;
             const perDay = document.getElementById('time-per-day');
             const dates = App.state.editorData.schedule.dates || []; const days = App.state.editorData.schedule.days_of_week || [];
             const allDates = [...new Set([...dates, ...days])];
             if (allDates.length > 0) {
                 perDay.innerHTML = allDates.map(d => `<div class="time-day-row"><span class="time-day-label">${d}</span><input type="time" class="time-picker-text" data-day="${d}" value="${times[d] || ''}" style="flex:1;"></div>`).join('');
             } else { perDay.innerHTML = '<p style="font-size:0.85rem;color:var(--text-tertiary)">Set dates first</p>'; }
+            // Instant propagation: when time-all changes, fill all per-day inputs immediately
+            // Remove previous listener to prevent stacking
+            if (this._timeAllPropagator) {
+                timeAllInput.removeEventListener('input', this._timeAllPropagator);
+            }
+            this._timeAllPropagator = () => {
+                const val = timeAllInput.value;
+                document.querySelectorAll('#time-per-day .time-picker-text').forEach(input => {
+                    input.value = val;
+                });
+            };
+            timeAllInput.addEventListener('input', this._timeAllPropagator);
             // Load notification preferences
             const notifications = App.state.editorData.notifications || [];
             document.querySelectorAll('#notification-options input[type="checkbox"]').forEach(cb => {
@@ -2433,7 +2635,17 @@ const App = {
             const times = {};
             if (mode === 'same') {
                 const timeVal = document.getElementById('time-all').value;
-                if (timeVal) times['default'] = timeVal;
+                if (timeVal) {
+                    times['default'] = timeVal;
+                    // Propagate the "Everyday" / same time to all scheduled specific dates and day-of-week entries
+                    const schedule = App.state.editorData.schedule;
+                    const daysOfWeek = schedule.days_of_week || [];
+                    const dates = schedule.dates || [];
+                    // Set for each day-of-week key
+                    daysOfWeek.forEach(day => { times[day] = timeVal; });
+                    // Set for each specific date
+                    dates.forEach(date => { times[date] = timeVal; });
+                }
             } else document.querySelectorAll('#time-per-day .time-picker-text').forEach(input => { if (input.value) times[input.dataset.day] = input.value; });
             App.state.editorData.schedule.times = times;
             // Save notification preferences
@@ -2535,7 +2747,7 @@ const App = {
                 load,
                 placeholder,
                 last_applied: null,
-                start_date: new Date().toISOString().split('T')[0]
+                start_date: getTodayRO()
             });
 
             // Read current state of the contenteditable input
@@ -2634,7 +2846,7 @@ const App = {
             const grid = document.getElementById('calendar-grid'); const label = document.getElementById('cal-month-label');
             if (!grid || !label) return;
             const year = App.state.calendarYear, month = App.state.calendarMonth;
-            const today = new Date().toISOString().split('T')[0];
+            const today = getTodayRO();
             label.textContent = new Date(year, month).toLocaleDateString('en', { month: 'long', year: 'numeric' });
             const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
             const startOffset = (firstDay + 6) % 7;
@@ -2655,7 +2867,7 @@ const App = {
         },
 
         openDailyDetail(dateStr) {
-            const today = new Date().toISOString().split('T')[0];
+            const today = getTodayRO();
             if (dateStr === today) {
                 App.nav.goto('main');
                 return;
@@ -2738,7 +2950,7 @@ const App = {
             const total = tasks.length;
             let rate = total > 0 ? Math.round((done / total) * 100) : 0;
             // For past dates, prefer the finalized rate from daily logs
-            const todayCheck = new Date().toISOString().split('T')[0];
+            const todayCheck = getTodayRO();
             if (dateStr < todayCheck) {
                 const logs = DB.getDailyLogs();
                 if (logs[dateStr] && logs[dateStr].finalized && logs[dateStr].finalRate != null) {
@@ -2760,14 +2972,14 @@ const App = {
             const [y, m, d] = App.state.dailyDetailDate.split('-').map(Number);
             const date = new Date(Date.UTC(y, m-1, d));
             date.setUTCDate(date.getUTCDate() - 1);
-            App.state.dailyDetailDate = date.toISOString().split('T')[0];
+            App.state.dailyDetailDate = toDateStrRO(date);
             this.render();
         },
         nextDay() {
             const [y, m, d] = App.state.dailyDetailDate.split('-').map(Number);
             const date = new Date(Date.UTC(y, m-1, d));
             date.setUTCDate(date.getUTCDate() + 1);
-            App.state.dailyDetailDate = date.toISOString().split('T')[0];
+            App.state.dailyDetailDate = toDateStrRO(date);
             this.render();
         },
         goBack() {
@@ -2821,7 +3033,7 @@ const App = {
 
         loadAnalytics(range) {
             const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
+            const todayStr = toDateStrRO(today);
             let start;
             switch (range) {
                 case 'today': start = new Date(today); break;
@@ -2833,56 +3045,31 @@ const App = {
                 case 'all': start = new Date(2020, 0, 1); break;
                 default: start = new Date(today); start.setDate(start.getDate() - 7);
             }
-            const logs = DB.getDailyLogs();
             const allTasks = DB.getTasks();
 
             // Compute average of DAILY rates using mean formula:
-            // Sum of each day's rate ÷ number of days (cardinality)
-            // Only include past/present days. Exclude all future dates.
-            // Only count days that actually had tasks scheduled.
+            // Always recompute from current task data to exclude deleted tasks.
+            // Only include past/present days up to today. Skip days with zero tasks.
             let sumDoneRate = 0, sumFailedRate = 0, sumUndeclaredRate = 0;
             let dayCount = 0;
             const current = new Date(start);
 
             while (current <= today) {
-                const dateStr = current.toISOString().split('T')[0];
+                const dateStr = toDateStrRO(current);
                 // Strictly exclude any future date
                 if (dateStr > todayStr) { current.setDate(current.getDate() + 1); continue; }
 
-                let dayTotal = 0, dayDone = 0, dayFailed = 0;
+                // Always compute from actual current task data (automatically excludes deleted tasks)
+                const tasks = App.tasks.getTasksForDate(allTasks, dateStr);
+                const dayTotal = tasks.length;
 
-                // First check if we have a daily log for this date (recorded when user interacted)
-                if (logs[dateStr]) {
-                    const log = logs[dateStr];
-                    dayTotal = log.total || 0;
-                    dayDone = log.done || 0;
-                    dayFailed = log.failed || 0;
-                    // If finalized, use the finalized snapshot
-                    if (log.finalized && log.finalRate != null) {
-                        // Use the stored final rate directly
-                        if (dayTotal > 0) {
-                            sumDoneRate += log.finalRate;
-                            sumFailedRate += dayTotal > 0 ? (dayFailed / dayTotal) * 100 : 0;
-                            sumUndeclaredRate += dayTotal > 0 ? (Math.max(0, dayTotal - dayDone - dayFailed) / dayTotal) * 100 : 0;
-                            dayCount++;
-                        }
-                        current.setDate(current.getDate() + 1);
-                        continue;
-                    }
-                } else {
-                    // No log exists — compute from actual task data for this past date
-                    // This covers days the user may not have interacted but tasks were scheduled
-                    const tasks = App.tasks.getTasksForDate(allTasks, dateStr);
-                    dayTotal = tasks.length;
+                if (dayTotal > 0) {
+                    let dayDone = 0, dayFailed = 0;
                     tasks.forEach(t => {
                         if (t.current_status === 'done') dayDone++;
-                        if (t.current_status === 'failed') dayFailed++;
+                        else if (t.current_status === 'failed') dayFailed++;
                     });
-                }
-
-                // Only include days that actually had tasks
-                if (dayTotal > 0) {
-                    const dayUndeclared = Math.max(0, dayTotal - dayDone - dayFailed);
+                    const dayUndeclared = dayTotal - dayDone - dayFailed;
                     sumDoneRate += (dayDone / dayTotal) * 100;
                     sumFailedRate += (dayFailed / dayTotal) * 100;
                     sumUndeclaredRate += (dayUndeclared / dayTotal) * 100;
@@ -2988,7 +3175,7 @@ const App = {
                 for (const r of records) {
                     if (r.id === App.state.editingRecordId) {
                         r.title = title; r.value = value; r.unit = unit;
-                        r.date = new Date().toISOString().split('T')[0];
+                        r.date = getTodayRO();
                         r.history.push({ value, date: r.date });
                         if (reminder) r.reminder = reminder; else delete r.reminder;
                         if (reminderHour) r.reminderHour = reminderHour; else delete r.reminderHour;
@@ -2999,9 +3186,9 @@ const App = {
                 records.push({
                     id: Math.random().toString(36).slice(2, 18),
                     title, value, unit,
-                    date: new Date().toISOString().split('T')[0],
+                    date: getTodayRO(),
                     reminder, reminderHour,
-                    history: [{ value, date: new Date().toISOString().split('T')[0] }]
+                    history: [{ value, date: getTodayRO() }]
                 });
             }
             DB.setRecords(records);
@@ -3020,8 +3207,8 @@ const App = {
         },
 
         openRecordCalendar() {
-            App.state.rcMonth = new Date().getMonth();
-            App.state.rcYear = new Date().getFullYear();
+            App.state.rcMonth = getNowRO().getMonth();
+            App.state.rcYear = getNowRO().getFullYear();
             this.renderRecordCalendar();
             document.getElementById('modal-record-calendar').classList.add('active');
         },
@@ -3074,7 +3261,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     await DB.init();
 
     if ('serviceWorker' in navigator) {
-        try { await navigator.serviceWorker.register('./sw.js'); }
+        try {
+            const reg = await navigator.serviceWorker.register('./sw.js');
+            // Register periodic background sync for notifications (if supported)
+            if ('periodicSync' in reg) {
+                try {
+                    await reg.periodicSync.register('1point-notification-check', { minInterval: 60 * 1000 });
+                } catch (e) { /* periodicSync not granted or unsupported */ }
+            }
+        }
         catch (e) { console.warn('SW registration failed:', e); }
     }
 
@@ -3134,6 +3329,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Schedule pending record reminders on load
     Notifier.scheduleAllTaskNotifications();
+
+    // Re-sync notifications when SW becomes active
+    if (navigator.serviceWorker) {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            Notifier._syncToServiceWorker();
+        });
+    }
+    // Re-check and re-sync when app becomes visible (returning from background)
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            Notifier._checkPendingNotifications();
+            Notifier._syncToServiceWorker();
+        }
+    });
 
     App.tasks.loadTasks();
 });
