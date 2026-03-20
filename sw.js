@@ -1,4 +1,4 @@
-const CACHE_NAME = '1point-v2';
+const CACHE_NAME = '1point-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -8,6 +8,9 @@ const ASSETS = [
   'https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&display=swap',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
 ];
+
+// Stored notifications synced from the main thread
+let pendingNotifications = [];
 
 // Install: cache all core assets
 self.addEventListener('install', (event) => {
@@ -49,6 +52,34 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
+// Handle messages from main thread (notification sync)
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SYNC_NOTIFICATIONS') {
+    pendingNotifications = event.data.notifications || [];
+    // Start checking immediately
+    checkAndFireNotifications();
+  }
+});
+
+// Check pending notifications and fire any that are due
+function checkAndFireNotifications() {
+  const now = Date.now();
+  const due = pendingNotifications.filter(n => n.fireAt <= now);
+  pendingNotifications = pendingNotifications.filter(n => n.fireAt > now);
+
+  due.forEach(n => {
+    self.registration.showNotification(n.title, {
+      body: n.body,
+      icon: 'logoLight.png',
+      badge: 'logoLight.png',
+      vibrate: [200, 100, 200],
+      tag: n.title + '-' + n.fireAt,
+      renotify: true,
+      requireInteraction: true
+    }).catch(() => {});
+  });
+}
+
 // Handle notification clicks
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
@@ -64,4 +95,11 @@ self.addEventListener('notificationclick', (event) => {
       }
     })
   );
+});
+
+// Periodic background sync (for browsers that support it)
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === '1point-notification-check') {
+    event.waitUntil(checkAndFireNotifications());
+  }
 });
