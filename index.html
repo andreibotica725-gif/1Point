@@ -173,8 +173,9 @@ input[type="number"] { -moz-appearance: textfield; }
 
 /* Subtasks in Editor */
 .subtasks-container { display: flex; flex-direction: column; gap: 6px; padding: 12px 0; }
-.subtask-editor { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); animation: subtaskIn 0.3s ease-out; }
+.subtask-editor { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); }
 @keyframes subtaskIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+.subtask-editor.newly-added { animation: subtaskIn 0.3s ease-out; }
 .subtask-editor-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--border); flex-shrink: 0; }
 .subtask-editor-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.9rem; color: var(--text-primary); min-height: 22px; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
 .subtask-editor-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
@@ -184,7 +185,8 @@ input[type="number"] { -moz-appearance: textfield; }
 .subtask-editor:hover .subtask-editor-duplicate, .subtask-editor:focus-within .subtask-editor-duplicate { opacity: 1; }
 
 /* Subtask description editor - grows vertically */
-.subtask-description-editor { padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); animation: subtaskIn 0.3s ease-out; display: flex; align-items: flex-start; gap: 10px; }
+.subtask-description-editor { padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); display: flex; align-items: flex-start; gap: 10px; }
+.subtask-description-editor.newly-added { animation: subtaskIn 0.3s ease-out; }
 .subtask-description-editor .subtask-desc-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.85rem; color: var(--text-secondary); font-style: italic; min-height: 24px; overflow: hidden; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
 .subtask-description-editor .subtask-desc-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
 
@@ -279,6 +281,15 @@ input[type="number"] { -moz-appearance: textfield; }
 .analytics-rate-item.failed .analytics-rate-value { color: var(--failed); }
 .analytics-rate-item.undeclared .analytics-rate-value { color: var(--text-tertiary); }
 
+/* Daily History Dropdown */
+.daily-history-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); border-top: 1px solid var(--border-light); margin-top: 4px; }
+.daily-history-toggle:active { opacity: 0.6; }
+.daily-history-list { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1); }
+.daily-history-list.open { max-height: 2000px; }
+.daily-history-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; border-top: 1px solid var(--border-light); font-size: 0.8rem; }
+.daily-history-date { color: var(--text-secondary); font-weight: 500; }
+.daily-history-rates { display: flex; gap: 12px; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+
 /* Records */
 .records-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
 .record-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--bg-card); border-radius: var(--radius-md); animation: taskSlideIn 0.3s ease-out; }
@@ -360,7 +371,11 @@ input[type="number"] { -moz-appearance: textfield; }
 .notif-chip:active { transform: scale(0.95); }
 .po-field { margin-bottom: 16px; }
 .po-field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; }
-.po-input, .po-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; -webkit-appearance: none; appearance: none; }
+.po-input, .po-select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; -webkit-appearance: none; appearance: none; outline: none; }
+.po-input:focus, .po-select:focus { border-color: var(--border); }
+.fn-formula-input:focus, .time-picker-text:focus, .time-picker-clock input:focus { outline: none; border-color: var(--border); }
+input:focus, select:focus, textarea:focus { outline: none; }
+.user-table td:focus { outline: none; background: var(--bg-secondary); }
 
 /* PO numbers bold */
 .po-value { font-weight: 700 !important; color: var(--po-color); }
@@ -383,13 +398,13 @@ input[type="number"] { -moz-appearance: textfield; }
    TABLE FEATURE STYLES (embedded in editor)
    ========================================== */
 .editor-tables-container { display: flex; flex-direction: column; gap: 12px; padding: 12px 0; }
-.table-container { background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden; animation: taskSlideIn 0.3s ease-out; }
+.table-container { background: var(--bg-card); border-radius: var(--radius-lg); overflow: hidden; }
+.table-container.newly-added { animation: taskSlideIn 0.3s ease-out; }
 .table-title-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; font-family: var(--font-heading); font-size: 0.95rem; font-weight: 600; transition: background var(--transition); }
 .table-title-bar:hover { background: var(--bg-secondary); }
 .table-title-bar i { font-size: 0.8rem; color: var(--text-tertiary); }
 .user-table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 0; }
 .user-table td { border: 1px solid var(--border); padding: 8px 10px; font-size: 0.85rem; min-width: 60px; min-height: 32px; height: 36px; position: relative; cursor: text; transition: background var(--transition); vertical-align: top; word-wrap: break-word; }
-.user-table td:focus { outline: 2px solid var(--accent); outline-offset: -2px; background: var(--bg-secondary); }
 .user-table td.merged { background: var(--bg-secondary); }
 .user-table td .po-value { font-weight: 700; color: var(--po-color); }
 .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0 0 8px; }
@@ -397,6 +412,29 @@ input[type="number"] { -moz-appearance: textfield; }
 .table-settings-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 249; backdrop-filter: blur(4px); }
 .add-table-btn { width: 100%; padding: 12px; border-radius: var(--radius-md); border: 1.5px dashed var(--border); color: var(--text-tertiary); font-size: 0.9rem; font-weight: 500; transition: all var(--transition); }
 .add-table-btn:hover { border-color: var(--text-secondary); color: var(--text-secondary); }
+
+/* Table Row Management */
+.table-row-handle { width: 24px; min-height: 32px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: grab; color: var(--text-placeholder); font-size: 0.65rem; border: 1px solid var(--border); border-right: none; vertical-align: middle; user-select: none; -webkit-user-select: none; transition: color var(--transition); }
+.table-row-handle:hover { color: var(--text-secondary); }
+.table-row-handle:active { cursor: grabbing; }
+tr.dragging-row { opacity: 0.4; }
+tr.drag-over-row td, tr.drag-over-row .table-row-handle { border-top: 2px solid var(--accent); }
+.table-row-actions { display: flex; gap: 6px; padding: 8px 12px; justify-content: flex-end; border-top: 1px solid var(--border-light); }
+.table-row-action-btn { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text-tertiary); padding: 4px 8px; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); border: none; background: none; }
+.table-row-action-btn:hover { color: var(--text-primary); background: var(--bg-secondary); }
+.table-row-action-btn.danger { color: var(--failed); }
+.table-row-action-btn.danger:hover { background: var(--failed-bg); }
+
+/* Table variable cell indicator */
+.user-table td.var-cell { background: var(--po-bg); }
+
+/* Cell merge selection */
+.user-table td.cell-selected { outline: 2px solid var(--accent); outline-offset: -2px; background: rgba(26,26,26,0.04); }
+[data-theme="dark"] .user-table td.cell-selected { background: rgba(240,240,240,0.06); }
+.merge-actions-bar { display: flex; gap: 6px; padding: 6px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); margin-top: 6px; align-items: center; font-size: 0.78rem; color: var(--text-secondary); }
+.merge-actions-bar button { font-size: 0.78rem; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-primary); cursor: pointer; transition: all var(--transition); font-weight: 500; }
+.merge-actions-bar button:hover { background: var(--bg-tertiary); }
+.merge-actions-bar button:active { opacity: 0.6; }
 
 /* Future task item in calendar */
 .future-task-item { padding: 10px 14px; background: var(--bg-card); border-radius: var(--radius-md); margin-bottom: 6px; }
@@ -482,6 +520,117 @@ text-align: center;
   pointer-events: none;
   cursor: default;
 }
+
+/* ==========================================
+   VARIABLE / FUNCTION SYSTEM STYLES
+   ========================================== */
+.var-bound { font-weight: 500; }
+.var-computed-ref { font-weight: 500; color: var(--po-color); }
+
+/* Function Modal */
+.fn-modal-section { margin-bottom: 16px; }
+.fn-modal-section-title { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; letter-spacing: 0.5px; }
+.fn-var-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.fn-var-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); font-size: 0.85rem; }
+.fn-var-item-name { font-weight: 600; color: var(--text-primary); }
+.fn-var-item-value { font-weight: 500; color: var(--po-color); }
+.fn-var-item-delete { color: var(--failed); font-size: 0.75rem; cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.fn-var-item-computed { font-size: 0.75rem; color: var(--text-tertiary); font-style: italic; }
+.fn-formula-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.fn-formula-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: var(--bg-secondary); border-radius: var(--radius-sm); font-size: 0.85rem; }
+.fn-formula-item.conflict { border: 1.5px solid var(--failed); background: var(--failed-bg); }
+.fn-formula-expr { font-weight: 500; color: var(--text-primary); font-family: monospace; font-size: 0.82rem; }
+.fn-formula-result { font-weight: 600; color: var(--po-color); }
+.fn-formula-delete { color: var(--failed); font-size: 0.75rem; cursor: pointer; padding: 2px 6px; }
+.fn-formula-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; font-family: monospace; }
+.fn-formula-input::placeholder { color: var(--text-placeholder); }
+.fn-help-text { font-size: 0.72rem; color: var(--text-tertiary); line-height: 1.5; margin-top: 6px; }
+.fn-new-var-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+.fn-new-var-row input { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.85rem; }
+.fn-btn { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.82rem; font-weight: 600; transition: all var(--transition); cursor: pointer; border: none; }
+.fn-btn-primary { background: var(--accent); color: var(--bg-primary); }
+.fn-btn-primary:active { opacity: 0.7; }
+.fn-btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
+.fn-btn-secondary:active { opacity: 0.7; }
+
+/* ==========================================
+   TEXT COLOR STYLING TOOL
+   ========================================== */
+.color-saved-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.color-saved-chip { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--bg-secondary); border-radius: 16px; font-size: 0.8rem; cursor: pointer; transition: all var(--transition); border: 1px solid var(--border); }
+.color-saved-chip:active { transform: scale(0.95); }
+.color-saved-chip .color-swatch { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--border); flex-shrink: 0; }
+.color-saved-chip .color-chip-delete { font-size: 0.7rem; color: var(--text-tertiary); margin-left: 4px; }
+.color-input-row { display: flex; align-items: stretch; gap: 0; }
+.color-input-row .po-input { flex: 1; border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; }
+.color-swatch-preview { width: 42px; flex-shrink: 0; border: 1px solid var(--border); border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); background: var(--bg-secondary); transition: background var(--transition); }
+.input-with-action { display: flex; align-items: stretch; gap: 0; }
+.input-with-action .po-input { flex: 1; border-top-right-radius: 0; border-bottom-right-radius: 0; border-right: none; }
+.input-action-btn { width: 42px; flex-shrink: 0; border: 1px solid var(--border); border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-tertiary); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; cursor: pointer; transition: all var(--transition); }
+.input-action-btn:hover { color: var(--text-primary); background: var(--bg-tertiary); }
+.input-action-btn:active { opacity: 0.6; }
+
+/* ==========================================
+   COLLAPSIBLE SIDEBAR
+   ========================================== */
+.editor-sidebar { overflow: hidden; }
+.editor-sidebar .sidebar-tools-wrapper { display: flex; flex-direction: column; gap: 4px; max-height: 600px; opacity: 1; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease; }
+.editor-sidebar.collapsed .sidebar-tools-wrapper { max-height: 0; opacity: 0; pointer-events: none; }
+.editor-sidebar.collapsed { padding: 4px; gap: 0; }
+.editor-sidebar.collapsed .sidebar-drag-handle { padding: 6px 4px; }
+.sidebar-collapse-btn { width: 38px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 0.7rem; transition: all var(--transition); cursor: pointer; border: none; background: none; }
+.sidebar-collapse-btn:hover { color: var(--text-secondary); }
+.sidebar-expand-btn { width: 38px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 0.7rem; cursor: pointer; border: none; background: none; max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; pointer-events: none; }
+.editor-sidebar.collapsed .sidebar-expand-btn { max-height: 28px; opacity: 1; pointer-events: auto; }
+.sidebar-expand-btn:hover { color: var(--text-secondary); }
+
+/* Pin button active state */
+.sidebar-pin-btn.pinned { color: var(--accent); background: var(--accent-soft); }
+/* When pinned, hide the drag handle so user knows it's locked */
+.editor-sidebar.pinned .sidebar-drag-handle { opacity: 0.3; pointer-events: none; cursor: default; }
+.row-reorder-handle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.fn-var-item-value {
+  font-weight: 500;
+  color: var(--po-color);
+  padding: 4px 8px;
+}
+.fn-var-item-computed {
+  font-style: normal;
+}
+.fn-formula-result {
+  font-weight: 600;
+  color: var(--po-color);
+  padding: 4px 8px;
+}
+.fn-formula-expr {
+  font-family: montserrat;
+}
+#fn-formula-input {
+  font-family: montserrat !important;
+}
+.fn-btn.fn-btn-secondary {
+  width: 100%;
+  padding: 14px !important;
+  border: none;
+  background: transparent;
+  font-weight: 500;
+}
+.daily-history-toggle {
+  padding: 14px 16px;
+}
+.color-swatch {
+  border: none !important;
+}
+.fn-var-item .po-input {
+  text-align: right;
+}
+#btn-pin-sidebar {
+  display: none;
+}
 </style>
 </head>
 <body>
@@ -534,28 +683,45 @@ text-align: center;
                 <div class="sidebar-drag-handle" id="sidebar-drag-handle">
                     <i class="fa-solid fa-grip-lines" style="font-size:0.8rem;"></i>
                 </div>
-                <button class="sidebar-tool" onclick="App.editor.toggleBold()" title="Bold" data-tool="bold"><i class="fa-solid fa-bold"></i></button>
-                <button class="sidebar-tool" onclick="App.editor.toggleItalic()" title="Italic" data-tool="italic"><i class="fa-solid fa-italic"></i></button>
-                <button class="sidebar-tool" onclick="App.editor.addSubtask()" title="Add Subtask" data-tool="subtask">
-                    <i class="fa-solid fa-list-check"></i>
-                </button>
-                <button class="sidebar-tool" onclick="App.editor.addSubtaskDescription()" title="Add Description" data-tool="description">
-                    <i class="fa-solid fa-align-left"></i>
-                </button>
-                <button class="sidebar-tool" onclick="App.editor.addTable()" title="Add Table" data-tool="table">
-                    <i class="fa-solid fa-table"></i>
-                </button>
-                <button class="sidebar-tool" onclick="App.editor.openPOConfig()" title="Progressive Overload" data-tool="po">
-                    <i class="fa-solid fa-arrow-trend-up"></i>
-                </button>
-                <button class="sidebar-tool" onclick="App.editor.openPriorityPicker()" title="Priority" data-tool="priority" id="btn-priority">
-                    <i class="fa-solid fa-list-ol"></i>
-                </button>
-                <button class="sidebar-tool" onclick="App.editor.openDatePicker()" title="Schedule" data-tool="schedule">
-                    <i class="fa-regular fa-calendar"></i>
-                </button>
-                <button class="sidebar-tool" onclick="App.editor.openTimePicker()" title="Time" data-tool="time">
-                    <i class="fa-regular fa-clock"></i>
+                <div class="sidebar-tools-wrapper">
+                    <button class="sidebar-tool sidebar-pin-btn" onclick="App.editor.togglePinSidebar()" title="Pin in place" data-tool="pin" id="btn-pin-sidebar">
+                        <i class="fa-solid fa-map-pin"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.toggleBold()" title="Bold" data-tool="bold"><i class="fa-solid fa-bold"></i></button>
+                    <button class="sidebar-tool" onclick="App.editor.toggleItalic()" title="Italic" data-tool="italic"><i class="fa-solid fa-italic"></i></button>
+                    <button class="sidebar-tool" onclick="App.editor.openColorPicker()" title="Text Color" data-tool="color">
+                        <i class="fa-solid fa-circle" id="color-tool-icon"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.openPOConfig()" title="Progressive Overload" data-tool="po">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.openFunctionModal()" title="Function" data-tool="function">
+                        <i class="fa-solid fa-superscript"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.addSubtaskDescription()" title="Add Description" data-tool="description">
+                        <i class="fa-solid fa-align-left"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.addSubtask()" title="Add Subtask" data-tool="subtask">
+                        <i class="fa-solid fa-list-check"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.addTable()" title="Add Table" data-tool="table">
+                        <i class="fa-solid fa-table"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.openDatePicker()" title="Schedule" data-tool="schedule">
+                        <i class="fa-regular fa-calendar"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.openTimePicker()" title="Time" data-tool="time">
+                        <i class="fa-regular fa-clock"></i>
+                    </button>
+                    <button class="sidebar-tool" onclick="App.editor.openPriorityPicker()" title="Priority" data-tool="priority" id="btn-priority">
+                        <i class="fa-solid fa-list-ol"></i>
+                    </button>
+                    <button class="sidebar-collapse-btn" onclick="App.editor.collapseSidebar()" title="Collapse">
+                        <i class="fa-solid fa-chevron-up"></i>
+                    </button>
+                </div>
+                <button class="sidebar-expand-btn" onclick="App.editor.expandSidebar()" title="Expand">
+                    <i class="fa-solid fa-chevron-down"></i>
                 </button>
             </div>
         </div>
@@ -656,6 +822,12 @@ text-align: center;
                             <span class="analytics-rate-label">Undeclared</span>
                         </div>
                     </div>
+                    <!-- Daily History Dropdown -->
+                    <div class="daily-history-toggle" onclick="App.account.toggleDailyHistory()">
+                        <span>Daily Breakdown</span>
+                        <i class="fa-solid fa-chevron-down" id="daily-history-chevron" style="font-size:0.7rem;transition:transform 0.25s ease;"></i>
+                    </div>
+                    <div class="daily-history-list" id="analytics-daily-history"></div>
                 </div>
 
                 <div class="account-section">
@@ -842,8 +1014,29 @@ text-align: center;
             <div class="modal-header"><h3 id="modal-table-title">Create Table</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
             <div class="modal-body">
                 <div class="po-field"><label>Table Title</label><input type="text" id="table-title-input" class="po-input" placeholder="My Table" spellcheck="false"></div>
-                <div class="po-field"><label>Rows</label><input type="number" id="table-rows-input" class="po-input" placeholder="3" min="1" max="50" value="3"></div>
-                <div class="po-field"><label>Columns</label><input type="number" id="table-cols-input" class="po-input" placeholder="3" min="1" max="20" value="3"></div>
+                <div id="table-mgmt-section" style="display:none;">
+                    <div class="po-field"><label>Table Structure</label>
+                        <div class="table-wrapper" id="table-mgmt-preview" style="margin-top:4px;"></div>
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:8px;">
+                        <button class="fn-btn fn-btn-secondary" onclick="App.editor.addTableRow()"><i class="fa-solid fa-plus"></i> Row</button>
+                        <button class="fn-btn fn-btn-secondary" onclick="App.editor.addTableCol()"><i class="fa-solid fa-plus"></i> Column</button>
+                    </div>
+                    <div id="table-merge-section" style="margin-top:12px;">
+                        <div class="po-field">
+                            <label>Merge Cells</label>
+                            <p class="fn-help-text" style="margin-top:0;margin-bottom:8px;">Tap cells to select, then merge.</p>
+                            <div style="display:flex;gap:8px;">
+                                <button class="fn-btn fn-btn-secondary" onclick="App.editor.mergeCells()"><i class="fa-solid fa-expand"></i> Merge</button>
+                                <button class="fn-btn fn-btn-secondary" onclick="App.editor.unmergeCells()"><i class="fa-solid fa-compress"></i> Unmerge</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="table-new-section">
+                    <div class="po-field"><label>Rows</label><input type="number" id="table-rows-input" class="po-input" placeholder="3" min="1" max="50" value="3"></div>
+                    <div class="po-field"><label>Columns</label><input type="number" id="table-cols-input" class="po-input" placeholder="3" min="1" max="20" value="3"></div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="modal-btn-save" onclick="App.editor.saveEditorTable()"><i class="fa-solid fa-check"></i> Save</button>
@@ -863,6 +1056,64 @@ text-align: center;
                 <div class="po-field"><label>Decrease by</label><input type="number" id="table-po-decrement" class="po-input" value="0" min="0" oninput="App.editor.onTablePODecrementChange()"></div>
             </div>
             <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveTableCellPO()"><i class="fa-solid fa-check"></i> Apply</button></div>
+        </div>
+
+        <!-- Function / Variables Modal -->
+        <div class="modal" id="modal-function">
+            <div class="modal-header"><h3>Variables & Functions</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body" id="fn-modal-body">
+                <!-- Dynamic content rendered by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn-save" onclick="App.editor.saveFunctionModal()"><i class="fa-solid fa-check"></i> Done</button>
+            </div>
+        </div>
+
+        <!-- Create Variable Modal (sub-modal) -->
+        <div class="modal" id="modal-create-var" style="z-index:210;">
+            <div class="modal-header"><h3>Create Variable</h3><button onclick="App.editor.closeCreateVarModal()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="po-field"><label>Variable Name</label><input type="text" id="create-var-name" class="po-input" placeholder="e.g. c" spellcheck="false" autocomplete="off"></div>
+                <div class="po-field"><label>Selected Value</label><input type="number" id="create-var-value" class="po-input" readonly></div>
+                <div class="po-field" id="create-var-scope-field" style="display:none;">
+                    <label>Scope</label>
+                    <div class="time-mode-option selected" id="var-scope-cell" onclick="App.editor.setVarScope('cell')">
+                        <i class="fa-regular fa-circle-dot"></i>
+                        <span>Whole cell</span>
+                    </div>
+                    <div class="time-mode-option" id="var-scope-number" onclick="App.editor.setVarScope('number')">
+                        <i class="fa-regular fa-circle"></i>
+                        <span>Selected number only</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.saveNewVariable()"><i class="fa-solid fa-check"></i> Save Variable</button></div>
+        </div>
+
+        <!-- Color Picker Modal -->
+        <div class="modal" id="modal-color">
+            <div class="modal-header"><h3>Text Color</h3><button onclick="App.modal.close()" class="modal-close"><i class="fa-solid fa-xmark"></i></button></div>
+            <div class="modal-body">
+                <div class="po-field">
+                    <label>Color Value</label>
+                    <div class="color-input-row">
+                        <input type="text" id="color-input" class="po-input" placeholder="#ff0000, rgb(255,0,0), red..." spellcheck="false" autocomplete="off" oninput="App.editor.previewColor()">
+                        <div class="color-swatch-preview" id="color-swatch-preview"></div>
+                    </div>
+                </div>
+                <div class="po-field" style="margin-top:12px;">
+                    <label>Save as (optional)</label>
+                    <div class="input-with-action">
+                        <input type="text" id="color-save-name" class="po-input" placeholder="Custom name" spellcheck="false" autocomplete="off">
+                        <button class="input-action-btn" onclick="App.editor.saveColorPreset()" title="Save color"><i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+                <div id="color-saved-container">
+                    <div class="fn-modal-section-title" style="margin-top:8px;">Saved Colors</div>
+                    <div class="color-saved-list" id="color-saved-list"></div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn-save" onclick="App.editor.applyColor()"><i class="fa-solid fa-check"></i> Apply</button></div>
         </div>
     </div>
 
@@ -888,7 +1139,7 @@ const DB = {
     _cache: {},
     async init() {
         return new Promise((resolve) => {
-            for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables']) {
+            for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables', 'variables', 'saved_colors']) {
                 try { const v = localStorage.getItem('1p_' + key); if (v) this._cache[key] = JSON.parse(v); } catch {}
             }
             const req = indexedDB.open('1PointDB', 2);
@@ -897,7 +1148,7 @@ const DB = {
                 this._idb = e.target.result;
                 const tx = this._idb.transaction('data', 'readonly');
                 const store = tx.objectStore('data');
-                for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables']) {
+                for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables', 'variables', 'saved_colors']) {
                     const r = store.get(key);
                     r.onsuccess = () => { if (r.result !== undefined) this._cache[key] = r.result; };
                 }
@@ -907,11 +1158,20 @@ const DB = {
         });
     },
     get(key, fallback) { return this._cache[key] !== undefined ? this._cache[key] : fallback; },
+    _version: 0,
     set(key, val) {
+        this._version++;
         this._cache[key] = val;
         try { localStorage.setItem('1p_' + key, JSON.stringify(val)); } catch {}
         if (this._idb) { try { const tx = this._idb.transaction('data', 'readwrite'); tx.objectStore('data').put(val, key); } catch {} }
+        try { localStorage.setItem('1p_data_version', String(this._version)); } catch {}
         AutoBackup.onDataChange();
+    },
+    // Force reload from storage if another tab/context changed data
+    refreshCache() {
+        for (const key of ['tasks', 'records', 'daily_logs', 'balance', 'settings', 'tables', 'variables', 'saved_colors']) {
+            try { const v = localStorage.getItem('1p_' + key); if (v) this._cache[key] = JSON.parse(v); } catch {}
+        }
     },
     getTasks() { return this.get('tasks', []); },
     setTasks(t) { this.set('tasks', t); },
@@ -925,7 +1185,11 @@ const DB = {
     setSettings(s) { this.set('settings', s); },
     getTables() { return this.get('tables', []); },
     setTables(t) { this.set('tables', t); },
-    getAll() { return { tasks: this.getTasks(), records: this.getRecords(), daily_logs: this.getDailyLogs(), balance: this.getBalance(), settings: this.getSettings(), tables: this.getTables(), exported: new Date().toISOString() }; }
+    getVariables() { return this.get('variables', { vars: {}, formulas: [] }); },
+    setVariables(v) { this.set('variables', v); },
+    getSavedColors() { return this.get('saved_colors', []); },
+    setSavedColors(c) { this.set('saved_colors', c); },
+    getAll() { return { tasks: this.getTasks(), records: this.getRecords(), daily_logs: this.getDailyLogs(), balance: this.getBalance(), settings: this.getSettings(), tables: this.getTables(), variables: this.getVariables(), saved_colors: this.getSavedColors(), exported: new Date().toISOString() }; }
 };
 
 const AutoBackup = {
@@ -1155,7 +1419,7 @@ const App = {
         tasks: [],
         currentDate: getTodayRO(),
         editingTask: null,
-        editorData: { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [], times: {}, days_of_week: [] }, notifications: [], excludedDates: [] },
+        editorData: { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [], times: {}, days_of_week: [] }, notifications: [], excludedDates: [], variables: { vars: {}, formulas: [] } },
         calendarMonth: getNowRO().getMonth(),
         calendarYear: getNowRO().getFullYear(),
         dpMonth: getNowRO().getMonth(),
@@ -1329,6 +1593,8 @@ const App = {
                             }
                         }
                     }
+                    // Sync PO values into variables and recompute formulas
+                    this._syncPOIntoVariables(taskCopy);
                     result.push(taskCopy);
                 }
             }
@@ -1412,6 +1678,8 @@ const App = {
                             }
                         }
                     }
+                    // Sync PO values into variables and recompute formulas
+                    this._syncPOIntoVariables(taskCopy);
                     result.push(taskCopy);
                 }
             }
@@ -1485,6 +1753,89 @@ const App = {
             return this._computePOValueForDate(po, date);
         },
 
+        // Sync PO-projected values into variables and recompute formulas
+        _syncPOIntoVariables(taskCopy) {
+            if (!taskCopy.variables || !taskCopy.variables.vars) return;
+            const vars = taskCopy.variables.vars;
+            const hasFormulas = taskCopy.variables.formulas && taskCopy.variables.formulas.length > 0;
+            const hasVars = Object.keys(vars).length > 0;
+            if (!hasFormulas && !hasVars) return; // No variables at all = nothing to sync
+
+            // Step 1: Sync subtask PO values into linked variables
+            if (taskCopy.subtasks) {
+                for (const st of taskCopy.subtasks) {
+                    if (!st.po_variables || st.po_variables.length === 0) continue;
+                    for (const po of st.po_variables) {
+                        const poVal = po.current_value != null ? po.current_value : po.base_value;
+                        
+                        // Direct link (set at PO creation or cached from previous sync)
+                        if (po.varName && vars[po.varName]) {
+                            vars[po.varName].value = poVal;
+                            continue;
+                        }
+                        
+                        // Auto-detect: find a non-computed, non-table variable with matching base value
+                        for (const vName in vars) {
+                            const v = vars[vName];
+                            if (v.isComputed || v.tableCell) continue;
+                            if (v._poBaseValue === po.base_value || v.value === po.base_value) {
+                                v.value = poVal;
+                                po.varName = vName; // cache for next time
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Step 2: Sync table cell PO values into linked variables
+            if (taskCopy.tables) {
+                for (const table of taskCopy.tables) {
+                    if (!table.cells) continue;
+                    for (const key in table.cells) {
+                        const cell = table.cells[key];
+                        if (cell.po && cell.varName && vars[cell.varName]) {
+                            const poVal = cell.po._displayValue != null ? cell.po._displayValue :
+                                         (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value);
+                            vars[cell.varName].value = poVal;
+                        }
+                    }
+                }
+            }
+
+            // Step 3: Recompute all formulas
+            const formulas = taskCopy.variables.formulas;
+            for (const f of formulas) {
+                const res = App.editor._fnMath.evaluate(f.expression, vars);
+                if (!isNaN(res)) {
+                    if (!vars[f.resultVar]) vars[f.resultVar] = { value: 0, isComputed: true };
+                    vars[f.resultVar].value = res;
+                }
+            }
+            
+            // Step 4: Persist any newly discovered varName links back to DB
+            try {
+                const allTasks = DB.getTasks();
+                const origTask = allTasks.find(t => t.id === taskCopy.id);
+                if (origTask && origTask.subtasks && taskCopy.subtasks) {
+                    let changed = false;
+                    for (let i = 0; i < taskCopy.subtasks.length && i < origTask.subtasks.length; i++) {
+                        const stCopy = taskCopy.subtasks[i];
+                        const stOrig = origTask.subtasks[i];
+                        if (stCopy.po_variables && stOrig.po_variables) {
+                            for (let j = 0; j < stCopy.po_variables.length && j < stOrig.po_variables.length; j++) {
+                                if (stCopy.po_variables[j].varName && !stOrig.po_variables[j].varName) {
+                                    stOrig.po_variables[j].varName = stCopy.po_variables[j].varName;
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
+                    if (changed) DB.setTasks(allTasks);
+                }
+            } catch (e) { /* non-critical */ }
+        },
+
         render() {
             const list = document.getElementById('task-list');
             if (!list) return;
@@ -1529,7 +1880,14 @@ const App = {
                 html += `<div class="task-expanded-content">`;
                 // Top-level description
                 if (task.description && task.description.trim()) {
-                    html += `<div class="task-expanded-description">${task.description}</div>`;
+                    let descHtml = task.description;
+                    // Resolve variable references in display
+                    if (task.variables && task.variables.vars) {
+                        descHtml = descHtml.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                        descHtml = descHtml.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                        descHtml = descHtml.replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                    }
+                    html += `<div class="task-expanded-description">${descHtml}</div>`;
                 }
                 // Build elements array if not present (legacy data migration)
                 let elements = task.elements || [];
@@ -1562,11 +1920,16 @@ const App = {
                         let stIcon = '<i class="fa-regular fa-circle"></i>';
                         if (st.current_status === 'done') stIcon = '<i class="fa-regular fa-circle-check"></i>';
                         else if (st.current_status === 'failed') stIcon = '<i class="fa-regular fa-circle-xmark"></i>';
-                        html += `<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text">${this.formatSubtaskText(st)}</span></div>`;
+                        html += `<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text">${this.formatSubtaskText(st, task.variables)}</span></div>`;
                     } else if (el.type === 'description') {
                         const desc = descriptions.find(d => d.position === el.position);
                         if (desc && desc.text) {
-                            html += `<div class="task-expanded-description" style="font-size:0.8rem;color:var(--text-tertiary);padding:6px 0;line-height:1.5;">${desc.text}</div>`;
+                            let dText = desc.text;
+                            if (task.variables && task.variables.vars) {
+                                dText = dText.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                                dText = dText.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                            }
+                            html += `<div class="task-expanded-description" style="font-size:0.8rem;color:var(--text-tertiary);padding:6px 0;line-height:1.5;">${dText}</div>`;
                         }
                     } else if (el.type === 'table') {
                         const table = (task.tables || [])[el.index];
@@ -1580,7 +1943,7 @@ const App = {
                                 if (cell.mergedInto) continue;
                                 const rowspan = cell.rowspan || 1;
                                 const colspan = cell.colspan || 1;
-                                const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (cell.content || '');
+                                const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (task.variables && task.variables.vars ? (cell.content || '').replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m).replace(/\[(\w+)\]/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m).replace(/<--(?:var\s+)?(\w+)-->/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m).replace(/\[(\w+)\]/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m) : (cell.content || ''));
                                 html += `<td${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
                             }
                             html += '</tr>';
@@ -1650,7 +2013,26 @@ const App = {
                         if (st.id === subtaskId) {
                             if (!st.status) st.status = {};
                             st.status[date] = status;
-                            if (status === 'done') this.applyProgressiveOverload(st, date);
+                            if (status === 'done') {
+                                this.applyProgressiveOverload(st, date);
+                                // Sync PO values into linked variables and recompute formulas
+                                if (st.po_variables && task.variables && task.variables.vars) {
+                                    for (const po of st.po_variables) {
+                                        if (po.varName && task.variables.vars[po.varName]) {
+                                            task.variables.vars[po.varName].value = po.current_value != null ? po.current_value : po.base_value;
+                                        }
+                                    }
+                                    if (task.variables.formulas) {
+                                        for (const f of task.variables.formulas) {
+                                            const res = App.editor._fnMath.evaluate(f.expression, task.variables.vars);
+                                            if (!isNaN(res)) {
+                                                if (!task.variables.vars[f.resultVar]) task.variables.vars[f.resultVar] = { value: 0, isComputed: true };
+                                                task.variables.vars[f.resultVar].value = res;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                             break;
                         }
                     }
@@ -1675,6 +2057,28 @@ const App = {
                             for (const st of task.subtasks) this.applyProgressiveOverload(st, date);
                         }
                         this.applyTableCellPO(task, date);
+                        // Sync all PO values into linked variables and recompute formulas
+                        if (task.variables && task.variables.vars) {
+                            if (task.subtasks) {
+                                for (const st of task.subtasks) {
+                                    if (!st.po_variables) continue;
+                                    for (const po of st.po_variables) {
+                                        if (po.varName && task.variables.vars[po.varName]) {
+                                            task.variables.vars[po.varName].value = po.current_value != null ? po.current_value : po.base_value;
+                                        }
+                                    }
+                                }
+                            }
+                            if (task.variables.formulas) {
+                                for (const f of task.variables.formulas) {
+                                    const res = App.editor._fnMath.evaluate(f.expression, task.variables.vars);
+                                    if (!isNaN(res)) {
+                                        if (!task.variables.vars[f.resultVar]) task.variables.vars[f.resultVar] = { value: 0, isComputed: true };
+                                        task.variables.vars[f.resultVar].value = res;
+                                    }
+                                }
+                            }
+                        }
                     }
                     break;
                 }
@@ -1742,6 +2146,10 @@ const App = {
                             cell.po.current_value = cell.po.base_value + (Math.floor(daysDiff / 7) * load);
                         }
                         cell.po.last_applied = date;
+                        // Sync updated PO value into linked variable
+                        if (cell.varName && task.variables && task.variables.vars && task.variables.vars[cell.varName]) {
+                            task.variables.vars[cell.varName].value = cell.po.current_value;
+                        }
                     }
                 }
             }
@@ -1756,7 +2164,7 @@ const App = {
             if (el) el.classList.toggle('expanded');
         },
 
-        formatSubtaskText(subtask) {
+        formatSubtaskText(subtask, taskVars) {
             const hasPO = subtask.po_variables && subtask.po_variables.length > 0;
 
             // If we have html content, use it as the base
@@ -1769,6 +2177,11 @@ const App = {
                             text = text.split(po.placeholder).join(`<span class="po-value">${val}</span>`);
                         }
                     }
+                }
+                // Resolve variable references
+                if (taskVars && taskVars.vars) {
+                    text = text.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m);
+                    text = text.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m);
                 }
                 return text;
             }
@@ -1783,6 +2196,10 @@ const App = {
                         text = text.split(this.escapeHtml(po.placeholder)).join(`<span class="po-value">${val}</span>`);
                     }
                 }
+            }
+            // Resolve variable references
+            if (taskVars && taskVars.vars) {
+                text = text.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m);
             }
             return text;
         },
@@ -1817,7 +2234,9 @@ const App = {
 
         logDaily() {
             const date = App.state.currentDate;
-            const tasks = App.state.tasks;
+            const allTasks = DB.getTasks();
+            // Recompute today's stats from current task data (excludes deleted tasks)
+            const tasks = this.getTasksForDate(allTasks, date);
             let done = 0, failed = 0;
             tasks.forEach(t => { if (t.current_status === 'done') done++; if (t.current_status === 'failed') failed++; });
             const total = tasks.length;
@@ -1825,10 +2244,15 @@ const App = {
             const logs = DB.getDailyLogs();
             logs[date] = { rate, total, done, failed, finalized: false };
             DB.setDailyLogs(logs);
+            // Recompute balance from scratch using current task data for all logged dates
             let bal = 0;
             for (const k of Object.keys(logs)) {
-                // Use finalized rate if available, otherwise current rate
-                bal += logs[k].finalRate != null ? logs[k].finalRate : (logs[k].rate || 0);
+                const dayTasks = this.getTasksForDate(allTasks, k);
+                if (dayTasks.length > 0) {
+                    let dayDone = 0;
+                    dayTasks.forEach(t => { if (t.current_status === 'done') dayDone++; });
+                    bal += Math.round((dayDone / dayTasks.length) * 100);
+                }
             }
             DB.setBalance(bal);
         },
@@ -1841,6 +2265,24 @@ const App = {
             DB.setTasks(allTasks);
             App.state.expandedTasks.delete(taskId);
             this.loadTasks();
+            // Recompute daily log and purge stale daily_logs entries for days with 0 tasks
+            this.logDaily();
+            this._purgeEmptyDailyLogs();
+        },
+
+        // Remove daily_logs entries for days that no longer have any tasks
+        _purgeEmptyDailyLogs() {
+            const allTasks = DB.getTasks();
+            const logs = DB.getDailyLogs();
+            let changed = false;
+            for (const dateStr of Object.keys(logs)) {
+                const tasks = this.getTasksForDate(allTasks, dateStr);
+                if (tasks.length === 0) {
+                    delete logs[dateStr];
+                    changed = true;
+                }
+            }
+            if (changed) DB.setDailyLogs(logs);
         },
 
         openEditor(taskId) {
@@ -1858,11 +2300,12 @@ const App = {
                     priority: task.priority || 'usual',
                     schedule: JSON.parse(JSON.stringify(task.schedule || { type: 'once', dates: [], times: {}, days_of_week: [] })),
                     notifications: [...(task.notifications || [])],
-                    excludedDates: [...(task.excludedDates || [])]
+                    excludedDates: [...(task.excludedDates || [])],
+                    variables: JSON.parse(JSON.stringify(task.variables || { vars: {}, formulas: [] }))
                 };
             } else {
                 App.state.editingTask = null;
-                App.state.editorData = { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [App.state.currentDate], times: {}, days_of_week: [] }, notifications: [], excludedDates: [] };
+                App.state.editorData = { title: '', description: '', subtasks: [], descriptions: [], tables: [], elements: [], priority: 'usual', schedule: { type: 'once', dates: [App.state.currentDate], times: {}, days_of_week: [] }, notifications: [], excludedDates: [], variables: { vars: {}, formulas: [] } };
             }
             document.getElementById('editor-title').value = App.state.editorData.title;
             document.getElementById('editor-description').innerHTML = App.state.editorData.description;
@@ -1880,7 +2323,16 @@ const App = {
             App.editor.updatePriorityBtn();
             const sidebar = document.getElementById('editor-sidebar');
             sidebar.style.left = ''; sidebar.style.top = ''; sidebar.style.right = '12px'; sidebar.style.transform = 'translateY(-50%)';
+            sidebar.classList.remove('collapsed');
+            sidebar.classList.remove('pinned');
+            const pinBtn = document.getElementById('btn-pin-sidebar');
+            if (pinBtn) pinBtn.classList.remove('pinned');
             App.nav.goto('editor');
+            // Resolve variable references after render and set up live detection
+            setTimeout(() => {
+                App.editor._resolveVarReferences();
+                App.editor._initLiveVarResolve();
+            }, 50);
         },
 
         closeEditor() { App.nav.goto('main'); },
@@ -1954,6 +2406,7 @@ const App = {
                         task.elements = ed.elements || [];
                         task.priority = ed.priority; task.schedule = ed.schedule; task.notifications = ed.notifications;
                         task.excludedDates = ed.excludedDates || [];
+                        task.variables = ed.variables || { vars: {}, formulas: [] };
                         task.updated = new Date().toISOString(); break;
                     }
                 }
@@ -1964,6 +2417,7 @@ const App = {
                     elements: ed.elements || [],
                     priority: ed.priority,
                     schedule: ed.schedule, notifications: ed.notifications, excludedDates: ed.excludedDates || [],
+                    variables: ed.variables || { vars: {}, formulas: [] },
                     status: {}, overrides: {},
                     created: new Date().toISOString(), updated: new Date().toISOString()
                 });
@@ -2017,17 +2471,18 @@ const App = {
             App.state.editorData.subtasks.push({ id: Math.random().toString(36).substr(2, 8), text: '', html: '', po_variables: [], status: {} });
             if (!App.state.editorData.elements) App.state.editorData.elements = [];
             App.state.editorData.elements.push({ type: 'subtask', index: idx });
+            App.state._newlyAddedElement = { type: 'subtask', index: idx };
             this.renderSubtasks();
             setTimeout(() => { const inputs = document.querySelectorAll('.subtask-editor-input'); if (inputs.length) inputs[inputs.length - 1].focus(); }, 100);
         },
 
         addSubtaskDescription() {
             if (!App.state.editorData.descriptions) App.state.editorData.descriptions = [];
-            // Use a unique position ID
             const pos = Date.now();
             App.state.editorData.descriptions.push({ position: pos, text: '' });
             if (!App.state.editorData.elements) App.state.editorData.elements = [];
             App.state.editorData.elements.push({ type: 'description', position: pos });
+            App.state._newlyAddedElement = { type: 'description', position: pos };
             this.renderSubtasks();
         },
 
@@ -2197,6 +2652,17 @@ const App = {
                 }
             });
 
+            // Apply newly-added animation class to the last-added element only
+            const na = App.state._newlyAddedElement;
+            if (na) {
+                let sel;
+                if (na.type === 'subtask') sel = container.querySelector(`.editor-element[data-el-type="subtask"][data-el-index="${na.index}"]`);
+                else if (na.type === 'description') sel = container.querySelector(`.editor-element[data-el-type="description"][data-el-position="${na.position}"]`);
+                else if (na.type === 'table') sel = container.querySelector(`.editor-element[data-el-type="table"][data-el-index="${na.index}"]`);
+                if (sel) sel.classList.add('newly-added');
+                App.state._newlyAddedElement = null;
+            }
+
             // Bind subtask input events
             container.querySelectorAll('.subtask-editor-input').forEach(input => {
                 input.addEventListener('input', (e) => {
@@ -2223,6 +2689,8 @@ const App = {
                     if (poBtn) poBtn.classList.remove('po-disabled');
                 });
             });
+            // Bind table cell input events for variable cells
+            this._initTableVarCellListeners();
         },
 
         // Helper to render a single editor table as HTML string
@@ -2231,20 +2699,266 @@ const App = {
             html += `<div class="table-title-bar" onclick="App.editor.editEditorTable(${tIdx})"><span>${App.tasks.escapeHtml(table.title)}</span><i class="fa-regular fa-pen-to-square"></i></div>`;
             html += `<div class="table-wrapper"><table class="user-table" data-table-idx="${tIdx}">`;
             for (let r = 0; r < table.rows; r++) {
-                html += '<tr>';
+                html += `<tr data-row="${r}">`;
                 for (let c = 0; c < table.cols; c++) {
                     const cellKey = `${r}-${c}`;
                     const cell = (table.cells && table.cells[cellKey]) || {};
                     if (cell.mergedInto) continue;
                     const rowspan = cell.rowspan || 1;
                     const colspan = cell.colspan || 1;
-                    const displayContent = cell.po ? `<span class="po-value">${cell.po.current_value != null ? cell.po.current_value : cell.po.base_value}</span>` : (cell.content || '');
-                    html += `<td contenteditable="true" spellcheck="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                    const isVarCell = cell.varName ? true : false;
+                    const varClass = isVarCell ? ' var-cell' : '';
+                    let displayContent;
+                    if (cell.po) {
+                        const poDispVal = cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value);
+                        displayContent = `<span class="po-value">${poDispVal}</span>`;
+                        // Sync PO value into linked variable so formulas reflect it
+                        if (isVarCell) {
+                            const ed = App.state.editorData;
+                            if (ed.variables && ed.variables.vars[cell.varName]) {
+                                ed.variables.vars[cell.varName].value = poDispVal;
+                            }
+                        }
+                    } else if (isVarCell) {
+                        const ed = App.state.editorData;
+                        const varVal = (ed.variables && ed.variables.vars[cell.varName]) ? ed.variables.vars[cell.varName].value : '';
+                        displayContent = String(varVal);
+                    } else {
+                        displayContent = cell.content || '';
+                    }
+                    html += `<td contenteditable="true" spellcheck="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}" class="${varClass}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
                 }
                 html += '</tr>';
             }
             html += '</table></div></div>';
             return html;
+        },
+
+        // Row/Column management (operates within table modal)
+        addTableRow() {
+            const tIdx = App.state.editingEditorTableId;
+            if (tIdx === null) return;
+            this.syncLiveDOM();
+            const table = App.state.editorData.tables[tIdx];
+            if (!table) return;
+            const newRow = table.rows;
+            table.rows++;
+            if (!table.cells) table.cells = {};
+            for (let c = 0; c < table.cols; c++) table.cells[`${newRow}-${c}`] = { content: '' };
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+        },
+
+        addTableCol() {
+            const tIdx = App.state.editingEditorTableId;
+            if (tIdx === null) return;
+            this.syncLiveDOM();
+            const table = App.state.editorData.tables[tIdx];
+            if (!table) return;
+            const newCol = table.cols;
+            table.cols++;
+            if (!table.cells) table.cells = {};
+            for (let r = 0; r < table.rows; r++) table.cells[`${r}-${newCol}`] = { content: '' };
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+        },
+
+        deleteTableRowAt(rowIdx) {
+            const tIdx = App.state.editingEditorTableId;
+            if (tIdx === null) return;
+            this.syncLiveDOM();
+            const table = App.state.editorData.tables[tIdx];
+            if (!table || table.rows <= 1) { App.showError('Table must have at least one row'); return; }
+            if (this._hasMergesInTable(table)) { App.showError('Unmerge all cells before deleting rows'); return; }
+            if (!table.cells) table.cells = {};
+            const newCells = {};
+            for (let r = 0; r < table.rows; r++) {
+                if (r === rowIdx) continue;
+                const newR = r > rowIdx ? r - 1 : r;
+                for (let c = 0; c < table.cols; c++) {
+                    const oldKey = `${r}-${c}`;
+                    const newKey = `${newR}-${c}`;
+                    newCells[newKey] = table.cells[oldKey] || { content: '' };
+                }
+            }
+            table.cells = newCells;
+            table.rows--;
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+        },
+
+        deleteTableCol(colIdx) {
+            const tIdx = App.state.editingEditorTableId;
+            if (tIdx === null) return;
+            this.syncLiveDOM();
+            const table = App.state.editorData.tables[tIdx];
+            if (!table || table.cols <= 1) { App.showError('Table must have at least one column'); return; }
+            if (this._hasMergesInTable(table)) { App.showError('Unmerge all cells before deleting columns'); return; }
+            if (!table.cells) table.cells = {};
+            const newCells = {};
+            for (let r = 0; r < table.rows; r++) {
+                for (let c = 0; c < table.cols; c++) {
+                    if (c === colIdx) continue;
+                    const newC = c > colIdx ? c - 1 : c;
+                    const oldKey = `${r}-${c}`;
+                    const newKey = `${r}-${newC}`;
+                    newCells[newKey] = table.cells[oldKey] || { content: '' };
+                }
+            }
+            table.cells = newCells;
+            table.cols--;
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+        },
+
+        _hasMergesInTable(table) {
+            if (!table || !table.cells) return false;
+            for (const key in table.cells) {
+                const cell = table.cells[key];
+                if (cell.mergedInto || (cell.rowspan && cell.rowspan > 1) || (cell.colspan && cell.colspan > 1)) return true;
+            }
+            return false;
+        },
+
+        _swapTableRows(tIdx, fromRow, toRow) {
+            const table = App.state.editorData.tables[tIdx];
+            if (!table || !table.cells || fromRow === toRow) return;
+            if (this._hasMergesInTable(table)) {
+                App.showError('Unmerge all cells before reordering rows');
+                return;
+            }
+            for (let c = 0; c < table.cols; c++) {
+                const keyA = `${fromRow}-${c}`;
+                const keyB = `${toRow}-${c}`;
+                const cellA = table.cells[keyA] || { content: '' };
+                const cellB = table.cells[keyB] || { content: '' };
+                table.cells[keyA] = cellB;
+                table.cells[keyB] = cellA;
+            }
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+        },
+
+        _swapTableCols(tIdx, fromCol, toCol) {
+            const table = App.state.editorData.tables[tIdx];
+            if (!table || !table.cells || fromCol === toCol) return;
+            if (this._hasMergesInTable(table)) {
+                App.showError('Unmerge all cells before reordering columns');
+                return;
+            }
+            for (let r = 0; r < table.rows; r++) {
+                const keyA = `${r}-${fromCol}`;
+                const keyB = `${r}-${toCol}`;
+                const cellA = table.cells[keyA] || { content: '' };
+                const cellB = table.cells[keyB] || { content: '' };
+                table.cells[keyA] = cellB;
+                table.cells[keyB] = cellA;
+            }
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+        },
+
+        // Cell merge
+        _selectedCells: [],
+
+        mergeCells() {
+            if (this._selectedCells.length < 2) { App.showError('Select at least 2 cells to merge'); return; }
+            const tIdx = this._selectedCells[0].tableIdx;
+            const table = App.state.editorData.tables[tIdx];
+            if (!table) return;
+            this.syncLiveDOM();
+            if (!table.cells) table.cells = {};
+
+            // Start with selected cell coordinates
+            let minR = Infinity, maxR = -1, minC = Infinity, maxC = -1;
+            for (const sc of this._selectedCells) {
+                const r = sc.row, c = sc.col;
+                const cell = table.cells[`${r}-${c}`] || {};
+                const rs = cell.rowspan || 1;
+                const cs = cell.colspan || 1;
+                // Expand bounding box to include the full span of any already-merged anchor
+                if (r < minR) minR = r;
+                if (r + rs - 1 > maxR) maxR = r + rs - 1;
+                if (c < minC) minC = c;
+                if (c + cs - 1 > maxC) maxC = c + cs - 1;
+            }
+
+            const rowSpan = maxR - minR + 1;
+            const colSpan = maxC - minC + 1;
+            if (rowSpan < 2 && colSpan < 2) { App.showError('Select cells spanning multiple rows or columns'); return; }
+
+            // First unmerge any existing merges within the bounding box
+            for (let r = minR; r <= maxR; r++) {
+                for (let c = minC; c <= maxC; c++) {
+                    const k = `${r}-${c}`;
+                    const cell = table.cells[k];
+                    if (cell) {
+                        if (cell.rowspan > 1 || cell.colspan > 1) {
+                            // Unmerge this anchor
+                            const ors = cell.rowspan || 1, ocs = cell.colspan || 1;
+                            for (let ur = r; ur < r + ors; ur++) {
+                                for (let uc = c; uc < c + ocs; uc++) {
+                                    const uk = `${ur}-${uc}`;
+                                    if (ur === r && uc === c) { delete cell.rowspan; delete cell.colspan; }
+                                    else if (table.cells[uk]) { delete table.cells[uk].mergedInto; if (!table.cells[uk].content) table.cells[uk].content = ''; }
+                                }
+                            }
+                        }
+                        if (cell.mergedInto) { delete cell.mergedInto; cell.content = cell.content || ''; }
+                    }
+                }
+            }
+
+            // Now merge the full rectangle
+            const anchorKey = `${minR}-${minC}`;
+            if (!table.cells[anchorKey]) table.cells[anchorKey] = { content: '' };
+            // Gather first non-empty content
+            let mergedContent = '';
+            for (let r = minR; r <= maxR; r++) {
+                for (let c = minC; c <= maxC; c++) {
+                    const cell = table.cells[`${r}-${c}`] || {};
+                    if (cell.content && !mergedContent) mergedContent = cell.content;
+                }
+            }
+            table.cells[anchorKey].content = mergedContent;
+            table.cells[anchorKey].rowspan = rowSpan;
+            table.cells[anchorKey].colspan = colSpan;
+            for (let r = minR; r <= maxR; r++) {
+                for (let c = minC; c <= maxC; c++) {
+                    if (r === minR && c === minC) continue;
+                    table.cells[`${r}-${c}`] = { mergedInto: anchorKey };
+                }
+            }
+            this._selectedCells = [];
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+            App.showSuccess('Cells merged');
+        },
+
+        unmergeCells() {
+            if (this._selectedCells.length === 0) { App.showError('Select a merged cell first'); return; }
+            const tIdx = this._selectedCells[0].tableIdx;
+            const table = App.state.editorData.tables[tIdx];
+            if (!table || !table.cells) return;
+            this.syncLiveDOM();
+            const { row, col } = this._selectedCells[0];
+            const key = `${row}-${col}`;
+            const cell = table.cells[key];
+            if (!cell || ((!cell.rowspan || cell.rowspan <= 1) && (!cell.colspan || cell.colspan <= 1))) {
+                App.showError('Selected cell is not merged'); return;
+            }
+            const rs = cell.rowspan || 1, cs = cell.colspan || 1;
+            for (let r = row; r < row + rs; r++) {
+                for (let c = col; c < col + cs; c++) {
+                    const k = `${r}-${c}`;
+                    if (r === row && c === col) { delete cell.rowspan; delete cell.colspan; }
+                    else { if (table.cells[k]) { delete table.cells[k].mergedInto; table.cells[k].content = table.cells[k].content || ''; } else table.cells[k] = { content: '' }; }
+                }
+            }
+            this._selectedCells = [];
+            this._renderTableMgmtPreview();
+            this.renderAllElements();
+            App.showSuccess('Cells unmerged');
         },
 
         // Sync element order from DOM
@@ -2328,41 +3042,139 @@ const App = {
         // ==========================================
         addTable() {
             App.state.editingEditorTableId = null;
-            App.state._addTableToElements = true; // flag to add to elements on save
+            App.state._addTableToElements = true;
             document.getElementById('modal-table-title').textContent = 'Create Table';
             document.getElementById('table-title-input').value = '';
             document.getElementById('table-rows-input').value = '3';
             document.getElementById('table-cols-input').value = '3';
             document.getElementById('table-delete-wrapper').style.display = 'none';
+            document.getElementById('table-mgmt-section').style.display = 'none';
+            document.getElementById('table-new-section').style.display = 'block';
             App.modal.open('modal-table');
         },
 
         editEditorTable(tableIdx) {
+            this.syncLiveDOM();
             const table = App.state.editorData.tables[tableIdx];
             if (!table) return;
             App.state.editingEditorTableId = tableIdx;
             document.getElementById('modal-table-title').textContent = 'Edit Table';
             document.getElementById('table-title-input').value = table.title;
-            document.getElementById('table-rows-input').value = table.rows;
-            document.getElementById('table-cols-input').value = table.cols;
             document.getElementById('table-delete-wrapper').style.display = 'block';
+            document.getElementById('table-mgmt-section').style.display = 'block';
+            document.getElementById('table-new-section').style.display = 'none';
+            this._selectedCells = [];
+            this._renderTableMgmtPreview();
             App.modal.open('modal-table');
+        },
+
+        _renderTableMgmtPreview() {
+            const tIdx = App.state.editingEditorTableId;
+            if (tIdx === null) return;
+            const table = App.state.editorData.tables[tIdx];
+            if (!table) return;
+            const container = document.getElementById('table-mgmt-preview');
+            if (!container) return;
+            let html = '<table class="user-table" id="table-mgmt-table" style="font-size:0.75rem;">';
+            // Header: corner + col reorder handles + spacer
+            html += '<tr><td style="border:none;width:18px;padding:0;"></td>';
+            for (let c = 0; c < table.cols; c++) {
+                html += `<td contenteditable="false" style="border:none;text-align:center;padding:2px 0;cursor:grab;color:var(--text-placeholder);vertical-align:middle;" class="col-reorder-handle" draggable="true" data-col="${c}" data-table-idx="${tIdx}"><i class="fa-solid fa-square" style="font-size:0.4rem;"></i></td>`;
+            }
+            html += '<td style="border:none;width:18px;padding:0;"></td></tr>';
+            // Data rows
+            for (let r = 0; r < table.rows; r++) {
+                html += `<tr data-row="${r}">`;
+                html += `<td contenteditable="false" style="border:none;text-align:center;padding:2px 0;cursor:grab;width:18px;color:var(--text-placeholder);vertical-align:middle;" class="row-reorder-handle" draggable="true" data-row="${r}" data-table-idx="${tIdx}"><i class="fa-solid fa-square" style="font-size:0.4rem;"></i></td>`;
+                for (let c = 0; c < table.cols; c++) {
+                    const cellKey = `${r}-${c}`;
+                    const cell = (table.cells && table.cells[cellKey]) || {};
+                    if (cell.mergedInto) continue;
+                    const rowspan = cell.rowspan || 1;
+                    const colspan = cell.colspan || 1;
+                    const preview = (cell.content || '').replace(/<[^>]+>/g, '').substring(0, 6);
+                    html += `<td contenteditable="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}" style="padding:5px 4px;min-width:36px;cursor:pointer;"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${preview || '&nbsp;'}</td>`;
+                }
+                html += `<td class="tbl-delete-cell" contenteditable="false" style="border:none;padding:0 2px;text-align:center;vertical-align:middle;"><button onclick="App.editor.deleteTableRowAt(${r})" style="border:none;background:none;color:var(--failed);cursor:pointer;font-size:0.65rem;padding:2px 4px;" title="Delete row"><i class="fa-solid fa-xmark"></i></button></td>`;
+                html += '</tr>';
+            }
+            // Col delete row
+            html += '<tr><td style="border:none;padding:0;"></td>';
+            for (let c = 0; c < table.cols; c++) {
+                html += `<td class="tbl-delete-cell" contenteditable="false" style="border:none;padding:2px 0;text-align:center;vertical-align:middle;"><button onclick="App.editor.deleteTableCol(${c})" style="border:none;background:none;color:var(--failed);cursor:pointer;font-size:0.65rem;padding:2px 4px;" title="Delete column"><i class="fa-solid fa-xmark"></i></button></td>`;
+            }
+            html += '<td style="border:none;"></td></tr>';
+            html += '</table>';
+            container.innerHTML = html;
+            this._initCellSelectionInMgmt(tIdx);
+            this._initMgmtReorder(tIdx);
+        },
+
+        _initCellSelectionInMgmt(tIdx) {
+            const table = document.getElementById('table-mgmt-table');
+            if (!table) return;
+            table.querySelectorAll('td[data-row][data-col]').forEach(td => {
+                td.addEventListener('click', (e) => {
+                    td.classList.toggle('cell-selected');
+                    if (td.classList.contains('cell-selected')) {
+                        this._selectedCells.push({ row: parseInt(td.dataset.row), col: parseInt(td.dataset.col), tableIdx: tIdx });
+                    } else {
+                        this._selectedCells = this._selectedCells.filter(c => !(c.row === parseInt(td.dataset.row) && c.col === parseInt(td.dataset.col)));
+                    }
+                });
+            });
+        },
+
+        _initMgmtReorder(tIdx) {
+            // Row drag
+            document.querySelectorAll('.row-reorder-handle[draggable="true"]').forEach(h => {
+                h.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'row', tIdx, idx: parseInt(h.dataset.row) }));
+                    setTimeout(() => h.closest('tr')?.classList.add('dragging-row'), 0);
+                });
+                h.addEventListener('dragend', () => document.querySelectorAll('.dragging-row,.drag-over-row').forEach(el => el.classList.remove('dragging-row', 'drag-over-row')));
+            });
+            document.querySelectorAll('#table-mgmt-table tr[data-row]').forEach(tr => {
+                tr.addEventListener('dragover', (e) => { e.preventDefault(); tr.classList.add('drag-over-row'); });
+                tr.addEventListener('dragleave', () => tr.classList.remove('drag-over-row'));
+                tr.addEventListener('drop', (e) => {
+                    e.preventDefault(); tr.classList.remove('drag-over-row');
+                    try { const d = JSON.parse(e.dataTransfer.getData('text/plain')); if (d.type === 'row') this._swapTableRows(d.tIdx, d.idx, parseInt(tr.dataset.row)); } catch {}
+                });
+            });
+            // Col drag
+            document.querySelectorAll('.col-reorder-handle[draggable="true"]').forEach(h => {
+                h.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({ type: 'col', tIdx, idx: parseInt(h.dataset.col) }));
+                });
+            });
+            document.querySelectorAll('.col-reorder-handle').forEach(ch => {
+                ch.addEventListener('dragover', (e) => { e.preventDefault(); ch.style.background = 'var(--accent-soft)'; });
+                ch.addEventListener('dragleave', () => ch.style.background = '');
+                ch.addEventListener('drop', (e) => {
+                    e.preventDefault(); ch.style.background = '';
+                    try { const d = JSON.parse(e.dataTransfer.getData('text/plain')); if (d.type === 'col') this._swapTableCols(d.tIdx, d.idx, parseInt(ch.dataset.col)); } catch {}
+                });
+            });
         },
 
         saveEditorTable() {
             const title = document.getElementById('table-title-input').value.trim() || 'Untitled Table';
-            const rows = Math.max(1, Math.min(50, parseInt(document.getElementById('table-rows-input').value) || 3));
-            const cols = Math.max(1, Math.min(20, parseInt(document.getElementById('table-cols-input').value) || 3));
             if (!App.state.editorData.tables) App.state.editorData.tables = [];
 
             if (App.state.editingEditorTableId !== null) {
+                // Editing: only update title (rows/cols managed by add/delete buttons)
                 const t = App.state.editorData.tables[App.state.editingEditorTableId];
-                if (t) { t.title = title; t.rows = rows; t.cols = cols; }
+                if (t) { t.title = title; }
             } else {
+                // Creating new table
+                const rows = Math.max(1, Math.min(50, parseInt(document.getElementById('table-rows-input').value) || 3));
+                const cols = Math.max(1, Math.min(20, parseInt(document.getElementById('table-cols-input').value) || 3));
                 const newIdx = App.state.editorData.tables.length;
                 App.state.editorData.tables.push({ id: Math.random().toString(36).slice(2, 14), title, rows, cols, cells: {} });
                 if (!App.state.editorData.elements) App.state.editorData.elements = [];
                 App.state.editorData.elements.push({ type: 'table', index: newIdx });
+                App.state._newlyAddedElement = { type: 'table', index: newIdx };
             }
             App.modal.close();
             this.syncLiveDOM();
@@ -2388,10 +3200,11 @@ const App = {
         },
 
         syncEditorTableCells() {
+            const ed = App.state.editorData;
             // Tables may be in either container due to unified rendering
             document.querySelectorAll('#subtasks-container .user-table, #editor-tables-container .user-table').forEach(tableEl => {
                 const tableIdx = parseInt(tableEl.dataset.tableIdx);
-                const table = App.state.editorData.tables[tableIdx];
+                const table = ed.tables[tableIdx];
                 if (!table) return;
                 if (!table.cells) table.cells = {};
                 tableEl.querySelectorAll('td[contenteditable]').forEach(td => {
@@ -2399,7 +3212,17 @@ const App = {
                     const c = parseInt(td.dataset.col);
                     const key = `${r}-${c}`;
                     if (!table.cells[key]) table.cells[key] = {};
+                    // Preserve varName if it exists
+                    const existingVarName = table.cells[key].varName;
                     table.cells[key].content = td.innerHTML;
+                    if (existingVarName) {
+                        table.cells[key].varName = existingVarName;
+                        // Also sync the numeric value to the variable
+                        const numVal = parseFloat(td.textContent.trim());
+                        if (!isNaN(numVal) && ed.variables && ed.variables.vars[existingVarName]) {
+                            ed.variables.vars[existingVarName].value = numVal;
+                        }
+                    }
                 });
             });
         },
@@ -2444,8 +3267,10 @@ const App = {
             if (!table.cells) table.cells = {};
             const key = `${row}-${col}`;
             if (!table.cells[key]) table.cells[key] = {};
-            // Always use frequency 'every_check'
+            // Always use frequency 'every_check' — preserve existing varName if cell is a variable
+            const existingVarName = table.cells[key].varName || null;
             table.cells[key].po = { base_value: baseValue, current_value: baseValue, frequency: 'every_check', load, last_applied: null, start_date: getTodayRO() };
+            if (existingVarName) table.cells[key].varName = existingVarName;
             table.cells[key].content = `<span class="po-value">${baseValue}</span>`;
             App.modal.close();
             this.syncLiveDOM();
@@ -2676,6 +3501,8 @@ const App = {
         },
 
         openPOConfig() {
+            const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+            if (poBtn && poBtn.classList.contains('po-disabled')) return;
             const sel = window.getSelection();
             const selectedText = sel.toString().trim();
             if (selectedText && !isNaN(selectedText)) {
@@ -2700,10 +3527,15 @@ const App = {
                 if (parentSubtaskInput && parentSubtaskInput.dataset.index !== undefined) {
                     targetSubtaskIdx = parseInt(parentSubtaskInput.dataset.index);
                 }
+                // Check if selected number is inside a var-bound span
+                const anchorEl = anchorNode.nodeType === 3 ? anchorNode.parentElement : anchorNode;
+                const varSpan = anchorEl ? anchorEl.closest('.var-bound[data-var-name]') : null;
+                const linkedVarName = varSpan ? varSpan.getAttribute('data-var-name') : null;
                 // Store the PO target context so savePO knows exactly where to apply
                 App.state._poTargetContext = {
                     subtaskIndex: targetSubtaskIdx,
-                    selectedValue: parseInt(selectedText)
+                    selectedValue: parseInt(selectedText),
+                    linkedVarName: linkedVarName
                 };
                 document.getElementById('po-base-value').value = parseInt(selectedText);
                 document.getElementById('po-load').value = 1;
@@ -2739,6 +3571,9 @@ const App = {
             const uniqueId = Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
             const placeholder = `{{PO_${uniqueId}}}`;
 
+            // Check if the selected number is inside a var-bound span (saved at openPOConfig time)
+            const linkedVarName = ctx.linkedVarName || null;
+
             // Always use frequency 'every_check'
             subtask.po_variables.push({
                 base_value: baseValue,
@@ -2747,7 +3582,8 @@ const App = {
                 load,
                 placeholder,
                 last_applied: null,
-                start_date: getTodayRO()
+                start_date: getTodayRO(),
+                varName: linkedVarName
             });
 
             // Read current state of the contenteditable input
@@ -2771,7 +3607,7 @@ const App = {
                     workText = workText.substring(0, textIdx) + placeholder + workText.substring(textIdx + valStr.length);
                 }
 
-                // For html: replace the first occurrence that is NOT inside a po-value span
+                // For html: replace the first occurrence that is NOT inside a po-value span or HTML tag
                 // First, temporarily protect existing PO spans
                 const poSpanRegex = /<span class="po-value">(\d+(?:\.\d+)?)<\/span>/g;
                 const protectedTokens = [];
@@ -2781,13 +3617,25 @@ const App = {
                     return token;
                 });
 
-                // Now replace the first occurrence of the value in the unprotected html
+                // Protect ALL HTML tags so indexOf doesn't match values inside attributes
+                // (e.g. font-weight: 500 when value is 500, or data-var-name="x1" when value is 1)
+                const tagTokens = [];
+                protectedHtml = protectedHtml.replace(/<[^>]+>/g, (match) => {
+                    const token = `__TAG_${tagTokens.length}__`;
+                    tagTokens.push(match);
+                    return token;
+                });
+
+                // Now safely replace the first occurrence in text content only
                 const htmlIdx = protectedHtml.indexOf(valStr);
                 if (htmlIdx >= 0) {
                     protectedHtml = protectedHtml.substring(0, htmlIdx) + placeholder + protectedHtml.substring(htmlIdx + valStr.length);
                 }
 
-                // Restore protected tokens
+                // Restore all tokens in reverse order
+                tagTokens.forEach((original, i) => {
+                    protectedHtml = protectedHtml.replace(`__TAG_${i}__`, original);
+                });
                 protectedTokens.forEach((original, i) => {
                     protectedHtml = protectedHtml.replace(`__PO_PROTECT_${i}__`, original);
                 });
@@ -2817,13 +3665,25 @@ const App = {
         },
 
         initSidebarDrag() {
-            const sidebar = document.getElementById('editor-sidebar'); const handle = document.getElementById('sidebar-drag-handle');
+            const sidebar = document.getElementById('editor-sidebar');
+            const handle = document.getElementById('sidebar-drag-handle');
             if (!sidebar || !handle) return;
-            const onStart = (cx, cy) => { const r = sidebar.getBoundingClientRect(); App.state.sidebarDrag = { active: true, startX: cx, startY: cy, origX: r.left, origY: r.top }; sidebar.style.transition = 'none'; };
-            const onMove = (cx, cy) => { if (!App.state.sidebarDrag.active) return; const dx = cx - App.state.sidebarDrag.startX; const dy = cy - App.state.sidebarDrag.startY;
-                sidebar.style.right = 'auto'; sidebar.style.transform = 'none';
+            const onStart = (cx, cy) => {
+                // If pinned, don't allow dragging
+                if (sidebar.classList.contains('pinned')) return;
+                const r = sidebar.getBoundingClientRect();
+                App.state.sidebarDrag = { active: true, startX: cx, startY: cy, origX: r.left, origY: r.top };
+                sidebar.style.transition = 'none';
+            };
+            const onMove = (cx, cy) => {
+                if (!App.state.sidebarDrag.active) return;
+                const dx = cx - App.state.sidebarDrag.startX;
+                const dy = cy - App.state.sidebarDrag.startY;
+                sidebar.style.right = 'auto';
+                sidebar.style.transform = 'none';
                 sidebar.style.left = Math.max(0, Math.min(App.state.sidebarDrag.origX + dx, window.innerWidth - sidebar.offsetWidth)) + 'px';
-                sidebar.style.top = Math.max(0, Math.min(App.state.sidebarDrag.origY + dy, window.innerHeight - sidebar.offsetHeight)) + 'px'; };
+                sidebar.style.top = Math.max(0, App.state.sidebarDrag.origY + dy) + 'px';
+            };
             const onEnd = () => { App.state.sidebarDrag.active = false; sidebar.style.transition = ''; };
             handle.addEventListener('mousedown', (e) => { e.preventDefault(); onStart(e.clientX, e.clientY); });
             document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
@@ -2831,6 +3691,743 @@ const App = {
             handle.addEventListener('touchstart', (e) => { const t = e.touches[0]; onStart(t.clientX, t.clientY); }, { passive: true });
             document.addEventListener('touchmove', (e) => { if (!App.state.sidebarDrag.active) return; const t = e.touches[0]; onMove(t.clientX, t.clientY); }, { passive: true });
             document.addEventListener('touchend', onEnd);
+        },
+
+        togglePinSidebar() {
+            const sidebar = document.getElementById('editor-sidebar');
+            const btn = document.getElementById('btn-pin-sidebar');
+            if (!sidebar) return;
+            const isPinned = sidebar.classList.toggle('pinned');
+            if (btn) btn.classList.toggle('pinned', isPinned);
+        },
+
+        // ==========================================
+        // Collapsible Sidebar
+        // ==========================================
+        collapseSidebar() {
+            const sidebar = document.getElementById('editor-sidebar');
+            if (sidebar) sidebar.classList.add('collapsed');
+        },
+        expandSidebar() {
+            const sidebar = document.getElementById('editor-sidebar');
+            if (sidebar) sidebar.classList.remove('collapsed');
+        },
+
+        // ==========================================
+        // Variable & Function System
+        // ==========================================
+        _fnMath: {
+            evaluate(expr, vars) {
+                try {
+                    // Replace variable references: both "var xyz" and bare "xyz" if it's a known var
+                    let e = expr.replace(/var\s+(\w+)/g, (match, name) => {
+                        if (vars[name] !== undefined) return String(vars[name].value);
+                        return 'NaN';
+                    });
+                    // Also replace bare variable names (not already numbers or JS keywords)
+                    const varNames = Object.keys(vars).sort((a, b) => b.length - a.length);
+                    for (const vn of varNames) {
+                        const re = new RegExp('\\b' + vn + '\\b', 'g');
+                        e = e.replace(re, (m) => {
+                            if (!isNaN(m)) return m;
+                            return String(vars[vn].value);
+                        });
+                    }
+                    e = e.replace(/×/g, '*').replace(/÷/g, '/');
+                    e = e.replace(/pow\(\s*([^,]+),\s*([^)]+)\)/g, 'Math.pow($1,$2)');
+                    e = e.replace(/rad\(\s*([^,]+),\s*([^)]+)\)/g, 'Math.pow($1,1/($2))');
+                    e = e.replace(/log\(\s*([^,]+),\s*([^)]+)\)/g, '(Math.log($2)/Math.log($1))');
+                    e = e.replace(/(\d+(?:\.\d+)?)\s*!/g, '_factorial($1)');
+                    const _factorial = (n) => { n = Math.round(n); if (n < 0) return NaN; if (n <= 1) return 1; let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; };
+                    const result = new Function('_factorial', `"use strict"; return (${e});`)(_factorial);
+                    if (typeof result === 'number' && isFinite(result)) return Math.round(result * 1e8) / 1e8;
+                    return NaN;
+                } catch { return NaN; }
+            },
+            parseFormula(str) {
+                const eqParts = str.split('=').map(s => s.trim());
+                if (eqParts.length !== 2) return null;
+                // Accept "var name" or just "name" as result
+                let resultMatch = eqParts[1].match(/^var\s+(\w+)$/);
+                if (!resultMatch) resultMatch = eqParts[1].match(/^(\w+)$/);
+                if (!resultMatch) return null;
+                return { expression: eqParts[0], resultVar: resultMatch[1] };
+            }
+        },
+
+        openFunctionModal() {
+            const sel = window.getSelection();
+            const selectedText = sel ? sel.toString().trim() : '';
+            if (selectedText && !isNaN(selectedText) && selectedText !== '') {
+                App.state._fnSelectedValue = parseFloat(selectedText);
+                App.state._fnSelectionRange = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+                // Detect if selection is inside a table cell
+                const node = App.state._fnSelectionRange ? App.state._fnSelectionRange.startContainer : null;
+                const cellTd = node ? (node.nodeType === 3 ? node.parentElement : node).closest('td[contenteditable][data-table-idx]') : null;
+                App.state._fnIsTableCell = !!cellTd;
+                document.getElementById('create-var-value').value = App.state._fnSelectedValue;
+                document.getElementById('create-var-name').value = '';
+                document.getElementById('create-var-scope-field').style.display = cellTd ? 'block' : 'none';
+                if (cellTd) {
+                    document.getElementById('var-scope-cell').classList.add('selected');
+                    document.getElementById('var-scope-cell').querySelector('i').className = 'fa-regular fa-circle-dot';
+                    document.getElementById('var-scope-number').classList.remove('selected');
+                    document.getElementById('var-scope-number').querySelector('i').className = 'fa-regular fa-circle';
+                    App.state._varScope = 'cell';
+                }
+                document.getElementById('modal-create-var').classList.add('active');
+                document.getElementById('modal-overlay').classList.add('active');
+                setTimeout(() => document.getElementById('create-var-name').focus(), 100);
+                return;
+            }
+            this._renderFunctionModal();
+            App.modal.open('modal-function');
+        },
+
+        closeCreateVarModal() {
+            document.getElementById('modal-create-var').classList.remove('active');
+            if (!document.getElementById('modal-function').classList.contains('active')) {
+                document.getElementById('modal-overlay').classList.remove('active');
+            }
+        },
+
+        setVarScope(scope) {
+            App.state._varScope = scope;
+            const cellEl = document.getElementById('var-scope-cell');
+            const numEl = document.getElementById('var-scope-number');
+            if (scope === 'cell') {
+                cellEl.classList.add('selected'); cellEl.querySelector('i').className = 'fa-regular fa-circle-dot';
+                numEl.classList.remove('selected'); numEl.querySelector('i').className = 'fa-regular fa-circle';
+            } else {
+                numEl.classList.add('selected'); numEl.querySelector('i').className = 'fa-regular fa-circle-dot';
+                cellEl.classList.remove('selected'); cellEl.querySelector('i').className = 'fa-regular fa-circle';
+            }
+        },
+
+        saveNewVariable() {
+            const name = document.getElementById('create-var-name').value.trim();
+            const value = parseFloat(document.getElementById('create-var-value').value);
+            if (!name) { App.showError('Enter a variable name'); return; }
+            if (!/^\w+$/.test(name)) { App.showError('Variable name must be alphanumeric'); return; }
+            if (isNaN(value)) { App.showError('Invalid value'); return; }
+            const ed = App.state.editorData;
+            if (!ed.variables) ed.variables = { vars: {}, formulas: [] };
+            if (ed.variables.vars[name]) { App.showError(`Variable "${name}" already exists`); return; }
+            const isComputed = ed.variables.formulas.some(f => f.resultVar === name);
+            if (isComputed) { App.showError(`"${name}" is a computed variable`); return; }
+
+            // Check scope choice for table cells
+            const isTableCell = App.state._fnIsTableCell;
+            const scopeCell = isTableCell && (App.state._varScope === 'cell');
+            let cellTd = null;
+            if (isTableCell && App.state._fnSelectionRange) {
+                const node = App.state._fnSelectionRange.startContainer;
+                cellTd = (node.nodeType === 3 ? node.parentElement : node)?.closest('td[contenteditable][data-table-idx]');
+            }
+
+            if (scopeCell && cellTd) {
+                // Whole cell variable container
+                const tIdx = parseInt(cellTd.dataset.tableIdx);
+                const row = parseInt(cellTd.dataset.row);
+                const col = parseInt(cellTd.dataset.col);
+                ed.variables.vars[name] = { value, isSource: true, tableCell: { tableIdx: tIdx, row, col } };
+                const table = ed.tables[tIdx];
+                if (table) {
+                    if (!table.cells) table.cells = {};
+                    const key = `${row}-${col}`;
+                    if (!table.cells[key]) table.cells[key] = { content: String(value) };
+                    table.cells[key].varName = name;
+                }
+                cellTd.classList.add('var-cell');
+            } else {
+                // Selected number only (works for both table cells and regular fields)
+                ed.variables.vars[name] = { value, isSource: true, _poBaseValue: value };
+                if (App.state._fnSelectionRange) {
+                    try {
+                        const range = App.state._fnSelectionRange;
+                        const span = document.createElement('span');
+                        span.className = 'var-bound';
+                        span.setAttribute('data-var-name', name);
+                        span.style.fontWeight = '500';
+                        const contents = range.extractContents();
+                        span.appendChild(contents);
+                        range.insertNode(span);
+                        const zwsp = document.createTextNode('\u200B');
+                        if (span.nextSibling) span.parentNode.insertBefore(zwsp, span.nextSibling);
+                        else span.parentNode.appendChild(zwsp);
+                        const sel = window.getSelection();
+                        const newRange = document.createRange();
+                        newRange.setStartAfter(zwsp);
+                        newRange.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(newRange);
+                    } catch (e) { /* selection may have changed */ }
+                }
+                // Sync updated DOM back to subtask data so var-bound span is persisted across re-renders
+                const allSubInputs = document.querySelectorAll('.subtask-editor-input');
+                allSubInputs.forEach(inp => {
+                    const stIdx = parseInt(inp.dataset.index);
+                    if (ed.subtasks[stIdx]) {
+                        ed.subtasks[stIdx].html = inp.innerHTML;
+                        ed.subtasks[stIdx].text = inp.textContent;
+                    }
+                });
+            }
+            App.state._fnSelectedValue = null;
+            App.state._fnSelectionRange = null;
+            App.state._fnIsTableCell = false;
+            this.closeCreateVarModal();
+            App.showSuccess(`Variable "${name}" = ${value} created`);
+        },
+
+        // Table cell variable listeners: when cell content changes, update the variable value
+        _initTableVarCellListeners() {
+            const ed = App.state.editorData;
+            if (!ed.variables || !ed.variables.vars) return;
+            const vars = ed.variables.vars;
+            document.querySelectorAll('td[contenteditable="true"][data-table-idx][data-row][data-col]').forEach(td => {
+                const tIdx = parseInt(td.dataset.tableIdx);
+                const row = parseInt(td.dataset.row);
+                const col = parseInt(td.dataset.col);
+                const table = ed.tables[tIdx];
+                if (!table || !table.cells) return;
+                const key = `${row}-${col}`;
+                const cell = table.cells[key];
+                if (!cell || !cell.varName) return;
+                const varName = cell.varName;
+                // Remove previous listener to avoid stacking
+                if (td._varCellHandler) td.removeEventListener('input', td._varCellHandler);
+                td._varCellHandler = () => {
+                    const numVal = parseFloat(td.textContent.trim());
+                    if (!isNaN(numVal) && vars[varName]) {
+                        vars[varName].value = numVal;
+                        // Also update the cell data
+                        cell.content = td.innerHTML;
+                        this._recomputeFormulas();
+                        this._resolveVarReferences();
+                    }
+                };
+                td.addEventListener('input', td._varCellHandler);
+            });
+        },
+
+        _renderFunctionModal() {
+            const ed = App.state.editorData;
+            if (!ed.variables) ed.variables = { vars: {}, formulas: [] };
+            const vars = ed.variables.vars;
+            const formulas = ed.variables.formulas;
+            // Recompute all computed variables
+            this._recomputeFormulas();
+
+            let html = '';
+            // Section: Variables
+            html += `<div class="fn-modal-section"><div class="fn-modal-section-title">Variables</div>`;
+            const varKeys = Object.keys(vars);
+            if (varKeys.length === 0) {
+                html += `<p style="font-size:0.82rem;color:var(--text-tertiary);padding:8px 0;">No variables yet. Select a number in the editor and click <i class="fa-solid fa-superscript"></i> to create one.</p>`;
+            } else {
+                html += `<div class="fn-var-list">`;
+                for (const name of varKeys) {
+                    const v = vars[name];
+                    const computed = formulas.find(f => f.resultVar === name);
+                    const isTblVar = v.tableCell ? `<span class="fn-var-item-computed"> (table cell)</span>` : '';
+                    html += `<div class="fn-var-item">
+                        <div><span class="fn-var-item-name">var ${App.tasks.escapeHtml(name)}</span>
+                        ${computed ? `<span class="fn-var-item-computed"> (computed)</span>` : isTblVar}</div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            ${!computed ? `<input type="number" class="po-input" style="width:80px;padding:4px 8px;font-size:0.85rem;" value="${v.value}" onchange="App.editor._updateVarValue('${App.tasks.escapeHtml(name)}', this.value)">` : `<span class="fn-var-item-value">${v.value}</span>`}
+                            <span class="fn-var-item-delete" onclick="App.editor._deleteVariable('${App.tasks.escapeHtml(name)}')"><i class="fa-regular fa-trash-can"></i></span>
+                        </div>
+                    </div>`;
+                }
+                html += `</div>`;
+                html += `<div style="margin-top:6px;"><button class="fn-btn fn-btn-secondary" style="font-size:0.75rem;padding:6px 12px;color:var(--failed);" onclick="App.editor._deleteAllVariables()"><i class="fa-regular fa-trash-can"></i> Delete All Variables</button></div>`;
+            }
+            html += `</div>`;
+
+            // Section: Functions
+            html += `<div class="fn-modal-section"><div class="fn-modal-section-title">Functions</div>`;
+            if (formulas.length > 0) {
+                html += `<div class="fn-formula-list">`;
+                formulas.forEach((f, i) => {
+                    const computed = vars[f.resultVar];
+                    const val = computed ? computed.value : '?';
+                    html += `<div class="fn-formula-item${f._conflict ? ' conflict' : ''}">
+                        <span class="fn-formula-expr">${App.tasks.escapeHtml(f.expression)} = ${App.tasks.escapeHtml(f.resultVar)}</span>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="fn-formula-result">${val}</span>
+                            <span class="fn-formula-delete" onclick="App.editor._deleteFormula(${i})"><i class="fa-regular fa-trash-can"></i></span>
+                        </div>
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `<div style="margin-top:6px;margin-bottom:12px;"><button class="fn-btn fn-btn-secondary" style="font-size:0.75rem;padding:6px 12px;color:var(--failed);" onclick="App.editor._deleteAllFormulas()"><i class="fa-regular fa-trash-can"></i> Delete All Functions</button></div>`;
+            } else {
+                html += `<p style="font-size:0.82rem;color:var(--text-tertiary);padding:8px 0;">No functions yet. Define relationships between variables below.</p>`;
+            }
+            html += `<div class="po-field"><label>Add Function</label>
+                <div class="input-with-action">
+                    <input type="text" id="fn-formula-input" class="po-input" style="font-family:monospace;font-size:0.88rem;" placeholder="a + b = c" spellcheck="false" autocomplete="off">
+                    <button class="input-action-btn" onclick="App.editor._addFormula()" title="Add function"><i class="fa-solid fa-check"></i></button>
+                </div>
+                <p class="fn-help-text">Syntax: <b>a + b = result</b><br>
+                Operators: + - × / pow(x,y) rad(x,y) log(x,y) n! ( )<br>
+                Type <b>[name]</b> in text to display a computed value</p>
+            </div>`;
+            html += `</div>`;
+
+            document.getElementById('fn-modal-body').innerHTML = html;
+        },
+
+        _updateVarValue(name, val) {
+            const ed = App.state.editorData;
+            const numVal = parseFloat(val);
+            if (isNaN(numVal)) return;
+            if (ed.variables && ed.variables.vars[name]) {
+                ed.variables.vars[name].value = numVal;
+                // Update the var-bound span in the editor DOM
+                document.querySelectorAll(`[data-var-name="${name}"]`).forEach(el => {
+                    el.textContent = String(numVal);
+                });
+                // Update table cell if this is a table cell variable
+                const varData = ed.variables.vars[name];
+                if (varData.tableCell) {
+                    const { tableIdx, row, col } = varData.tableCell;
+                    const td = document.querySelector(`td[data-table-idx="${tableIdx}"][data-row="${row}"][data-col="${col}"]`);
+                    if (td) td.textContent = String(numVal);
+                    const table = ed.tables[tableIdx];
+                    if (table && table.cells) {
+                        const key = `${row}-${col}`;
+                        if (table.cells[key]) table.cells[key].content = String(numVal);
+                    }
+                }
+                this._recomputeFormulas();
+                this._renderFunctionModal();
+                this._resolveVarReferences();
+            }
+        },
+
+        _deleteVariable(name) {
+            const ed = App.state.editorData;
+            if (!ed.variables) return;
+            const varData = ed.variables.vars[name];
+            // Remove formulas that reference this variable
+            ed.variables.formulas = ed.variables.formulas.filter(f => {
+                if (f.resultVar === name) return false;
+                if (f.expression.includes(`var ${name}`)) return false;
+                return true;
+            });
+            // If it's a table cell variable, unbind the cell
+            if (varData && varData.tableCell) {
+                const { tableIdx, row, col } = varData.tableCell;
+                const table = ed.tables[tableIdx];
+                if (table && table.cells) {
+                    const key = `${row}-${col}`;
+                    if (table.cells[key]) {
+                        delete table.cells[key].varName;
+                    }
+                }
+                // Remove var-cell class from DOM
+                document.querySelectorAll(`td[data-table-idx="${tableIdx}"][data-row="${row}"][data-col="${col}"]`).forEach(td => {
+                    td.classList.remove('var-cell');
+                });
+            }
+            delete ed.variables.vars[name];
+            // Remove styling from DOM: unwrap var-bound spans and restore original content
+            document.querySelectorAll(`[data-var-name="${name}"]`).forEach(el => {
+                const parent = el.parentNode;
+                while (el.firstChild) parent.insertBefore(el.firstChild, el);
+                parent.removeChild(el);
+                parent.normalize();
+            });
+            // Clear any PO varName links that pointed to this deleted variable
+            if (ed.subtasks) {
+                for (const st of ed.subtasks) {
+                    if (st.po_variables) {
+                        for (const po of st.po_variables) {
+                            if (po.varName === name) po.varName = null;
+                        }
+                    }
+                }
+            }
+            // Sync DOM back to subtask data after removing var-bound spans
+            document.querySelectorAll('.subtask-editor-input').forEach(inp => {
+                const stIdx = parseInt(inp.dataset.index);
+                if (ed.subtasks[stIdx]) {
+                    ed.subtasks[stIdx].html = inp.innerHTML;
+                    ed.subtasks[stIdx].text = inp.textContent;
+                }
+            });
+            this._recomputeFormulas();
+            this._renderFunctionModal();
+            this._resolveVarReferences();
+        },
+
+        _deleteFormula(index) {
+            const ed = App.state.editorData;
+            if (!ed.variables) return;
+            const formula = ed.variables.formulas[index];
+            if (formula) {
+                delete ed.variables.vars[formula.resultVar];
+            }
+            ed.variables.formulas.splice(index, 1);
+            this._recomputeFormulas();
+            this._renderFunctionModal();
+            this._resolveVarReferences();
+        },
+
+        _deleteAllVariables() {
+            const ed = App.state.editorData;
+            if (!ed.variables) return;
+            // Remove all var-bound spans from DOM
+            document.querySelectorAll('[data-var-name]').forEach(el => {
+                const parent = el.parentNode;
+                while (el.firstChild) parent.insertBefore(el.firstChild, el);
+                parent.removeChild(el);
+                parent.normalize();
+            });
+            // Remove var-cell bindings from table cells
+            for (const name in ed.variables.vars) {
+                const v = ed.variables.vars[name];
+                if (v.tableCell) {
+                    const { tableIdx, row, col } = v.tableCell;
+                    const table = ed.tables[tableIdx];
+                    if (table && table.cells) {
+                        const key = `${row}-${col}`;
+                        if (table.cells[key]) delete table.cells[key].varName;
+                    }
+                }
+            }
+            document.querySelectorAll('.var-cell').forEach(td => td.classList.remove('var-cell'));
+            // Clear PO varName links
+            if (ed.subtasks) {
+                for (const st of ed.subtasks) {
+                    if (st.po_variables) {
+                        for (const po of st.po_variables) { po.varName = null; }
+                    }
+                }
+            }
+            // Clear all formulas too since they depend on variables
+            ed.variables.vars = {};
+            ed.variables.formulas = [];
+            // Sync DOM back to subtask data after removing var-bound spans
+            document.querySelectorAll('.subtask-editor-input').forEach(inp => {
+                const stIdx = parseInt(inp.dataset.index);
+                if (ed.subtasks[stIdx]) {
+                    ed.subtasks[stIdx].html = inp.innerHTML;
+                    ed.subtasks[stIdx].text = inp.textContent;
+                }
+            });
+            this._renderFunctionModal();
+            this._resolveVarReferences();
+            App.showSuccess('All variables and functions deleted');
+        },
+
+        _deleteAllFormulas() {
+            const ed = App.state.editorData;
+            if (!ed.variables) return;
+            // Remove computed variables
+            for (const f of ed.variables.formulas) {
+                delete ed.variables.vars[f.resultVar];
+            }
+            ed.variables.formulas = [];
+            this._renderFunctionModal();
+            this._resolveVarReferences();
+            App.showSuccess('All functions deleted');
+        },
+
+        _addFormula() {
+            const input = document.getElementById('fn-formula-input');
+            if (!input) return;
+            const raw = input.value.trim();
+            if (!raw) { App.showError('Enter a formula'); return; }
+            const parsed = this._fnMath.parseFormula(raw);
+            if (!parsed) { App.showError('Invalid formula. Use format: a + b = result'); return; }
+            const ed = App.state.editorData;
+            if (!ed.variables) ed.variables = { vars: {}, formulas: [] };
+            const existing = ed.variables.formulas.find(f => f.resultVar === parsed.resultVar);
+            if (existing) {
+                App.showError(`Conflict: "${parsed.resultVar}" already has a formula`);
+                return;
+            }
+            // Extract referenced variable names (both "var name" and bare "name")
+            const refVars = [];
+            const exprCopy = parsed.expression;
+            // First extract "var name" style
+            const varPrefixed = /var\s+(\w+)/g;
+            let match;
+            while ((match = varPrefixed.exec(exprCopy)) !== null) refVars.push(match[1]);
+            // Then extract bare words that are known variables
+            const words = exprCopy.replace(/var\s+\w+/g, '').match(/\b([a-zA-Z_]\w*)\b/g) || [];
+            for (const w of words) {
+                if (ed.variables.vars[w] && !refVars.includes(w)) refVars.push(w);
+            }
+            for (const rv of refVars) {
+                if (!ed.variables.vars[rv]) {
+                    App.showError(`Variable "${rv}" does not exist`);
+                    return;
+                }
+            }
+            ed.variables.formulas.push({ expression: parsed.expression, resultVar: parsed.resultVar });
+            // Compute and create the result variable
+            const result = this._fnMath.evaluate(parsed.expression, ed.variables.vars);
+            ed.variables.vars[parsed.resultVar] = { value: isNaN(result) ? 0 : result, isComputed: true };
+            input.value = '';
+            this._recomputeFormulas();
+            this._renderFunctionModal();
+            this._resolveVarReferences();
+        },
+
+        _recomputeFormulas() {
+            const ed = App.state.editorData;
+            if (!ed.variables) return;
+            const vars = ed.variables.vars;
+            const formulas = ed.variables.formulas;
+            // Clear conflict flags
+            formulas.forEach(f => { f._conflict = false; });
+            // Recompute each formula
+            for (const f of formulas) {
+                const result = this._fnMath.evaluate(f.expression, vars);
+                if (!isNaN(result)) {
+                    if (!vars[f.resultVar]) vars[f.resultVar] = { value: 0, isComputed: true };
+                    vars[f.resultVar].value = result;
+                    vars[f.resultVar].isComputed = true;
+                }
+            }
+        },
+
+        // Resolve variable references in descriptions, subtasks, and table cells
+        _resolveVarReferences() {
+            const ed = App.state.editorData;
+            if (!ed.variables) ed.variables = { vars: {}, formulas: [] };
+            const vars = ed.variables.vars || {};
+            // Build a set of known variable names for safe matching
+            const varNames = new Set(Object.keys(vars));
+            const resolveInElement = (el) => {
+                if (!el) return;
+                // Update existing var-computed-ref spans; revert orphaned ones back to [name] syntax
+                const refs = el.querySelectorAll('.var-computed-ref');
+                let hasOrphans = false;
+                refs.forEach(ref => {
+                    const name = ref.getAttribute('data-var-ref');
+                    if (name && vars[name] !== undefined) {
+                        if (ref.textContent !== String(vars[name].value)) {
+                            ref.textContent = vars[name].value;
+                        }
+                    } else if (name) {
+                        // Variable was deleted — revert span back to [name] text so user can re-create it
+                        const textNode = document.createTextNode(`[${name}]`);
+                        ref.parentNode.replaceChild(textNode, ref);
+                        hasOrphans = true;
+                    }
+                });
+                if (hasOrphans && el.parentNode) el.normalize();
+                // Replace text patterns
+                let html = el.innerHTML;
+                let changed = false;
+                // Arrow syntax: <--name--> or <--var name-->
+                let replaced = html.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (match, name) => {
+                    if (varNames.has(name)) { changed = true; return `<span class="var-computed-ref" data-var-ref="${name}">${vars[name].value}</span>`; }
+                    return match;
+                });
+                // Bracket syntax: [name] — only match known variable names to avoid false positives
+                replaced = replaced.replace(/\[(\w+)\]/g, (match, name) => {
+                    if (varNames.has(name)) { changed = true; return `<span class="var-computed-ref" data-var-ref="${name}">${vars[name].value}</span>`; }
+                    return match;
+                });
+                if (changed) {
+                    const sel = window.getSelection();
+                    const focused = document.activeElement === el || el.contains(document.activeElement);
+                    el.innerHTML = replaced;
+                    if (focused) {
+                        const range = document.createRange();
+                        range.selectNodeContents(el);
+                        range.collapse(false);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                }
+            };
+            resolveInElement(document.getElementById('editor-description'));
+            document.querySelectorAll('.subtask-editor-input').forEach(resolveInElement);
+            document.querySelectorAll('.subtask-desc-input').forEach(resolveInElement);
+            document.querySelectorAll('td[contenteditable="true"]').forEach(resolveInElement);
+        },
+
+        // Live auto-transform: attach input listeners to contenteditable fields
+        _initLiveVarResolve() {
+            if (this._liveVarResolveAttached) return;
+            this._liveVarResolveAttached = true;
+            const handler = (e) => {
+                const el = e.target;
+                if (!el || el.getAttribute('contenteditable') !== 'true') return;
+                const ed = App.state.editorData;
+                if (!ed.variables || !ed.variables.vars) return;
+                const vars = ed.variables.vars;
+                const html = el.innerHTML;
+                // Check for completed pattern and resolve
+                if (/&lt;--(?:var\s+)?\w+--&gt;/.test(html) || /\[\w+\]/.test(html)) {
+                    this._resolveVarReferences();
+                }
+                // Check if any var-bound span was edited — update the variable value
+                el.querySelectorAll('.var-bound[data-var-name]').forEach(span => {
+                    const name = span.getAttribute('data-var-name');
+                    const numVal = parseFloat(span.textContent.trim());
+                    if (name && !isNaN(numVal) && vars[name] && vars[name].value !== numVal) {
+                        vars[name].value = numVal;
+                        this._recomputeFormulas();
+                        this._resolveVarReferences();
+                    }
+                });
+                // Check if edited element is a table variable cell
+                if (el.tagName === 'TD' && el.dataset.tableIdx !== undefined && el.dataset.row !== undefined && el.dataset.col !== undefined) {
+                    const tIdx = parseInt(el.dataset.tableIdx);
+                    const row = parseInt(el.dataset.row);
+                    const col = parseInt(el.dataset.col);
+                    const table = ed.tables[tIdx];
+                    if (table && table.cells) {
+                        const key = `${row}-${col}`;
+                        const cell = table.cells[key];
+                        if (cell && cell.varName && vars[cell.varName]) {
+                            const numVal = parseFloat(el.textContent.trim());
+                            if (!isNaN(numVal) && vars[cell.varName].value !== numVal) {
+                                vars[cell.varName].value = numVal;
+                                cell.content = el.innerHTML;
+                                this._recomputeFormulas();
+                                this._resolveVarReferences();
+                            }
+                        }
+                    }
+                }
+            };
+            const editorBody = document.querySelector('.editor-body');
+            if (editorBody) {
+                editorBody.addEventListener('input', handler);
+            }
+        },
+
+        saveFunctionModal() {
+            // Save any pending formula in the input field before closing
+            const input = document.getElementById('fn-formula-input');
+            if (input && input.value.trim()) {
+                this._addFormula();
+            }
+            this._recomputeFormulas();
+            this._resolveVarReferences();
+            App.modal.close();
+        },
+
+        // ==========================================
+        // Text Color Styling Tool
+        // ==========================================
+        openColorPicker() {
+            const sel = window.getSelection();
+            if (!sel || sel.isCollapsed || !sel.toString().trim()) {
+                App.showError('Select text first, then apply a color');
+                return;
+            }
+            // Store the selection range
+            App.state._colorSelRange = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+            document.getElementById('color-input').value = '';
+            document.getElementById('color-save-name').value = '';
+            document.getElementById('color-swatch-preview').style.background = 'var(--bg-secondary)';
+            this._renderSavedColors();
+            App.modal.open('modal-color');
+        },
+
+        previewColor() {
+            const val = document.getElementById('color-input').value.trim();
+            const swatch = document.getElementById('color-swatch-preview');
+            if (val) {
+                // Test if color is valid
+                const test = document.createElement('div');
+                test.style.color = val;
+                document.body.appendChild(test);
+                const computed = getComputedStyle(test).color;
+                document.body.removeChild(test);
+                if (computed && computed !== 'rgba(0, 0, 0, 0)') {
+                    swatch.style.background = val;
+                } else {
+                    swatch.style.background = 'var(--bg-secondary)';
+                }
+            } else {
+                swatch.style.background = 'var(--bg-secondary)';
+            }
+        },
+
+        applyColor() {
+            const val = document.getElementById('color-input').value.trim();
+            if (!val) { App.showError('Enter a color value'); return; }
+            if (!App.state._colorSelRange) { App.showError('No text selected'); App.modal.close(); return; }
+            try {
+                const range = App.state._colorSelRange;
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+                // Extract selected content, wrap in a colored span
+                const contents = range.extractContents();
+                const span = document.createElement('span');
+                span.style.color = val;
+                span.appendChild(contents);
+                range.insertNode(span);
+                // Insert a zero-width space after the span so the cursor escapes the color
+                const zwsp = document.createTextNode('\u200B');
+                if (span.nextSibling) {
+                    span.parentNode.insertBefore(zwsp, span.nextSibling);
+                } else {
+                    span.parentNode.appendChild(zwsp);
+                }
+                // Collapse cursor right after the zero-width space
+                const newRange = document.createRange();
+                newRange.setStartAfter(zwsp);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+            } catch (e) { App.showError('Could not apply color'); }
+            App.state._colorSelRange = null;
+            App.modal.close();
+        },
+
+        saveColorPreset() {
+            const name = document.getElementById('color-save-name').value.trim();
+            const val = document.getElementById('color-input').value.trim();
+            if (!name || !val) { App.showError('Enter both a name and color value'); return; }
+            let saved = DB.getSavedColors();
+            if (saved.some(c => c.name === name)) { App.showError(`Color "${name}" already exists`); return; }
+            saved.push({ name, value: val });
+            DB.setSavedColors(saved);
+            this._renderSavedColors();
+            document.getElementById('color-save-name').value = '';
+            App.showSuccess(`Color "${name}" saved`);
+        },
+
+        _renderSavedColors() {
+            const saved = DB.getSavedColors();
+            const container = document.getElementById('color-saved-list');
+            if (!container) return;
+            if (saved.length === 0) {
+                container.innerHTML = '<p style="font-size:0.8rem;color:var(--text-tertiary);">No saved colors</p>';
+                return;
+            }
+            container.innerHTML = saved.map((c, i) => {
+                return `<div class="color-saved-chip" onclick="App.editor._applySavedColor('${App.tasks.escapeHtml(c.value)}')">
+                    <span class="color-swatch" style="background:${c.value};"></span>
+                    <span>${App.tasks.escapeHtml(c.name)}</span>
+                    <span class="color-chip-delete" onclick="event.stopPropagation(); App.editor._deleteSavedColor(${i})"><i class="fa-solid fa-xmark"></i></span>
+                </div>`;
+            }).join('');
+        },
+
+        _applySavedColor(val) {
+            document.getElementById('color-input').value = val;
+            this.previewColor();
+        },
+
+        _deleteSavedColor(index) {
+            let saved = DB.getSavedColors();
+            saved.splice(index, 1);
+            DB.setSavedColors(saved);
+            this._renderSavedColors();
         }
     },
 
@@ -3002,6 +4599,14 @@ const App = {
 
         showAnalytics() { document.getElementById('analytics-section')?.scrollIntoView({ behavior: 'smooth' }); },
 
+        toggleDailyHistory() {
+            const list = document.getElementById('analytics-daily-history');
+            const chevron = document.getElementById('daily-history-chevron');
+            if (!list) return;
+            const isOpen = list.classList.toggle('open');
+            if (chevron) chevron.style.transform = isOpen ? 'rotate(180deg)' : '';
+        },
+
         toggleTheme() {
             const toggle = document.getElementById('toggle-theme'); const isDark = toggle.classList.toggle('on');
             const theme = isDark ? 'dark' : 'light';
@@ -3047,11 +4652,24 @@ const App = {
             }
             const allTasks = DB.getTasks();
 
+            // Purge daily_logs for days that no longer have tasks (deleted tasks cleanup)
+            const logs = DB.getDailyLogs();
+            let logsPurged = false;
+            for (const dateStr of Object.keys(logs)) {
+                const dayTasks = App.tasks.getTasksForDate(allTasks, dateStr);
+                if (dayTasks.length === 0) {
+                    delete logs[dateStr];
+                    logsPurged = true;
+                }
+            }
+            if (logsPurged) DB.setDailyLogs(logs);
+
             // Compute average of DAILY rates using mean formula:
             // Always recompute from current task data to exclude deleted tasks.
             // Only include past/present days up to today. Skip days with zero tasks.
             let sumDoneRate = 0, sumFailedRate = 0, sumUndeclaredRate = 0;
             let dayCount = 0;
+            const dayEntries = [];
             const current = new Date(start);
 
             while (current <= today) {
@@ -3070,10 +4688,14 @@ const App = {
                         else if (t.current_status === 'failed') dayFailed++;
                     });
                     const dayUndeclared = dayTotal - dayDone - dayFailed;
-                    sumDoneRate += (dayDone / dayTotal) * 100;
-                    sumFailedRate += (dayFailed / dayTotal) * 100;
-                    sumUndeclaredRate += (dayUndeclared / dayTotal) * 100;
+                    const dr = Math.round((dayDone / dayTotal) * 100);
+                    const fr = Math.round((dayFailed / dayTotal) * 100);
+                    const ur = Math.round((dayUndeclared / dayTotal) * 100);
+                    sumDoneRate += dr;
+                    sumFailedRate += fr;
+                    sumUndeclaredRate += ur;
                     dayCount++;
+                    dayEntries.push({ date: dateStr, done: dr, failed: fr, undeclared: ur });
                 }
                 current.setDate(current.getDate() + 1);
             }
@@ -3086,6 +4708,7 @@ const App = {
             this._animateRate('analytics-done-rate', doneRate);
             this._animateRate('analytics-failed-rate', failedRate);
             this._animateRate('analytics-undeclared-rate', undeclaredRate);
+            this._renderDailyHistory(dayEntries);
         },
 
         _animateRate(elementId, target) {
@@ -3102,6 +4725,27 @@ const App = {
                 if (progress < 1) requestAnimationFrame(step);
             }
             requestAnimationFrame(step);
+        },
+
+        _renderDailyHistory(dayEntries) {
+            const container = document.getElementById('analytics-daily-history');
+            if (!container) return;
+            if (dayEntries.length === 0) { container.innerHTML = ''; return; }
+            const reversed = [...dayEntries].reverse();
+            let html = '';
+            for (const entry of reversed) {
+                const d = new Date(entry.date + 'T00:00');
+                const formatted = d.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' });
+                html += `<div class="daily-history-row">
+                    <span class="daily-history-date">${formatted}</span>
+                    <div class="daily-history-rates">
+                        <span style="color:var(--done);font-weight:600;">${entry.done}%</span>
+                        <span style="color:var(--failed);font-weight:600;">${entry.failed}%</span>
+                        <span style="color:var(--text-tertiary);font-weight:600;">${entry.undeclared}%</span>
+                    </div>
+                </div>`;
+            }
+            container.innerHTML = html;
         },
 
         loadRecords() {
@@ -3293,6 +4937,58 @@ document.addEventListener('DOMContentLoaded', async () => {
         const italicBtn = document.querySelector('[data-tool="italic"]');
         if (boldBtn) boldBtn.classList.toggle('active', document.queryCommandState('bold'));
         if (italicBtn) italicBtn.classList.toggle('active', document.queryCommandState('italic'));
+        // Update color icon to reflect selected text color
+        const colorIcon = document.getElementById('color-tool-icon');
+        if (colorIcon) {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+                let detectedColor = null;
+                // Method 1: queryCommandValue('foreColor') — most reliable for execCommand colors
+                try {
+                    const cmdColor = document.queryCommandValue('foreColor');
+                    if (cmdColor && cmdColor !== 'rgb(0, 0, 0)' && cmdColor !== '') {
+                        detectedColor = cmdColor;
+                    }
+                } catch (e) {}
+                // Method 2: Walk up from selection anchor to find inline color
+                if (!detectedColor) {
+                    let node = sel.anchorNode;
+                    let el = node ? (node.nodeType === 3 ? node.parentElement : node) : null;
+                    if (el) {
+                        let current = el;
+                        while (current && current.getAttribute && current.getAttribute('contenteditable') !== 'true') {
+                            if (current.style && current.style.color) {
+                                detectedColor = current.style.color;
+                                break;
+                            }
+                            if (current.tagName === 'FONT' && current.getAttribute('color')) {
+                                detectedColor = current.getAttribute('color');
+                                break;
+                            }
+                            current = current.parentElement;
+                        }
+                    }
+                }
+                // Method 3: Computed style of the anchor element
+                if (!detectedColor) {
+                    let node = sel.anchorNode;
+                    let el = node ? (node.nodeType === 3 ? node.parentElement : node) : null;
+                    if (el) {
+                        const editableParent = el.closest('[contenteditable="true"]');
+                        if (editableParent) {
+                            const elColor = window.getComputedStyle(el).color;
+                            const parentColor = window.getComputedStyle(editableParent).color;
+                            if (elColor !== parentColor) {
+                                detectedColor = elColor;
+                            }
+                        }
+                    }
+                }
+                colorIcon.style.color = detectedColor || '';
+            } else {
+                colorIcon.style.color = '';
+            }
+        }
     };
     document.addEventListener('keyup', (e) => {
         if (e.target.getAttribute('contenteditable') === 'true' || e.target.closest('[contenteditable="true"]')) {
@@ -3302,6 +4998,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('mouseup', (e) => {
         if (e.target.getAttribute('contenteditable') === 'true' || e.target.closest('[contenteditable="true"]')) {
             _updateFormattingState();
+        }
+    });
+    // Update color icon on any selection change (including clicking away to deselect)
+    document.addEventListener('selectionchange', () => {
+        if (document.getElementById('page-editor')?.classList.contains('active')) {
+            _updateFormattingState();
+            // Disable PO button when cursor/selection is inside any variable or description
+            const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
+            if (poBtn) {
+                const sel = window.getSelection();
+                let insideVar = false;
+                if (sel && sel.anchorNode) {
+                    const el = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode;
+                    if (el) {
+                        // Text variable (var-bound span wrapping a number in subtask text)
+                        if (el.closest('.var-bound[data-var-name]')) insideVar = true;
+                        // [name] resolved reference (var-computed-ref span)
+                        if (el.closest('.var-computed-ref')) insideVar = true;
+                        // Table cell that is bound to a variable
+                        const td = el.closest('td[contenteditable][data-table-idx]');
+                        if (td) {
+                            const tIdx = parseInt(td.dataset.tableIdx);
+                            const row = parseInt(td.dataset.row);
+                            const col = parseInt(td.dataset.col);
+                            const ed = App.state.editorData;
+                            if (ed.tables && ed.tables[tIdx] && ed.tables[tIdx].cells) {
+                                const key = `${row}-${col}`;
+                                if (ed.tables[tIdx].cells[key] && ed.tables[tIdx].cells[key].varName) insideVar = true;
+                            }
+                        }
+                        // Description fields (existing behavior)
+                        if (el.closest('.subtask-desc-input') || el.closest('#editor-description')) insideVar = true;
+                    }
+                }
+                if (insideVar) {
+                    poBtn.classList.add('po-disabled');
+                } else {
+                    poBtn.classList.remove('po-disabled');
+                }
+            }
         }
     });
     document.addEventListener('touchend', (e) => {
@@ -3339,8 +5075,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Re-check and re-sync when app becomes visible (returning from background)
     document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'visible') {
+            DB.refreshCache();
             Notifier._checkPendingNotifications();
             Notifier._syncToServiceWorker();
+            App.tasks.loadTasks();
         }
     });
 
