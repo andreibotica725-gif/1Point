@@ -165,7 +165,7 @@ input[type="number"] { -moz-appearance: textfield; }
 .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; position: sticky; top: 0; background: var(--bg-primary); z-index: 5; }
 .editor-back, .editor-save { display: flex; align-items: center; gap: 4px; font-size: 0.95rem; font-weight: 500; color: var(--text-primary); transition: opacity var(--transition); }
 .editor-back:active, .editor-save:active { opacity: 0.5; }
-.editor-body { padding: 0 20px 100px; max-width: 480px; margin: 0 auto; }
+.editor-body { padding: 0 20px 140px; max-width: 480px; margin: 0 auto; }
 .editor-title { font-family: var(--font-heading); width: 100%; font-size: 1.8rem; font-weight: 600; border: none; outline: none; background: transparent; color: var(--text-primary); padding: 8px 0; letter-spacing: -0.3px; }
 .editor-title::placeholder { color: var(--text-placeholder); }
 .editor-description { width: 100%; min-height: 80px; border: none; outline: none; background: transparent; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; padding: 4px 0; }
@@ -190,13 +190,11 @@ input[type="number"] { -moz-appearance: textfield; }
 .subtask-description-editor .subtask-desc-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.85rem; color: var(--text-secondary); font-style: italic; min-height: 24px; overflow: hidden; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
 .subtask-description-editor .subtask-desc-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
 
-/* Editor Sidebar */
-.editor-sidebar { position: fixed; right: 12px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 4px; z-index: 10; background: var(--bg-primary); border-radius: var(--radius-lg); padding: 6px; border: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); touch-action: none; }
+/* Editor Footer Toolbar */
+.editor-sidebar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; flex-direction: row; align-items: center; gap: 2px; z-index: 10; background: var(--bg-primary); padding: 6px 8px; padding-bottom: max(6px, env(safe-area-inset-bottom, 6px)); border-top: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); touch-action: none; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
 #page-editor.active .editor-sidebar { opacity: 1; visibility: visible; }
-.sidebar-drag-handle { display: flex; align-items: center; justify-content: center; padding: 4px 0 2px; cursor: grab; color: var(--text-tertiary); transition: color var(--transition); }
-.sidebar-drag-handle:active { cursor: grabbing; }
-.sidebar-drag-handle:hover { color: var(--text-secondary); }
-.sidebar-tool { width: 38px; height: 38px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 1rem; transition: all var(--transition); }
+.sidebar-drag-handle { display: none; }
+.sidebar-tool { width: 38px; height: 38px; flex-shrink: 0; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 1rem; transition: all var(--transition); }
 .sidebar-tool:hover { background: var(--bg-secondary); color: var(--text-primary); }
 .sidebar-tool.active { background: var(--accent-soft); color: var(--accent); }
 .sidebar-tool[data-tool="priority"].priority-usual { color: var(--priority-usual); }
@@ -449,7 +447,7 @@ tr.drag-over-row td, tr.drag-over-row .table-row-handle { border-top: 2px solid 
 .seg-btn { border-radius: 0px !important; }
 
 /* Mobile polish */
-@media (max-width: 480px) { .page-content { padding: 16px; } .page-title { font-size: 1.7rem; } .editor-sidebar { right: 8px; } }
+@media (max-width: 480px) { .page-content { padding: 16px; } .page-title { font-size: 1.7rem; } }
 #page-editor.active ~ .bottom-nav { transform: translateY(100%); }
 
 .subtask-desc-input {
@@ -520,12 +518,21 @@ text-align: center;
   pointer-events: none;
   cursor: default;
 }
+/* Disabled text-align button when editing description */
+.sidebar-tool.textalign-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+  cursor: default;
+}
 
 /* ==========================================
    VARIABLE / FUNCTION SYSTEM STYLES
    ========================================== */
 .var-bound { font-weight: 500; }
 .var-computed-ref { font-weight: 500; color: var(--po-color); }
+.var-bool-icon { font-style: normal; font-size: 0.85em; pointer-events: none; }
+.var-bool-true { color: var(--done); }
+.var-bool-false { color: var(--failed); }
 
 /* Function Modal */
 .fn-modal-section { margin-bottom: 16px; }
@@ -544,6 +551,7 @@ text-align: center;
 .fn-formula-delete { color: var(--failed); font-size: 0.75rem; cursor: pointer; padding: 2px 6px; }
 .fn-formula-input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.9rem; font-family: monospace; }
 .fn-formula-input::placeholder { color: var(--text-placeholder); }
+.fn-help-section-content.open { max-height: 2000px !important; }
 .fn-help-text { font-size: 0.72rem; color: var(--text-tertiary); line-height: 1.5; margin-top: 6px; }
 .fn-new-var-row { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
 .fn-new-var-row input { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg-secondary); color: var(--text-primary); font-size: 0.85rem; }
@@ -571,23 +579,19 @@ text-align: center;
 .input-action-btn:active { opacity: 0.6; }
 
 /* ==========================================
-   COLLAPSIBLE SIDEBAR
+   FOOTER TOOLBAR
    ========================================== */
-.editor-sidebar { overflow: hidden; }
-.editor-sidebar .sidebar-tools-wrapper { display: flex; flex-direction: column; gap: 4px; max-height: 600px; opacity: 1; overflow: hidden; transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease; }
-.editor-sidebar.collapsed .sidebar-tools-wrapper { max-height: 0; opacity: 0; pointer-events: none; }
-.editor-sidebar.collapsed { padding: 4px; gap: 0; }
-.editor-sidebar.collapsed .sidebar-drag-handle { padding: 6px 4px; }
-.sidebar-collapse-btn { width: 38px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 0.7rem; transition: all var(--transition); cursor: pointer; border: none; background: none; }
-.sidebar-collapse-btn:hover { color: var(--text-secondary); }
-.sidebar-expand-btn { width: 38px; height: 28px; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); font-size: 0.7rem; cursor: pointer; border: none; background: none; max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.3s ease, opacity 0.25s ease; pointer-events: none; }
-.editor-sidebar.collapsed .sidebar-expand-btn { max-height: 28px; opacity: 1; pointer-events: auto; }
-.sidebar-expand-btn:hover { color: var(--text-secondary); }
+.editor-sidebar { overflow-x: auto; overflow-y: hidden; }
+.editor-sidebar .sidebar-tools-wrapper { display: flex; flex-direction: row; gap: 2px; opacity: 1; overflow-x: auto; overflow-y: hidden; transition: opacity 0.25s ease; flex-shrink: 0; }
+.editor-sidebar.collapsed .sidebar-tools-wrapper { display: none; opacity: 0; pointer-events: none; }
+.editor-sidebar.collapsed { padding: 4px 8px; gap: 0; }
+.sidebar-collapse-btn { display: none; }
+.sidebar-expand-btn { display: none; }
+.sidebar-pin-btn { display: none; }
 
-/* Pin button active state */
-.sidebar-pin-btn.pinned { color: var(--accent); background: var(--accent-soft); }
-/* When pinned, hide the drag handle so user knows it's locked */
-.editor-sidebar.pinned .sidebar-drag-handle { opacity: 0.3; pointer-events: none; cursor: default; }
+/* Pin button hidden for footer layout */
+.sidebar-pin-btn.pinned { display: none; }
+.editor-sidebar.pinned .sidebar-drag-handle { display: none; }
 .row-reorder-handle {
   display: flex;
   justify-content: center;
@@ -680,15 +684,10 @@ text-align: center;
             </div>
 
             <div class="editor-sidebar" id="editor-sidebar">
-                <div class="sidebar-drag-handle" id="sidebar-drag-handle">
-                    <i class="fa-solid fa-grip-lines" style="font-size:0.8rem;"></i>
-                </div>
                 <div class="sidebar-tools-wrapper">
-                    <button class="sidebar-tool sidebar-pin-btn" onclick="App.editor.togglePinSidebar()" title="Pin in place" data-tool="pin" id="btn-pin-sidebar">
-                        <i class="fa-solid fa-map-pin"></i>
-                    </button>
                     <button class="sidebar-tool" onclick="App.editor.toggleBold()" title="Bold" data-tool="bold"><i class="fa-solid fa-bold"></i></button>
                     <button class="sidebar-tool" onclick="App.editor.toggleItalic()" title="Italic" data-tool="italic"><i class="fa-solid fa-italic"></i></button>
+                    <button class="sidebar-tool" onclick="App.editor.cycleTextAlign()" title="Text Align" data-tool="textalign"><i class="fa-solid fa-align-left" id="textalign-icon"></i></button>
                     <button class="sidebar-tool" onclick="App.editor.openColorPicker()" title="Text Color" data-tool="color">
                         <i class="fa-solid fa-circle" id="color-tool-icon"></i>
                     </button>
@@ -716,13 +715,7 @@ text-align: center;
                     <button class="sidebar-tool" onclick="App.editor.openPriorityPicker()" title="Priority" data-tool="priority" id="btn-priority">
                         <i class="fa-solid fa-list-ol"></i>
                     </button>
-                    <button class="sidebar-collapse-btn" onclick="App.editor.collapseSidebar()" title="Collapse">
-                        <i class="fa-solid fa-chevron-up"></i>
-                    </button>
                 </div>
-                <button class="sidebar-expand-btn" onclick="App.editor.expandSidebar()" title="Expand">
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
             </div>
         </div>
 
@@ -1807,7 +1800,7 @@ const App = {
             const formulas = taskCopy.variables.formulas;
             for (const f of formulas) {
                 const res = App.editor._fnMath.evaluate(f.expression, vars);
-                if (!isNaN(res)) {
+                if (res !== undefined && res !== null && (typeof res === 'boolean' || !isNaN(res))) {
                     if (!vars[f.resultVar]) vars[f.resultVar] = { value: 0, isComputed: true };
                     vars[f.resultVar].value = res;
                 }
@@ -1874,7 +1867,7 @@ const App = {
             const timeDisplay = !isExpandable && task.time ? `<span class="task-time">${task.time}</span>` : '';
             const expandChevron = isExpandable ? `<span class="task-expand-chevron" onclick="event.stopPropagation(); App.tasks.toggleExpand('${task.id}')"><i class="fa-solid fa-chevron-down"></i></span>` : '';
 
-            let html = `<div class="task-row"><div class="task-check">${checkIcon}</div><span class="task-title">${this.escapeHtml(task.title)}</span>${timeDisplay}${expandChevron}</div>`;
+            let html = `<div class="task-row"><div class="task-check">${checkIcon}</div><span class="task-title">${this.escapeHtml(task.title)}</span>${timeDisplay}${expandChevron}${!isExpandable ? `<span style="display:flex;gap:8px;margin-left:8px;flex-shrink:0;"><span class="task-action-btn" onclick="event.stopPropagation(); App.tasks.openEditor('${task.id}')" style="padding:2px;"><i class="fa-regular fa-pen-to-square" style="font-size:0.75rem;"></i></span><span class="task-action-btn" onclick="event.stopPropagation(); App.tasks.deleteTask('${task.id}')" style="color:var(--failed);padding:2px;"><i class="fa-regular fa-trash-can" style="font-size:0.75rem;"></i></span></span>` : ''}</div>`;
 
             if (isExpandable) {
                 html += `<div class="task-expanded-content">`;
@@ -1882,10 +1875,11 @@ const App = {
                 if (task.description && task.description.trim()) {
                     let descHtml = task.description;
                     // Resolve variable references in display
+                    const _fvd2 = (v) => v === true ? '<i class="fa-solid fa-check" style="color:var(--done);font-size:0.85em;"></i>' : (v === false ? '<i class="fa-solid fa-xmark" style="color:var(--failed);font-size:0.85em;"></i>' : String(v));
                     if (task.variables && task.variables.vars) {
-                        descHtml = descHtml.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
-                        descHtml = descHtml.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
-                        descHtml = descHtml.replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                        descHtml = descHtml.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m);
+                        descHtml = descHtml.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m);
+                        descHtml = descHtml.replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m);
                     }
                     html += `<div class="task-expanded-description">${descHtml}</div>`;
                 }
@@ -1920,14 +1914,15 @@ const App = {
                         let stIcon = '<i class="fa-regular fa-circle"></i>';
                         if (st.current_status === 'done') stIcon = '<i class="fa-regular fa-circle-check"></i>';
                         else if (st.current_status === 'failed') stIcon = '<i class="fa-regular fa-circle-xmark"></i>';
-                        html += `<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text">${this.formatSubtaskText(st, task.variables)}</span></div>`;
+                        const stAlign = st.textAlign ? ` style="text-align:${st.textAlign}"` : '';
+                        html += `<div class="subtask-item ${st.current_status || 'undeclared'}" onclick="event.stopPropagation(); App.tasks.handleSubtaskClick('${task.id}', '${st.id}')"><div class="subtask-check">${stIcon}</div><span class="subtask-text"${stAlign}>${this.formatSubtaskText(st, task.variables)}</span></div>`;
                     } else if (el.type === 'description') {
                         const desc = descriptions.find(d => d.position === el.position);
                         if (desc && desc.text) {
                             let dText = desc.text;
                             if (task.variables && task.variables.vars) {
-                                dText = dText.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
-                                dText = dText.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[name].value}</span>` : m);
+                                dText = dText.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m);
+                                dText = dText.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => task.variables.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[name].value)}</span>` : m);
                             }
                             html += `<div class="task-expanded-description" style="font-size:0.8rem;color:var(--text-tertiary);padding:6px 0;line-height:1.5;">${dText}</div>`;
                         }
@@ -1943,8 +1938,9 @@ const App = {
                                 if (cell.mergedInto) continue;
                                 const rowspan = cell.rowspan || 1;
                                 const colspan = cell.colspan || 1;
-                                const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (task.variables && task.variables.vars ? (cell.content || '').replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m).replace(/\[(\w+)\]/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m).replace(/<--(?:var\s+)?(\w+)-->/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m).replace(/\[(\w+)\]/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${task.variables.vars[n].value}</span>` : m) : (cell.content || ''));
-                                html += `<td${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                                const displayContent = cell.po ? `<span class="po-value">${cell.po._displayValue != null ? cell.po._displayValue : (cell.po.current_value != null ? cell.po.current_value : cell.po.base_value)}</span>` : (task.variables && task.variables.vars ? (cell.content || '').replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[n].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[n].value)}</span>` : m).replace(/<--(?:var\s+)?(\w+)-->/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[n].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, n) => task.variables.vars[n] !== undefined ? `<span class="var-computed-ref">${_fvd2(task.variables.vars[n].value)}</span>` : m) : (cell.content || ''));
+                                const cellAlignView = cell.textAlign ? ` style="text-align:${cell.textAlign}"` : '';
+                                html += `<td${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}${cellAlignView}>${displayContent}</td>`;
                             }
                             html += '</tr>';
                         }
@@ -2025,7 +2021,7 @@ const App = {
                                     if (task.variables.formulas) {
                                         for (const f of task.variables.formulas) {
                                             const res = App.editor._fnMath.evaluate(f.expression, task.variables.vars);
-                                            if (!isNaN(res)) {
+                                            if (res !== undefined && res !== null && (typeof res === 'boolean' || !isNaN(res))) {
                                                 if (!task.variables.vars[f.resultVar]) task.variables.vars[f.resultVar] = { value: 0, isComputed: true };
                                                 task.variables.vars[f.resultVar].value = res;
                                             }
@@ -2072,7 +2068,7 @@ const App = {
                             if (task.variables.formulas) {
                                 for (const f of task.variables.formulas) {
                                     const res = App.editor._fnMath.evaluate(f.expression, task.variables.vars);
-                                    if (!isNaN(res)) {
+                                    if (res !== undefined && res !== null && (typeof res === 'boolean' || !isNaN(res))) {
                                         if (!task.variables.vars[f.resultVar]) task.variables.vars[f.resultVar] = { value: 0, isComputed: true };
                                         task.variables.vars[f.resultVar].value = res;
                                     }
@@ -2166,6 +2162,7 @@ const App = {
 
         formatSubtaskText(subtask, taskVars) {
             const hasPO = subtask.po_variables && subtask.po_variables.length > 0;
+            const _fvd = (v) => v === true ? '<i class="fa-solid fa-check" style="color:var(--done);font-size:0.85em;"></i>' : (v === false ? '<i class="fa-solid fa-xmark" style="color:var(--failed);font-size:0.85em;"></i>' : String(v));
 
             // If we have html content, use it as the base
             if (subtask.html) {
@@ -2180,8 +2177,8 @@ const App = {
                 }
                 // Resolve variable references
                 if (taskVars && taskVars.vars) {
-                    text = text.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m);
-                    text = text.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m);
+                    text = text.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd(taskVars.vars[name].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd(taskVars.vars[name].value)}</span>` : m);
+                    text = text.replace(/<--(?:var\s+)?(\w+)-->/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd(taskVars.vars[name].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd(taskVars.vars[name].value)}</span>` : m);
                 }
                 return text;
             }
@@ -2199,7 +2196,7 @@ const App = {
             }
             // Resolve variable references
             if (taskVars && taskVars.vars) {
-                text = text.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${taskVars.vars[name].value}</span>` : m);
+                text = text.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd(taskVars.vars[name].value)}</span>` : m).replace(/\[(\w+)\]/g, (m, name) => taskVars.vars[name] !== undefined ? `<span class="var-computed-ref">${_fvd(taskVars.vars[name].value)}</span>` : m);
             }
             return text;
         },
@@ -2322,11 +2319,7 @@ const App = {
             App.editor.renderAllElements();
             App.editor.updatePriorityBtn();
             const sidebar = document.getElementById('editor-sidebar');
-            sidebar.style.left = ''; sidebar.style.top = ''; sidebar.style.right = '12px'; sidebar.style.transform = 'translateY(-50%)';
             sidebar.classList.remove('collapsed');
-            sidebar.classList.remove('pinned');
-            const pinBtn = document.getElementById('btn-pin-sidebar');
-            if (pinBtn) pinBtn.classList.remove('pinned');
             App.nav.goto('editor');
             // Resolve variable references after render and set up live detection
             setTimeout(() => {
@@ -2466,6 +2459,50 @@ const App = {
             if (italicBtn) italicBtn.classList.toggle('active', document.queryCommandState('italic'));
         },
 
+        // Text alignment cycling: left -> center -> right -> left
+        cycleTextAlign() {
+            const sel = window.getSelection();
+            if (!sel || !sel.anchorNode) return;
+            const el = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode;
+            if (!el) return;
+            // Find the closest contenteditable container or the element itself
+            const td = el.closest('td[contenteditable="true"]');
+            const subtaskInput = el.closest('.subtask-editor-input');
+            const target = td || subtaskInput;
+            if (!target) return;
+            const current = target.style.textAlign || 'left';
+            let next = 'center';
+            if (current === 'center') next = 'right';
+            else if (current === 'right') next = 'left';
+            else next = 'center';
+            target.style.textAlign = next;
+            // Update icon
+            const icon = document.getElementById('textalign-icon');
+            if (icon) {
+                icon.className = next === 'center' ? 'fa-solid fa-align-center' : (next === 'right' ? 'fa-solid fa-align-right' : 'fa-solid fa-align-left');
+            }
+            // Persist alignment for subtasks
+            if (subtaskInput) {
+                const idx = parseInt(subtaskInput.dataset.index);
+                if (App.state.editorData.subtasks[idx]) {
+                    App.state.editorData.subtasks[idx].textAlign = next;
+                }
+            }
+            // Persist alignment for table cells
+            if (td && td.dataset.tableIdx !== undefined) {
+                const tIdx = parseInt(td.dataset.tableIdx);
+                const row = parseInt(td.dataset.row);
+                const col = parseInt(td.dataset.col);
+                const table = App.state.editorData.tables[tIdx];
+                if (table) {
+                    if (!table.cells) table.cells = {};
+                    const key = `${row}-${col}`;
+                    if (!table.cells[key]) table.cells[key] = { content: '' };
+                    table.cells[key].textAlign = next;
+                }
+            }
+        },
+
         addSubtask() {
             const idx = App.state.editorData.subtasks.length;
             App.state.editorData.subtasks.push({ id: Math.random().toString(36).substr(2, 8), text: '', html: '', po_variables: [], status: {} });
@@ -2529,6 +2566,10 @@ const App = {
                     } else {
                         ed.subtasks[idx].text = input.value;
                     }
+                    // Persist text alignment
+                    if (input.style.textAlign) {
+                        ed.subtasks[idx].textAlign = input.style.textAlign;
+                    }
                 }
             });
             // Sync description inputs
@@ -2538,7 +2579,7 @@ const App = {
                 const existing = ed.descriptions.find(d => d.position === pos);
                 if (existing) existing.text = div.innerHTML;
             });
-            // Sync table cells
+            // Sync table cells (including textAlign)
             this.syncEditorTableCells();
         },
 
@@ -2591,7 +2632,7 @@ const App = {
                     }
                     html += `<div class="subtask-editor editor-element" data-el-type="subtask" data-el-index="${i}" data-index="${i}">
                         <div class="subtask-editor-check"></div>
-                        <div class="subtask-editor-input" contenteditable="true" spellcheck="false" data-placeholder="Subtask..." data-index="${i}">${displayHtml}</div>
+                        <div class="subtask-editor-input" contenteditable="true" spellcheck="false" data-placeholder="Subtask..." data-index="${i}" style="${st.textAlign ? 'text-align:'+st.textAlign : ''}">${displayHtml}</div>
                         <button class="subtask-editor-duplicate" onclick="App.editor.duplicateSubtask(${i})" title="Duplicate"><i class="fa-regular fa-clone"></i></button>
                         <button class="subtask-editor-delete" onclick="App.editor.removeSubtask(${i})" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
                     </div>`;
@@ -2626,7 +2667,7 @@ const App = {
                     }
                     html += `<div class="subtask-editor editor-element" data-el-type="subtask" data-el-index="${i}" data-index="${i}">
                         <div class="subtask-editor-check"></div>
-                        <div class="subtask-editor-input" contenteditable="true" spellcheck="false" data-placeholder="Subtask..." data-index="${i}">${fallbackHtml}</div>
+                        <div class="subtask-editor-input" contenteditable="true" spellcheck="false" data-placeholder="Subtask..." data-index="${i}" style="${st.textAlign ? 'text-align:'+st.textAlign : ''}">${fallbackHtml}</div>
                         <button class="subtask-editor-duplicate" onclick="App.editor.duplicateSubtask(${i})" title="Duplicate"><i class="fa-regular fa-clone"></i></button>
                         <button class="subtask-editor-delete" onclick="App.editor.removeSubtask(${i})" title="Delete"><i class="fa-regular fa-trash-can"></i></button>
                     </div>`;
@@ -2691,6 +2732,30 @@ const App = {
             });
             // Bind table cell input events for variable cells
             this._initTableVarCellListeners();
+            // Bind long-press on table cells for variable declaration
+            this._initTableCellLongPress();
+            // Disable text-align for description fields
+            container.querySelectorAll('.subtask-desc-input').forEach(descInput => {
+                descInput.addEventListener('focus', () => {
+                    const alignBtn = document.querySelector('.sidebar-tool[data-tool="textalign"]');
+                    if (alignBtn) alignBtn.classList.add('textalign-disabled');
+                });
+                descInput.addEventListener('blur', () => {
+                    const alignBtn = document.querySelector('.sidebar-tool[data-tool="textalign"]');
+                    if (alignBtn) alignBtn.classList.remove('textalign-disabled');
+                });
+            });
+            const edDesc = document.getElementById('editor-description');
+            if (edDesc) {
+                edDesc.addEventListener('focus', () => {
+                    const alignBtn = document.querySelector('.sidebar-tool[data-tool="textalign"]');
+                    if (alignBtn) alignBtn.classList.add('textalign-disabled');
+                });
+                edDesc.addEventListener('blur', () => {
+                    const alignBtn = document.querySelector('.sidebar-tool[data-tool="textalign"]');
+                    if (alignBtn) alignBtn.classList.remove('textalign-disabled');
+                });
+            }
         },
 
         // Helper to render a single editor table as HTML string
@@ -2726,7 +2791,8 @@ const App = {
                     } else {
                         displayContent = cell.content || '';
                     }
-                    html += `<td contenteditable="true" spellcheck="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}" class="${varClass}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${displayContent}</td>`;
+                    const cellAlign = cell.textAlign ? ` style="text-align:${cell.textAlign}"` : '';
+                    html += `<td contenteditable="true" spellcheck="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}" class="${varClass}"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}${cellAlign}>${displayContent}</td>`;
                 }
                 html += '</tr>';
             }
@@ -2738,7 +2804,7 @@ const App = {
         addTableRow() {
             const tIdx = App.state.editingEditorTableId;
             if (tIdx === null) return;
-            this.syncLiveDOM();
+            this.syncEditorTableCells();
             const table = App.state.editorData.tables[tIdx];
             if (!table) return;
             const newRow = table.rows;
@@ -2752,7 +2818,7 @@ const App = {
         addTableCol() {
             const tIdx = App.state.editingEditorTableId;
             if (tIdx === null) return;
-            this.syncLiveDOM();
+            this.syncEditorTableCells();
             const table = App.state.editorData.tables[tIdx];
             if (!table) return;
             const newCol = table.cols;
@@ -2766,7 +2832,7 @@ const App = {
         deleteTableRowAt(rowIdx) {
             const tIdx = App.state.editingEditorTableId;
             if (tIdx === null) return;
-            this.syncLiveDOM();
+            this.syncEditorTableCells();
             const table = App.state.editorData.tables[tIdx];
             if (!table || table.rows <= 1) { App.showError('Table must have at least one row'); return; }
             if (this._hasMergesInTable(table)) { App.showError('Unmerge all cells before deleting rows'); return; }
@@ -2790,7 +2856,7 @@ const App = {
         deleteTableCol(colIdx) {
             const tIdx = App.state.editingEditorTableId;
             if (tIdx === null) return;
-            this.syncLiveDOM();
+            this.syncEditorTableCells();
             const table = App.state.editorData.tables[tIdx];
             if (!table || table.cols <= 1) { App.showError('Table must have at least one column'); return; }
             if (this._hasMergesInTable(table)) { App.showError('Unmerge all cells before deleting columns'); return; }
@@ -2821,39 +2887,57 @@ const App = {
         },
 
         _swapTableRows(tIdx, fromRow, toRow) {
+            // Sync data from the main editor table cells first (not mgmt preview)
+            this.syncEditorTableCells();
             const table = App.state.editorData.tables[tIdx];
             if (!table || !table.cells || fromRow === toRow) return;
             if (this._hasMergesInTable(table)) {
                 App.showError('Unmerge all cells before reordering rows');
                 return;
             }
+            const newCells = {};
+            // Copy all cells first
+            for (const key in table.cells) {
+                newCells[key] = JSON.parse(JSON.stringify(table.cells[key]));
+            }
+            // Swap the two rows
             for (let c = 0; c < table.cols; c++) {
                 const keyA = `${fromRow}-${c}`;
                 const keyB = `${toRow}-${c}`;
-                const cellA = table.cells[keyA] || { content: '' };
-                const cellB = table.cells[keyB] || { content: '' };
-                table.cells[keyA] = cellB;
-                table.cells[keyB] = cellA;
+                const cellA = table.cells[keyA] ? JSON.parse(JSON.stringify(table.cells[keyA])) : { content: '' };
+                const cellB = table.cells[keyB] ? JSON.parse(JSON.stringify(table.cells[keyB])) : { content: '' };
+                newCells[keyA] = cellB;
+                newCells[keyB] = cellA;
             }
+            table.cells = newCells;
             this._renderTableMgmtPreview();
             this.renderAllElements();
         },
 
         _swapTableCols(tIdx, fromCol, toCol) {
+            // Sync data from the main editor table cells first (not mgmt preview)
+            this.syncEditorTableCells();
             const table = App.state.editorData.tables[tIdx];
             if (!table || !table.cells || fromCol === toCol) return;
             if (this._hasMergesInTable(table)) {
                 App.showError('Unmerge all cells before reordering columns');
                 return;
             }
+            const newCells = {};
+            // Copy all cells first
+            for (const key in table.cells) {
+                newCells[key] = JSON.parse(JSON.stringify(table.cells[key]));
+            }
+            // Swap the two columns
             for (let r = 0; r < table.rows; r++) {
                 const keyA = `${r}-${fromCol}`;
                 const keyB = `${r}-${toCol}`;
-                const cellA = table.cells[keyA] || { content: '' };
-                const cellB = table.cells[keyB] || { content: '' };
-                table.cells[keyA] = cellB;
-                table.cells[keyB] = cellA;
+                const cellA = table.cells[keyA] ? JSON.parse(JSON.stringify(table.cells[keyA])) : { content: '' };
+                const cellB = table.cells[keyB] ? JSON.parse(JSON.stringify(table.cells[keyB])) : { content: '' };
+                newCells[keyA] = cellB;
+                newCells[keyB] = cellA;
             }
+            table.cells = newCells;
             this._renderTableMgmtPreview();
             this.renderAllElements();
         },
@@ -3011,6 +3095,8 @@ const App = {
         },
 
         duplicateSubtask(index) {
+            // Sync live DOM to capture colored text and formatting before cloning
+            this.syncLiveDOM();
             const original = App.state.editorData.subtasks[index]; if (!original) return;
             const clone = JSON.parse(JSON.stringify(original));
             clone.id = Math.random().toString(36).substr(2, 8);
@@ -3079,13 +3165,13 @@ const App = {
             // Header: corner + col reorder handles + spacer
             html += '<tr><td style="border:none;width:18px;padding:0;"></td>';
             for (let c = 0; c < table.cols; c++) {
-                html += `<td contenteditable="false" style="border:none;text-align:center;padding:2px 0;cursor:grab;color:var(--text-placeholder);vertical-align:middle;" class="col-reorder-handle" draggable="true" data-col="${c}" data-table-idx="${tIdx}"><i class="fa-solid fa-square" style="font-size:0.4rem;"></i></td>`;
+                html += `<td style="border:none;text-align:center;padding:2px 0;cursor:grab;color:var(--text-placeholder);vertical-align:middle;" class="col-reorder-handle" draggable="true" data-col="${c}" data-table-idx="${tIdx}"><i class="fa-solid fa-square" style="font-size:0.4rem;"></i></td>`;
             }
             html += '<td style="border:none;width:18px;padding:0;"></td></tr>';
             // Data rows
             for (let r = 0; r < table.rows; r++) {
                 html += `<tr data-row="${r}">`;
-                html += `<td contenteditable="false" style="border:none;text-align:center;padding:2px 0;cursor:grab;width:18px;color:var(--text-placeholder);vertical-align:middle;" class="row-reorder-handle" draggable="true" data-row="${r}" data-table-idx="${tIdx}"><i class="fa-solid fa-square" style="font-size:0.4rem;"></i></td>`;
+                html += `<td style="border:none;text-align:center;padding:2px 0;cursor:grab;width:18px;color:var(--text-placeholder);vertical-align:middle;" class="row-reorder-handle" draggable="true" data-row="${r}" data-table-idx="${tIdx}"><i class="fa-solid fa-square" style="font-size:0.4rem;"></i></td>`;
                 for (let c = 0; c < table.cols; c++) {
                     const cellKey = `${r}-${c}`;
                     const cell = (table.cells && table.cells[cellKey]) || {};
@@ -3093,15 +3179,15 @@ const App = {
                     const rowspan = cell.rowspan || 1;
                     const colspan = cell.colspan || 1;
                     const preview = (cell.content || '').replace(/<[^>]+>/g, '').substring(0, 6);
-                    html += `<td contenteditable="false" data-row="${r}" data-col="${c}" data-table-idx="${tIdx}" style="padding:5px 4px;min-width:36px;cursor:pointer;"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${preview || '&nbsp;'}</td>`;
+                    html += `<td data-row="${r}" data-col="${c}" data-table-idx="${tIdx}" style="padding:5px 4px;min-width:36px;cursor:pointer;"${rowspan > 1 ? ` rowspan="${rowspan}"` : ''}${colspan > 1 ? ` colspan="${colspan}"` : ''}>${preview || '&nbsp;'}</td>`;
                 }
-                html += `<td class="tbl-delete-cell" contenteditable="false" style="border:none;padding:0 2px;text-align:center;vertical-align:middle;"><button onclick="App.editor.deleteTableRowAt(${r})" style="border:none;background:none;color:var(--failed);cursor:pointer;font-size:0.65rem;padding:2px 4px;" title="Delete row"><i class="fa-solid fa-xmark"></i></button></td>`;
+                html += `<td style="border:none;padding:0 2px;text-align:center;vertical-align:middle;"><button onclick="App.editor.deleteTableRowAt(${r})" style="border:none;background:none;color:var(--failed);cursor:pointer;font-size:0.65rem;padding:2px 4px;" title="Delete row"><i class="fa-solid fa-xmark"></i></button></td>`;
                 html += '</tr>';
             }
             // Col delete row
             html += '<tr><td style="border:none;padding:0;"></td>';
             for (let c = 0; c < table.cols; c++) {
-                html += `<td class="tbl-delete-cell" contenteditable="false" style="border:none;padding:2px 0;text-align:center;vertical-align:middle;"><button onclick="App.editor.deleteTableCol(${c})" style="border:none;background:none;color:var(--failed);cursor:pointer;font-size:0.65rem;padding:2px 4px;" title="Delete column"><i class="fa-solid fa-xmark"></i></button></td>`;
+                html += `<td style="border:none;padding:2px 0;text-align:center;vertical-align:middle;"><button onclick="App.editor.deleteTableCol(${c})" style="border:none;background:none;color:var(--failed);cursor:pointer;font-size:0.65rem;padding:2px 4px;" title="Delete column"><i class="fa-solid fa-xmark"></i></button></td>`;
             }
             html += '<td style="border:none;"></td></tr>';
             html += '</table>';
@@ -3210,6 +3296,7 @@ const App = {
                 tableEl.querySelectorAll('td[contenteditable]').forEach(td => {
                     const r = parseInt(td.dataset.row);
                     const c = parseInt(td.dataset.col);
+                    if (isNaN(r) || isNaN(c)) return;
                     const key = `${r}-${c}`;
                     if (!table.cells[key]) table.cells[key] = {};
                     // Preserve varName if it exists
@@ -3222,6 +3309,10 @@ const App = {
                         if (!isNaN(numVal) && ed.variables && ed.variables.vars[existingVarName]) {
                             ed.variables.vars[existingVarName].value = numVal;
                         }
+                    }
+                    // Persist text alignment
+                    if (td.style.textAlign) {
+                        table.cells[key].textAlign = td.style.textAlign;
                     }
                 });
             });
@@ -3665,40 +3756,11 @@ const App = {
         },
 
         initSidebarDrag() {
-            const sidebar = document.getElementById('editor-sidebar');
-            const handle = document.getElementById('sidebar-drag-handle');
-            if (!sidebar || !handle) return;
-            const onStart = (cx, cy) => {
-                // If pinned, don't allow dragging
-                if (sidebar.classList.contains('pinned')) return;
-                const r = sidebar.getBoundingClientRect();
-                App.state.sidebarDrag = { active: true, startX: cx, startY: cy, origX: r.left, origY: r.top };
-                sidebar.style.transition = 'none';
-            };
-            const onMove = (cx, cy) => {
-                if (!App.state.sidebarDrag.active) return;
-                const dx = cx - App.state.sidebarDrag.startX;
-                const dy = cy - App.state.sidebarDrag.startY;
-                sidebar.style.right = 'auto';
-                sidebar.style.transform = 'none';
-                sidebar.style.left = Math.max(0, Math.min(App.state.sidebarDrag.origX + dx, window.innerWidth - sidebar.offsetWidth)) + 'px';
-                sidebar.style.top = Math.max(0, App.state.sidebarDrag.origY + dy) + 'px';
-            };
-            const onEnd = () => { App.state.sidebarDrag.active = false; sidebar.style.transition = ''; };
-            handle.addEventListener('mousedown', (e) => { e.preventDefault(); onStart(e.clientX, e.clientY); });
-            document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-            document.addEventListener('mouseup', onEnd);
-            handle.addEventListener('touchstart', (e) => { const t = e.touches[0]; onStart(t.clientX, t.clientY); }, { passive: true });
-            document.addEventListener('touchmove', (e) => { if (!App.state.sidebarDrag.active) return; const t = e.touches[0]; onMove(t.clientX, t.clientY); }, { passive: true });
-            document.addEventListener('touchend', onEnd);
+            // Footer toolbar doesn't need drag - no-op
         },
 
         togglePinSidebar() {
-            const sidebar = document.getElementById('editor-sidebar');
-            const btn = document.getElementById('btn-pin-sidebar');
-            if (!sidebar) return;
-            const isPinned = sidebar.classList.toggle('pinned');
-            if (btn) btn.classList.toggle('pinned', isPinned);
+            // No-op for footer layout
         },
 
         // ==========================================
@@ -3733,25 +3795,60 @@ const App = {
                             return String(vars[vn].value);
                         });
                     }
+                    // Symbol replacements
                     e = e.replace(/×/g, '*').replace(/÷/g, '/');
+                    // Multi-arg functions: sum, avg, count
+                    e = e.replace(/sum\(([^)]+)\)/g, (_, args) => '(' + args.split(',').join('+') + ')');
+                    e = e.replace(/avg\(([^)]+)\)/g, (_, args) => { const parts = args.split(','); return '((' + parts.join('+') + ')/' + parts.length + ')'; });
+                    e = e.replace(/count\(([^)]+)\)/g, (_, args) => String(args.split(',').length));
+                    // Math functions
                     e = e.replace(/pow\(\s*([^,]+),\s*([^)]+)\)/g, 'Math.pow($1,$2)');
                     e = e.replace(/rad\(\s*([^,]+),\s*([^)]+)\)/g, 'Math.pow($1,1/($2))');
+                    e = e.replace(/sqrt\(\s*([^)]+)\)/g, 'Math.sqrt($1)');
                     e = e.replace(/log\(\s*([^,]+),\s*([^)]+)\)/g, '(Math.log($2)/Math.log($1))');
+                    e = e.replace(/ln\(\s*([^)]+)\)/g, 'Math.log($1)');
+                    e = e.replace(/log10\(\s*([^)]+)\)/g, 'Math.log10($1)');
+                    e = e.replace(/abs\(\s*([^)]+)\)/g, 'Math.abs($1)');
+                    e = e.replace(/sign\(\s*([^)]+)\)/g, 'Math.sign($1)');
+                    e = e.replace(/round\(\s*([^)]+)\)/g, 'Math.round($1)');
+                    e = e.replace(/floor\(\s*([^)]+)\)/g, 'Math.floor($1)');
+                    e = e.replace(/ceil\(\s*([^)]+)\)/g, 'Math.ceil($1)');
+                    e = e.replace(/min\(\s*([^,]+),\s*([^)]+)\)/g, 'Math.min($1,$2)');
+                    e = e.replace(/max\(\s*([^,]+),\s*([^)]+)\)/g, 'Math.max($1,$2)');
+                    e = e.replace(/mod\(\s*([^,]+),\s*([^)]+)\)/g, '(($1)%($2))');
+                    // Factorial
                     e = e.replace(/(\d+(?:\.\d+)?)\s*!/g, '_factorial($1)');
                     const _factorial = (n) => { n = Math.round(n); if (n < 0) return NaN; if (n <= 1) return 1; let r = 1; for (let i = 2; i <= n; i++) r *= i; return r; };
                     const result = new Function('_factorial', `"use strict"; return (${e});`)(_factorial);
+                    // Support boolean results
+                    if (typeof result === 'boolean') return result;
                     if (typeof result === 'number' && isFinite(result)) return Math.round(result * 1e8) / 1e8;
                     return NaN;
                 } catch { return NaN; }
             },
             parseFormula(str) {
-                const eqParts = str.split('=').map(s => s.trim());
-                if (eqParts.length !== 2) return null;
-                // Accept "var name" or just "name" as result
-                let resultMatch = eqParts[1].match(/^var\s+(\w+)$/);
-                if (!resultMatch) resultMatch = eqParts[1].match(/^(\w+)$/);
+                // Split on the LAST single '=' that is not part of ==, !=, >=, <=
+                // Strategy: find the last '=' that is not preceded by !, <, >, = and not followed by =
+                let lastAssignIdx = -1;
+                for (let i = str.length - 1; i >= 0; i--) {
+                    if (str[i] === '=') {
+                        const prev = i > 0 ? str[i - 1] : '';
+                        const next = i < str.length - 1 ? str[i + 1] : '';
+                        // Skip if part of ==, !=, >=, <=
+                        if (prev === '=' || prev === '!' || prev === '<' || prev === '>') continue;
+                        if (next === '=') continue;
+                        lastAssignIdx = i;
+                        break;
+                    }
+                }
+                if (lastAssignIdx < 0) return null;
+                const expression = str.substring(0, lastAssignIdx).trim();
+                const resultPart = str.substring(lastAssignIdx + 1).trim();
+                if (!expression || !resultPart) return null;
+                let resultMatch = resultPart.match(/^var\s+(\w+)$/);
+                if (!resultMatch) resultMatch = resultPart.match(/^(\w+)$/);
                 if (!resultMatch) return null;
-                return { expression: eqParts[0], resultVar: resultMatch[1] };
+                return { expression, resultVar: resultMatch[1] };
             }
         },
 
@@ -3911,6 +4008,55 @@ const App = {
             });
         },
 
+        // Long-press on table cell to select it and open variable creation
+        _initTableCellLongPress() {
+            document.querySelectorAll('td[contenteditable="true"][data-table-idx][data-row][data-col]').forEach(td => {
+                let longPressTimer = null;
+                const startPress = (e) => {
+                    longPressTimer = setTimeout(() => {
+                        longPressTimer = null;
+                        // Select the cell
+                        td.focus();
+                        const range = document.createRange();
+                        range.selectNodeContents(td);
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                        // Open create variable modal for this cell
+                        const tIdx = parseInt(td.dataset.tableIdx);
+                        const row = parseInt(td.dataset.row);
+                        const col = parseInt(td.dataset.col);
+                        const ed = App.state.editorData;
+                        // Get current cell value (may be non-numeric)
+                        const cellText = td.textContent.trim();
+                        const numVal = parseFloat(cellText);
+                        const value = isNaN(numVal) ? 0 : numVal;
+                        App.state._fnSelectedValue = value;
+                        App.state._fnSelectionRange = sel.rangeCount > 0 ? sel.getRangeAt(0).cloneRange() : null;
+                        App.state._fnIsTableCell = true;
+                        document.getElementById('create-var-value').value = value;
+                        document.getElementById('create-var-name').value = '';
+                        document.getElementById('create-var-scope-field').style.display = 'block';
+                        document.getElementById('var-scope-cell').classList.add('selected');
+                        document.getElementById('var-scope-cell').querySelector('i').className = 'fa-regular fa-circle-dot';
+                        document.getElementById('var-scope-number').classList.remove('selected');
+                        document.getElementById('var-scope-number').querySelector('i').className = 'fa-regular fa-circle';
+                        App.state._varScope = 'cell';
+                        document.getElementById('modal-create-var').classList.add('active');
+                        document.getElementById('modal-overlay').classList.add('active');
+                        setTimeout(() => document.getElementById('create-var-name').focus(), 100);
+                    }, 600);
+                };
+                const cancelPress = () => {
+                    if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+                };
+                td.addEventListener('touchstart', startPress, { passive: true });
+                td.addEventListener('touchend', cancelPress);
+                td.addEventListener('touchmove', cancelPress);
+                td.addEventListener('touchcancel', cancelPress);
+            });
+        },
+
         _renderFunctionModal() {
             const ed = App.state.editorData;
             if (!ed.variables) ed.variables = { vars: {}, formulas: [] };
@@ -3924,18 +4070,19 @@ const App = {
             html += `<div class="fn-modal-section"><div class="fn-modal-section-title">Variables</div>`;
             const varKeys = Object.keys(vars);
             if (varKeys.length === 0) {
-                html += `<p style="font-size:0.82rem;color:var(--text-tertiary);padding:8px 0;">No variables yet. Select a number in the editor and click <i class="fa-solid fa-superscript"></i> to create one.</p>`;
+                html += `<p style="font-size:0.82rem;color:var(--text-tertiary);padding:8px 0;">No variables yet. Create one below or select a number in the editor and click <i class="fa-solid fa-superscript"></i>.</p>`;
             } else {
                 html += `<div class="fn-var-list">`;
                 for (const name of varKeys) {
                     const v = vars[name];
                     const computed = formulas.find(f => f.resultVar === name);
                     const isTblVar = v.tableCell ? `<span class="fn-var-item-computed"> (table cell)</span>` : '';
+                    const boolDisplay = v.value === true ? '<i class="fa-solid fa-check" style="color:var(--done);"></i>' : (v.value === false ? '<i class="fa-solid fa-xmark" style="color:var(--failed);"></i>' : null);
                     html += `<div class="fn-var-item">
                         <div><span class="fn-var-item-name">var ${App.tasks.escapeHtml(name)}</span>
                         ${computed ? `<span class="fn-var-item-computed"> (computed)</span>` : isTblVar}</div>
                         <div style="display:flex;align-items:center;gap:8px;">
-                            ${!computed ? `<input type="number" class="po-input" style="width:80px;padding:4px 8px;font-size:0.85rem;" value="${v.value}" onchange="App.editor._updateVarValue('${App.tasks.escapeHtml(name)}', this.value)">` : `<span class="fn-var-item-value">${v.value}</span>`}
+                            ${!computed ? `<input type="number" class="po-input" style="width:80px;padding:4px 8px;font-size:0.85rem;" value="${v.value}" onchange="App.editor._updateVarValue('${App.tasks.escapeHtml(name)}', this.value)">` : (boolDisplay ? `<span class="fn-var-item-value">${boolDisplay}</span>` : `<span class="fn-var-item-value">${v.value}</span>`)}
                             <span class="fn-var-item-delete" onclick="App.editor._deleteVariable('${App.tasks.escapeHtml(name)}')"><i class="fa-regular fa-trash-can"></i></span>
                         </div>
                     </div>`;
@@ -3943,6 +4090,14 @@ const App = {
                 html += `</div>`;
                 html += `<div style="margin-top:6px;"><button class="fn-btn fn-btn-secondary" style="font-size:0.75rem;padding:6px 12px;color:var(--failed);" onclick="App.editor._deleteAllVariables()"><i class="fa-regular fa-trash-can"></i> Delete All Variables</button></div>`;
             }
+            // Always show create variable row
+            html += `<div class="fn-new-var-row" style="margin-top:10px;">
+                <input type="text" id="fn-new-var-name" class="po-input" placeholder="Name" spellcheck="false" autocomplete="off" style="flex:1;">
+                <div class="input-with-action" style="flex:1;">
+                    <input type="number" id="fn-new-var-value" class="po-input" placeholder="Value">
+                    <button class="input-action-btn" onclick="App.editor._createVarFromModal()" title="Add variable"><i class="fa-solid fa-plus"></i></button>
+                </div>
+            </div>`;
             html += `</div>`;
 
             // Section: Functions
@@ -3952,10 +4107,11 @@ const App = {
                 formulas.forEach((f, i) => {
                     const computed = vars[f.resultVar];
                     const val = computed ? computed.value : '?';
+                    const displayVal = val === true ? '<i class="fa-solid fa-check" style="color:var(--done);"></i>' : (val === false ? '<i class="fa-solid fa-xmark" style="color:var(--failed);"></i>' : val);
                     html += `<div class="fn-formula-item${f._conflict ? ' conflict' : ''}">
                         <span class="fn-formula-expr">${App.tasks.escapeHtml(f.expression)} = ${App.tasks.escapeHtml(f.resultVar)}</span>
                         <div style="display:flex;align-items:center;gap:8px;">
-                            <span class="fn-formula-result">${val}</span>
+                            <span class="fn-formula-result">${displayVal}</span>
                             <span class="fn-formula-delete" onclick="App.editor._deleteFormula(${i})"><i class="fa-regular fa-trash-can"></i></span>
                         </div>
                     </div>`;
@@ -3967,12 +4123,79 @@ const App = {
             }
             html += `<div class="po-field"><label>Add Function</label>
                 <div class="input-with-action">
-                    <input type="text" id="fn-formula-input" class="po-input" style="font-family:monospace;font-size:0.88rem;" placeholder="a + b = c" spellcheck="false" autocomplete="off">
+                    <input type="text" id="fn-formula-input" class="po-input" style="font-size:0.88rem;" placeholder="a + b = c" spellcheck="false" autocomplete="off">
                     <button class="input-action-btn" onclick="App.editor._addFormula()" title="Add function"><i class="fa-solid fa-check"></i></button>
                 </div>
-                <p class="fn-help-text">Syntax: <b>a + b = result</b><br>
-                Operators: + - × / pow(x,y) rad(x,y) log(x,y) n! ( )<br>
-                Type <b>[name]</b> in text to display a computed value</p>
+            </div>`;
+            // Collapsible help section
+            html += `<div style="margin-top:4px;">
+                <div onclick="this.nextElementSibling.classList.toggle('open');this.querySelector('i').style.transform=this.nextElementSibling.classList.contains('open')?'rotate(180deg)':''" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;padding:8px 0;font-size:0.82rem;color:var(--text-secondary);font-weight:500;">
+                    <span>How to form a function</span>
+                    <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;transition:transform 0.25s ease;color:var(--text-tertiary);"></i>
+                </div>
+                <div style="max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);" class="fn-help-section-content" onclick="event.stopPropagation();">
+                    <div style="padding:4px 0 12px;">
+                        <!-- Syntax section -->
+                        <div style="margin-bottom:14px;">
+                            <div style="font-size:0.78rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Syntax</div>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);line-height:1.6;margin-bottom:4px;">Write an expression on the left, then <b>=</b> followed by the result variable name on the right.</p>
+                            <p style="font-size:0.75rem;color:var(--text-tertiary);line-height:1.6;font-style:italic;">Example: <b>a + b = c</b> — computes a + b and stores the result in variable c.</p>
+                        </div>
+                        <!-- Mathematical Functions section -->
+                        <div style="margin-bottom:14px;">
+                            <div style="font-size:0.78rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Mathematical Functions</div>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);line-height:1.6;margin-bottom:6px;">Use these operators and functions inside expressions. Variables can be used in place of numbers.</p>
+                            <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:600;color:var(--text-primary);width:30%;">Operation</td><td style="padding:4px 6px;color:var(--text-secondary);width:30%;">Syntax</td><td style="padding:4px 6px;color:var(--text-tertiary);">Example</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Add</td><td style="padding:4px 6px;">a + b</td><td style="padding:4px 6px;">5 + 3 = 8</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Subtract</td><td style="padding:4px 6px;">a - b</td><td style="padding:4px 6px;">9 - 4 = 5</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Multiply</td><td style="padding:4px 6px;">a × b</td><td style="padding:4px 6px;">6 × 2 = 12</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Divide</td><td style="padding:4px 6px;">a / b</td><td style="padding:4px 6px;">10 / 2 = 5</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Power</td><td style="padding:4px 6px;">pow(x, y)</td><td style="padding:4px 6px;">pow(2, 3) = 8</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Root</td><td style="padding:4px 6px;">rad(x, y)</td><td style="padding:4px 6px;">rad(27, 3) = 3</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Square root</td><td style="padding:4px 6px;">sqrt(x)</td><td style="padding:4px 6px;">sqrt(16) = 4</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Logarithm</td><td style="padding:4px 6px;">log(x, base)</td><td style="padding:4px 6px;">log(25, 5) = 2</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Natural log</td><td style="padding:4px 6px;">ln(x)</td><td style="padding:4px 6px;">ln(2.71) ≈ 1</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Log base 10</td><td style="padding:4px 6px;">log10(x)</td><td style="padding:4px 6px;">log10(100) = 2</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Absolute</td><td style="padding:4px 6px;">abs(x)</td><td style="padding:4px 6px;">abs(-7) = 7</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Sign</td><td style="padding:4px 6px;">sign(x)</td><td style="padding:4px 6px;">sign(-5) = -1</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Round</td><td style="padding:4px 6px;">round(x)</td><td style="padding:4px 6px;">round(4.6) = 5</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Floor</td><td style="padding:4px 6px;">floor(x)</td><td style="padding:4px 6px;">floor(4.8) = 4</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Ceil</td><td style="padding:4px 6px;">ceil(x)</td><td style="padding:4px 6px;">ceil(4.2) = 5</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Minimum</td><td style="padding:4px 6px;">min(a, b)</td><td style="padding:4px 6px;">min(3, 9) = 3</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Maximum</td><td style="padding:4px 6px;">max(a, b)</td><td style="padding:4px 6px;">max(3, 9) = 9</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Modulo</td><td style="padding:4px 6px;">mod(a, b)</td><td style="padding:4px 6px;">mod(10, 3) = 1</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Sum</td><td style="padding:4px 6px;">sum(a, b, c)</td><td style="padding:4px 6px;">sum(5, 10, 15) = 30</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Average</td><td style="padding:4px 6px;">avg(a, b, c)</td><td style="padding:4px 6px;">avg(5, 10, 15) = 10</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Count</td><td style="padding:4px 6px;">count(a, b, c)</td><td style="padding:4px 6px;">count(5, 10, 15) = 3</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Factorial</td><td style="padding:4px 6px;">x!</td><td style="padding:4px 6px;">5! = 120</td></tr>
+                                <tr><td style="padding:4px 6px;font-weight:500;">Grouping</td><td style="padding:4px 6px;">(expr)</td><td style="padding:4px 6px;">(2 + 3) × 4 = 20</td></tr>
+                            </table>
+                        </div>
+                        <!-- Comparisons & Logic section -->
+                        <div style="margin-bottom:14px;">
+                            <div style="font-size:0.78rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Comparisons & Logic</div>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);line-height:1.6;margin-bottom:6px;">These return <b>true</b> or <b>false</b>. When displayed with <b>[name]</b>, true shows as <i class="fa-solid fa-check" style="color:var(--done);font-size:0.75rem;"></i> and false as <i class="fa-solid fa-xmark" style="color:var(--failed);font-size:0.75rem;"></i>.</p>
+                            <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:600;color:var(--text-primary);width:30%;">Operation</td><td style="padding:4px 6px;color:var(--text-secondary);width:30%;">Syntax</td><td style="padding:4px 6px;color:var(--text-tertiary);">Example</td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Equal</td><td style="padding:4px 6px;">a == b</td><td style="padding:4px 6px;">5 == 5 → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Not equal</td><td style="padding:4px 6px;">a != b</td><td style="padding:4px 6px;">5 != 3 → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Greater</td><td style="padding:4px 6px;">a > b</td><td style="padding:4px 6px;">7 > 4 → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Less</td><td style="padding:4px 6px;">a < b</td><td style="padding:4px 6px;">2 < 6 → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Greater/equal</td><td style="padding:4px 6px;">a >= b</td><td style="padding:4px 6px;">5 >= 5 → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Less/equal</td><td style="padding:4px 6px;">a <= b</td><td style="padding:4px 6px;">4 <= 6 → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">And</td><td style="padding:4px 6px;">a && b</td><td style="padding:4px 6px;">(5>3) && (2<4) → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr style="border-bottom:1px solid var(--border-light);"><td style="padding:4px 6px;font-weight:500;">Or</td><td style="padding:4px 6px;">a || b</td><td style="padding:4px 6px;">(5<3) || (2<4) → <i class="fa-solid fa-check" style="color:var(--done);font-size:0.7rem;"></i></td></tr>
+                                <tr><td style="padding:4px 6px;font-weight:500;">Not</td><td style="padding:4px 6px;">!a</td><td style="padding:4px 6px;">!(5>3) → <i class="fa-solid fa-xmark" style="color:var(--failed);font-size:0.7rem;"></i></td></tr>
+                            </table>
+                        </div>
+                        <!-- Display section -->
+                        <div>
+                            <div style="font-size:0.78rem;font-weight:600;color:var(--text-primary);margin-bottom:6px;">Displaying Results</div>
+                            <p style="font-size:0.75rem;color:var(--text-secondary);line-height:1.6;">Type <b>[name]</b> anywhere in a subtask, description, or table cell to display a variable's live value. For boolean variables, <i class="fa-solid fa-check" style="color:var(--done);font-size:0.75rem;"></i> or <i class="fa-solid fa-xmark" style="color:var(--failed);font-size:0.75rem;"></i> will appear instead of true/false.</p>
+                        </div>
+                    </div>
+                </div>
             </div>`;
             html += `</div>`;
 
@@ -4136,6 +4359,25 @@ const App = {
             App.showSuccess('All functions deleted');
         },
 
+        _createVarFromModal() {
+            const nameInput = document.getElementById('fn-new-var-name');
+            const valueInput = document.getElementById('fn-new-var-value');
+            if (!nameInput || !valueInput) return;
+            const name = nameInput.value.trim();
+            const value = parseFloat(valueInput.value);
+            if (!name) { App.showError('Enter a variable name'); return; }
+            if (!/^\w+$/.test(name)) { App.showError('Variable name must be alphanumeric'); return; }
+            if (isNaN(value)) { App.showError('Enter a numeric value'); return; }
+            const ed = App.state.editorData;
+            if (!ed.variables) ed.variables = { vars: {}, formulas: [] };
+            if (ed.variables.vars[name]) { App.showError(`Variable "${name}" already exists`); return; }
+            ed.variables.vars[name] = { value, isSource: true, _poBaseValue: value };
+            this._recomputeFormulas();
+            this._renderFunctionModal();
+            this._resolveVarReferences();
+            App.showSuccess(`Variable "${name}" = ${value} created`);
+        },
+
         _addFormula() {
             const input = document.getElementById('fn-formula-input');
             if (!input) return;
@@ -4171,7 +4413,8 @@ const App = {
             ed.variables.formulas.push({ expression: parsed.expression, resultVar: parsed.resultVar });
             // Compute and create the result variable
             const result = this._fnMath.evaluate(parsed.expression, ed.variables.vars);
-            ed.variables.vars[parsed.resultVar] = { value: isNaN(result) ? 0 : result, isComputed: true };
+            const initVal = (typeof result === 'boolean') ? result : (isNaN(result) ? 0 : result);
+            ed.variables.vars[parsed.resultVar] = { value: initVal, isComputed: true };
             input.value = '';
             this._recomputeFormulas();
             this._renderFunctionModal();
@@ -4188,12 +4431,25 @@ const App = {
             // Recompute each formula
             for (const f of formulas) {
                 const result = this._fnMath.evaluate(f.expression, vars);
-                if (!isNaN(result)) {
+                if (result !== undefined && result !== null && (typeof result === 'boolean' || !isNaN(result))) {
                     if (!vars[f.resultVar]) vars[f.resultVar] = { value: 0, isComputed: true };
                     vars[f.resultVar].value = result;
                     vars[f.resultVar].isComputed = true;
                 }
             }
+        },
+
+        // For contenteditable contexts: icon with a hidden carrier char so backspace works
+        _formatVarDisplay(value) {
+            if (value === true) return '\u2060<i class="fa-solid fa-check var-bool-icon var-bool-true"></i>';
+            if (value === false) return '\u2060<i class="fa-solid fa-xmark var-bool-icon var-bool-false"></i>';
+            return String(value);
+        },
+        // For display-only contexts (task view, function modal): use styled icons
+        _formatVarIcon(value) {
+            if (value === true) return '<i class="fa-solid fa-check" style="color:var(--done);font-size:0.85em;"></i>';
+            if (value === false) return '<i class="fa-solid fa-xmark" style="color:var(--failed);font-size:0.85em;"></i>';
+            return String(value);
         },
 
         // Resolve variable references in descriptions, subtasks, and table cells
@@ -4203,6 +4459,7 @@ const App = {
             const vars = ed.variables.vars || {};
             // Build a set of known variable names for safe matching
             const varNames = new Set(Object.keys(vars));
+            const self = this;
             const resolveInElement = (el) => {
                 if (!el) return;
                 // Update existing var-computed-ref spans; revert orphaned ones back to [name] syntax
@@ -4211,8 +4468,9 @@ const App = {
                 refs.forEach(ref => {
                     const name = ref.getAttribute('data-var-ref');
                     if (name && vars[name] !== undefined) {
-                        if (ref.textContent !== String(vars[name].value)) {
-                            ref.textContent = vars[name].value;
+                        const display = self._formatVarDisplay(vars[name].value);
+                        if (ref.innerHTML !== display) {
+                            ref.innerHTML = display;
                         }
                     } else if (name) {
                         // Variable was deleted — revert span back to [name] text so user can re-create it
@@ -4227,12 +4485,12 @@ const App = {
                 let changed = false;
                 // Arrow syntax: <--name--> or <--var name-->
                 let replaced = html.replace(/&lt;--(?:var\s+)?(\w+)--&gt;/g, (match, name) => {
-                    if (varNames.has(name)) { changed = true; return `<span class="var-computed-ref" data-var-ref="${name}">${vars[name].value}</span>`; }
+                    if (varNames.has(name)) { changed = true; return `<span class="var-computed-ref" data-var-ref="${name}">${self._formatVarDisplay(vars[name].value)}</span>`; }
                     return match;
                 });
                 // Bracket syntax: [name] — only match known variable names to avoid false positives
                 replaced = replaced.replace(/\[(\w+)\]/g, (match, name) => {
-                    if (varNames.has(name)) { changed = true; return `<span class="var-computed-ref" data-var-ref="${name}">${vars[name].value}</span>`; }
+                    if (varNames.has(name)) { changed = true; return `<span class="var-computed-ref" data-var-ref="${name}">${self._formatVarDisplay(vars[name].value)}</span>`; }
                     return match;
                 });
                 if (changed) {
@@ -4265,6 +4523,20 @@ const App = {
                 if (!ed.variables || !ed.variables.vars) return;
                 const vars = ed.variables.vars;
                 const html = el.innerHTML;
+                // Clean up orphaned boolean icons and empty var-computed-ref spans after deletion
+                el.querySelectorAll('.var-computed-ref').forEach(ref => {
+                    // If the span has no text content (word-joiner was deleted), remove the whole span
+                    const text = ref.textContent.replace(/[\u2060\u200B\u200D]/g, '');
+                    if (!text && !ref.querySelector('.var-bool-icon')) {
+                        ref.parentNode.removeChild(ref);
+                    }
+                });
+                // Remove stray bool icons that ended up outside their var-computed-ref parent
+                el.querySelectorAll('.var-bool-icon').forEach(icon => {
+                    if (!icon.closest('.var-computed-ref')) {
+                        icon.parentNode.removeChild(icon);
+                    }
+                });
                 // Check for completed pattern and resolve
                 if (/&lt;--(?:var\s+)?\w+--&gt;/.test(html) || /\[\w+\]/.test(html)) {
                     this._resolveVarReferences();
@@ -5006,9 +5278,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             _updateFormattingState();
             // Disable PO button when cursor/selection is inside any variable or description
             const poBtn = document.querySelector('.sidebar-tool[data-tool="po"]');
-            if (poBtn) {
+            const alignBtn = document.querySelector('.sidebar-tool[data-tool="textalign"]');
+            if (poBtn || alignBtn) {
                 const sel = window.getSelection();
                 let insideVar = false;
+                let insideDesc = false;
                 if (sel && sel.anchorNode) {
                     const el = sel.anchorNode.nodeType === 3 ? sel.anchorNode.parentElement : sel.anchorNode;
                     if (el) {
@@ -5029,13 +5303,35 @@ document.addEventListener('DOMContentLoaded', async () => {
                             }
                         }
                         // Description fields (existing behavior)
-                        if (el.closest('.subtask-desc-input') || el.closest('#editor-description')) insideVar = true;
+                        if (el.closest('.subtask-desc-input') || el.closest('#editor-description')) {
+                            insideVar = true;
+                            insideDesc = true;
+                        }
                     }
                 }
-                if (insideVar) {
-                    poBtn.classList.add('po-disabled');
-                } else {
-                    poBtn.classList.remove('po-disabled');
+                if (poBtn) {
+                    if (insideVar) poBtn.classList.add('po-disabled');
+                    else poBtn.classList.remove('po-disabled');
+                }
+                // Disable text-align for description elements
+                if (alignBtn) {
+                    if (insideDesc) alignBtn.classList.add('textalign-disabled');
+                    else alignBtn.classList.remove('textalign-disabled');
+                }
+                // Update text-align icon based on current focused element
+                if (alignBtn && !insideDesc) {
+                    const sel2 = window.getSelection();
+                    if (sel2 && sel2.anchorNode) {
+                        const el2 = sel2.anchorNode.nodeType === 3 ? sel2.anchorNode.parentElement : sel2.anchorNode;
+                        const targetTd = el2 ? el2.closest('td[contenteditable="true"]') : null;
+                        const targetSt = el2 ? el2.closest('.subtask-editor-input') : null;
+                        const target = targetTd || targetSt;
+                        if (target) {
+                            const align = target.style.textAlign || 'left';
+                            const icon = document.getElementById('textalign-icon');
+                            if (icon) icon.className = align === 'center' ? 'fa-solid fa-align-center' : (align === 'right' ? 'fa-solid fa-align-right' : 'fa-solid fa-align-left');
+                        }
+                    }
                 }
             }
         }
@@ -5060,6 +5356,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             document.execCommand('italic', false, null);
             _updateFormattingState();
+        }
+        // Backspace/Delete: if cursor is adjacent to a var-computed-ref with a boolean icon, remove the whole span
+        if (e.key === 'Backspace' || e.key === 'Delete') {
+            const sel = window.getSelection();
+            if (!sel || !sel.rangeCount || !sel.isCollapsed) return;
+            const range = sel.getRangeAt(0);
+            const node = range.startContainer;
+            const offset = range.startOffset;
+            let refSpan = null;
+            if (e.key === 'Backspace') {
+                // Cursor inside a var-computed-ref (e.g. after the word-joiner)
+                if (node.nodeType === 3) {
+                    const parent = node.parentElement;
+                    if (parent && parent.classList.contains('var-computed-ref') && parent.querySelector('.var-bool-icon')) refSpan = parent;
+                    else if (parent && parent.closest && parent.closest('.var-computed-ref')) {
+                        const vr = parent.closest('.var-computed-ref');
+                        if (vr.querySelector('.var-bool-icon')) refSpan = vr;
+                    }
+                    // Also: cursor at pos 0 of a text node right after a ref span
+                    if (!refSpan && offset === 0 && node.previousSibling) {
+                        const prev = node.previousSibling;
+                        if (prev.nodeType === 1 && prev.classList.contains('var-computed-ref') && prev.querySelector('.var-bool-icon')) refSpan = prev;
+                    }
+                } else if (node.nodeType === 1) {
+                    const child = offset > 0 ? node.childNodes[offset - 1] : null;
+                    if (child && child.nodeType === 1 && child.classList && child.classList.contains('var-computed-ref') && child.querySelector('.var-bool-icon')) refSpan = child;
+                }
+            } else { // Delete
+                if (node.nodeType === 3 && offset === node.textContent.length && node.nextSibling) {
+                    const next = node.nextSibling;
+                    if (next.nodeType === 1 && next.classList.contains('var-computed-ref') && next.querySelector('.var-bool-icon')) refSpan = next;
+                } else if (node.nodeType === 1) {
+                    const child = node.childNodes[offset];
+                    if (child && child.nodeType === 1 && child.classList && child.classList.contains('var-computed-ref') && child.querySelector('.var-bool-icon')) refSpan = child;
+                }
+            }
+            if (refSpan) {
+                e.preventDefault();
+                refSpan.parentNode.removeChild(refSpan);
+            }
         }
     });
 
