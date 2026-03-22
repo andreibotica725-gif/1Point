@@ -717,6 +717,12 @@ text-align: center;
 #btn-pin-sidebar {
   display: none;
 }
+#fn-new-var-value {
+  padding: 10px 14px;
+}
+#fn-new-var-name {
+  padding: 10px 0px 10px 10px;
+}
 </style>
 </head>
 <body>
@@ -774,7 +780,7 @@ text-align: center;
                     <button class="sidebar-tool" onclick="App.editor.toggleItalic()" title="Italic" data-tool="italic"><i class="fa-solid fa-italic"></i></button>
                     <button class="sidebar-tool" onclick="App.editor.cycleTextAlign()" title="Text Align" data-tool="textalign"><i class="fa-solid fa-align-left" id="textalign-icon"></i></button>
                     <button class="sidebar-tool" onclick="App.editor.openColorPicker()" title="Text Color" data-tool="color">
-                        <i class="fa-solid fa-circle" id="color-tool-icon"></i>
+                        <i class="fa-solid fa-fill" id="color-tool-icon"></i>
                     </button>
                     <button class="sidebar-tool" onclick="App.editor.openPOConfig()" title="Progressive Overload" data-tool="po">
                         <i class="fa-solid fa-arrow-trend-up"></i>
@@ -783,7 +789,7 @@ text-align: center;
                         <i class="fa-solid fa-superscript"></i>
                     </button>
                     <button class="sidebar-tool" onclick="App.editor.addSubtaskDescription()" title="Add Description" data-tool="description">
-                        <i class="fa-solid fa-align-left"></i>
+                        <i class="fa-solid fa-paragraph"></i>
                     </button>
                     <button class="sidebar-tool" onclick="App.editor.addSubtask()" title="Add Subtask" data-tool="subtask">
                         <i class="fa-solid fa-list-check"></i>
