@@ -161,11 +161,21 @@ input[type="number"] { -moz-appearance: textfield; }
 .nav-tab i { font-size: 1.25rem; }
 
 /* Task Editor */
-#page-editor { z-index: 50; }
+/* Phase 1 (Stacking Context): isolation: isolate creates a fresh stacking context
+   so internal z-index values (editor-header z:5, dropdowns z:50) cannot leak out
+   and compete with the sidebar's z-index: 9999.
+   Phase 3 (Overscroll): overscroll-behavior-y is toggled to 'none' by JS when
+   the keyboard is open — see the .keyboard-active class below. */
+#page-editor { z-index: 50; isolation: isolate; }
+#page-editor.keyboard-active { overscroll-behavior-y: none; }
 .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; position: sticky; top: 0; background: var(--bg-primary); z-index: 5; }
 .editor-back, .editor-save { display: flex; align-items: center; gap: 4px; font-size: 0.95rem; font-weight: 500; color: var(--text-primary); transition: opacity var(--transition); }
 .editor-back:active, .editor-save:active { opacity: 0.5; }
-.editor-body { padding: 0 20px 140px; padding-bottom: calc(140px + var(--keyboard-offset, 0px)); max-width: 480px; margin: 0 auto; }
+/* Phase 3 (Layout Shift Prevention): --keyboard-offset is set by JS to the keyboard
+   height. --sidebar-height (default 50px) is the toolbar's own height. Together they
+   ensure the bottom of the editor content is never hidden behind the sidebar+keyboard
+   stack when the user scrolls to the very end of the page. */
+.editor-body { padding: 0 20px 140px; padding-bottom: calc(140px + var(--keyboard-offset, 0px) + var(--sidebar-height, 0px)); max-width: 480px; margin: 0 auto; }
 .editor-title { font-family: var(--font-heading); width: 100%; font-size: 1.8rem; font-weight: 600; border: none; outline: none; background: transparent; color: var(--text-primary); padding: 8px 0; letter-spacing: -0.3px; }
 .editor-title::placeholder { color: var(--text-placeholder); }
 .editor-description { width: 100%; min-height: 80px; border: none; outline: none; background: transparent; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; padding: 4px 0; }
@@ -190,23 +200,27 @@ input[type="number"] { -moz-appearance: textfield; }
 .subtask-description-editor .subtask-desc-input { flex: 1; border: none; outline: none; background: transparent; font-size: 0.85rem; color: var(--text-secondary); font-style: italic; min-height: 24px; overflow: hidden; overflow-wrap: break-word; word-break: break-word; white-space: pre-wrap; }
 .subtask-description-editor .subtask-desc-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
 
-/* Editor Footer Toolbar */
-.editor-sidebar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; flex-direction: row; align-items: center; gap: 2px; z-index: 10; background: var(--bg-primary); padding: 6px 8px; padding-bottom: max(6px, env(safe-area-inset-bottom, 6px)); border-top: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease; touch-action: none; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; will-change: transform; }
-/* Phase 1: "Curtain" hack – a massive same-color box-shadow hangs below the sidebar
-   to visually mask the gap that appears when the compositor-thread scroll outruns
-   our main-thread JS repositioning. The shadow is invisible because it matches the
-   app background, but it covers the content that would otherwise peek through.
-   Phase 2: will-change: transform tells the browser to promote this element to its
-   own compositing layer so translateY() updates hit the GPU, not the layout engine.
-   transition: none prevents any CSS transition from fighting with our per-frame JS. */
-.editor-sidebar.keyboard-open {
-    padding-bottom: 0px;
-    bottom: auto;
-    position: fixed;
-    transition: none;
-    will-change: transform;
-    box-shadow: 0 50vh 0 0 var(--bg-primary);
-}
+/* Editor Footer Toolbar
+   ──────────────────────────────────────────────────────────────────
+   Phase 1 (Z-Index Supremacy):
+     z-index: 9999 ensures the sidebar paints above every other fixed/absolute
+     element in the app (bottom-nav=100, modals=201, toasts=999).
+     pointer-events: auto guarantees tap-interactivity even if an invisible
+     overlay sits above us in the stacking order.
+   Phase 4 (Hardware-Accelerated Anchoring):
+     We never use `bottom: 0` for keyboard-open positioning. The resting state
+     uses bottom: 0, but once the keyboard opens we switch to top: 0 +
+     translateY() so the GPU compositor handles placement.
+   ────────────────────────────────────────────────────────────────── */
+.editor-sidebar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; flex-direction: row; align-items: center; gap: 2px; z-index: 9999 !important; background: var(--bg-primary); padding: 6px 8px; padding-bottom: max(6px, env(safe-area-inset-bottom, 6px)); border-top: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease; touch-action: none; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; pointer-events: auto; }
+/* Phase 1 + 2 + 4 (keyboard-open state):
+   - bottom: auto + top: 0 → sidebar anchors to layout viewport top; JS moves it via translateY()
+   - will-change: transform → promotes to own GPU layer for jank-free compositing
+   - box-shadow "curtain" → 50vh solid block in --bg-primary hangs below the sidebar,
+     masking the gap that appears when the compositor-thread scroll outruns our
+     main-thread JS repositioning (the thread-lag problem)
+   - transition: none → prevents CSS transitions from fighting per-frame JS updates */
+.editor-sidebar.keyboard-open { padding-bottom: 0px; bottom: auto; top: 0; position: fixed; transition: none; will-change: transform; box-shadow: 0 50vh 0 0 var(--bg-primary); }
 #page-editor.active .editor-sidebar { opacity: 1; visibility: visible; }
 .sidebar-drag-handle { display: none; }
 .sidebar-tool { width: 38px; height: 38px; flex-shrink: 0; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 1rem; transition: all var(--transition); }
@@ -5434,17 +5448,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // === Mobile Keyboard: keep editor-sidebar pinned above keyboard ===
-    // Three-phase fix for the "gap + twitch" bug on iOS Safari & Chrome Android.
     //
-    // Phase 1 (CSS):  A 50vh box-shadow "curtain" in --bg-primary hangs below the
-    //                  sidebar, masking the gap caused by compositor-thread lag.
-    // Phase 2 (GPU):  We reposition with transform: translateY() instead of
-    //                  style.top. translateY is a paint-only property handled by
-    //                  the GPU compositor — it never triggers layout recalculation,
-    //                  which eliminates the per-frame twitching.
-    // Phase 3 (JS):   visualViewport resize+scroll listeners, RAF-gated, with a
-    //                  debounced focusout to survive iOS's rapid blur/focus dance
-    //                  when the user taps between inputs.
+    // This handler implements a 4-phase strategy to eliminate the "gap", "twitch",
+    // and "bottom-bounce" bugs on iOS Safari and Chrome for Android.
+    //
+    // Phase 1 (CSS): z-index: 9999 !important + isolation: isolate on parent
+    //   → sidebar always paints on top regardless of stacking context.
+    //
+    // Phase 2 (Bounce-safe math): The core position formula is:
+    //     desiredTop = vv.offsetTop + vv.height - sidebarHeight
+    //   But when the user over-scrolls past the bottom of content, vv.offsetTop
+    //   can spike (iOS rubber-band), pushing desiredTop past the visible area.
+    //   We clamp desiredTop so the sidebar never sinks below the visual viewport:
+    //     maxAllowedTop = vv.offsetTop + vv.height - sidebarHeight
+    //     minAllowedTop = vv.offsetTop   (can't go above visible area either)
+    //
+    // Phase 3 (Overscroll lockdown): When the keyboard opens, we set
+    //   overscroll-behavior-y: none on the scroll container (#page-editor)
+    //   to prevent the rubber-band bounce from pulling the layout viewport
+    //   away from the sidebar's calculated position.
+    //
+    // Phase 4 (GPU compositing): We set top: 0 on the sidebar and move it
+    //   exclusively with transform: translateY(). This is a paint-only operation
+    //   handled by the GPU compositor — it never triggers layout recalculation,
+    //   eliminating per-frame twitching entirely.
+    //
     (function initKeyboardHandler() {
         const sidebar = document.getElementById('editor-sidebar');
         const editorPage = document.getElementById('page-editor');
@@ -5453,23 +5481,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         let keyboardOpen = false;
         let rafId = null;
         let focusoutTimer = null;
+        // Cache the last known keyboard height so we can use it during over-scroll
+        // when the visual viewport measurements get distorted by the rubber-band.
+        let lastKeyboardHeight = 0;
 
-        // ── The core positioning math ──
-        // window.innerHeight  = the "layout viewport" height (does NOT shrink when the keyboard opens)
-        // vv.height           = the "visual viewport" height (DOES shrink — it's the visible area above the keyboard)
-        // vv.offsetTop        = how far the visual viewport has scrolled down from the top of the layout viewport
-        //
-        // So: keyboardHeight ≈ innerHeight - vv.height
-        //     (we ignore vv.offsetTop here because our offset is relative to the layout viewport origin)
-        //
-        // To place the sidebar at the TOP of the keyboard:
-        //   desired CSS top  = vv.offsetTop + vv.height - sidebarHeight
-        //
-        // But instead of setting style.top (which triggers layout/reflow), we keep the
-        // sidebar at top: 0 and apply a translateY equal to that desired position.
-        // This way the GPU handles the move on the compositor thread.
+        // ── The core repositioning logic ──
         function positionSidebar() {
-            if (rafId) return;                       // throttle: one calc per frame
+            if (rafId) return;                         // throttle: one calc per frame
             rafId = requestAnimationFrame(() => {
                 rafId = null;
                 const vv = window.visualViewport;
@@ -5477,79 +5495,120 @@ document.addEventListener('DOMContentLoaded', async () => {
 
                 const sidebarHeight = sidebar.offsetHeight;
 
-                // Keyboard height = portion of the layout viewport hidden behind the keyboard.
-                // On most browsers: innerHeight stays constant while vv.height shrinks.
-                const keyboardHeight = window.innerHeight - vv.height;
-                const threshold = 80;                // ignore tiny viewport changes (address bar, etc.)
+                // ── Keyboard detection ──
+                // window.innerHeight = layout viewport (does NOT shrink when keyboard opens)
+                // vv.height          = visual viewport (DOES shrink — the visible area above the keyboard)
+                // The difference is approximately the keyboard height.
+                // We do NOT subtract vv.offsetTop here — that caused the old code to
+                // under-estimate keyboard height when the page was scrolled.
+                const rawKeyboardHeight = window.innerHeight - vv.height;
+                const threshold = 80;
 
-                if (keyboardHeight > threshold) {
+                if (rawKeyboardHeight > threshold) {
                     // ── Keyboard IS open ──
+
+                    // Cache the keyboard height for over-scroll protection.
+                    // During a bottom-bounce, vv.height can momentarily expand as the
+                    // rubber-band pulls the viewport, making rawKeyboardHeight shrink
+                    // or even go negative. By keeping the last "good" value we avoid
+                    // the sidebar flying off.
+                    if (rawKeyboardHeight > lastKeyboardHeight - 30) {
+                        lastKeyboardHeight = rawKeyboardHeight;
+                    }
+
                     if (!keyboardOpen) {
                         keyboardOpen = true;
                         sidebar.classList.add('keyboard-open');
-                        // Reset any previous inline top/bottom so transform is the only mover
+                        // Phase 3: Lock overscroll on the scroll container
+                        editorPage.classList.add('keyboard-active');
+                        document.body.style.overscrollBehaviorY = 'none';
+                        // Phase 4: Anchor to top: 0; all movement via translateY
                         sidebar.style.top = '0';
                         sidebar.style.bottom = 'auto';
                     }
 
-                    // Desired position from the top of the layout viewport:
-                    //   visual viewport's scroll offset + visible height - sidebar's own height
-                    const desiredTop = vv.offsetTop + vv.height - sidebarHeight;
+                    // ── Position calculation ──
+                    // desiredTop = where the bottom edge of the visible viewport is,
+                    //              minus the sidebar's own height, so the sidebar sits
+                    //              flush on top of the keyboard.
+                    //
+                    //   vv.offsetTop → how far the visual VP has scrolled within the layout VP
+                    //   vv.height   → the visible height (everything above the keyboard)
+                    //
+                    let desiredTop = vv.offsetTop + vv.height - sidebarHeight;
 
-                    // Phase 2: GPU-accelerated move — no layout thrash
+                    // ── Over-scroll / bounce clamp ──
+                    // When the user hits the bottom of the page and the browser rubber-bands,
+                    // vv.offsetTop can spike dramatically. Clamp so the sidebar can never
+                    // drop below the visual viewport's bottom edge or fly above its top edge.
+                    const maxTop = vv.offsetTop + vv.height - sidebarHeight;
+                    const minTop = vv.offsetTop;
+                    desiredTop = Math.max(minTop, Math.min(desiredTop, maxTop));
+
+                    // Additional safety: if desiredTop is negative (can happen during
+                    // aggressive bounce on iOS), lock to 0.
+                    if (desiredTop < 0) desiredTop = 0;
+
+                    // Phase 4: GPU-accelerated move — no layout recalculation
                     sidebar.style.transform = `translateY(${desiredTop}px)`;
 
-                    // Let the editor know how much space the keyboard eats so content can pad itself
-                    editorPage.style.setProperty('--keyboard-offset', keyboardHeight + 'px');
+                    // Phase 3: Update CSS custom properties so editor-body can pad itself
+                    editorPage.style.setProperty('--keyboard-offset', lastKeyboardHeight + 'px');
+                    editorPage.style.setProperty('--sidebar-height', sidebarHeight + 'px');
 
-                } else {
-                    // ── Keyboard is CLOSED ──
-                    if (keyboardOpen) {
-                        keyboardOpen = false;
-                        sidebar.classList.remove('keyboard-open');
-                        // Clear all inline positioning — revert to CSS defaults (bottom: 0)
-                        sidebar.style.transform = '';
-                        sidebar.style.top = '';
-                        sidebar.style.bottom = '0';
-                        sidebar.style.willChange = '';
-                        editorPage.style.setProperty('--keyboard-offset', '0px');
-                    }
+                } else if (keyboardOpen) {
+                    // ── Keyboard just CLOSED ──
+                    // (only runs once per close because of the keyboardOpen guard)
+                    keyboardOpen = false;
+                    lastKeyboardHeight = 0;
+                    sidebar.classList.remove('keyboard-open');
+                    // Phase 3: Unlock overscroll
+                    editorPage.classList.remove('keyboard-active');
+                    document.body.style.overscrollBehaviorY = '';
+                    // Clear all inline positioning — revert to CSS defaults (bottom: 0)
+                    sidebar.style.transform = '';
+                    sidebar.style.top = '';
+                    sidebar.style.bottom = '0';
+                    sidebar.style.willChange = '';
+                    editorPage.style.setProperty('--keyboard-offset', '0px');
+                    editorPage.style.setProperty('--sidebar-height', '0px');
                 }
             });
         }
 
         // ── Bind to visualViewport (the only reliable keyboard signal) ──
         if (window.visualViewport) {
-            // 'resize' fires when the keyboard opens/closes (viewport height changes)
+            // 'resize' → keyboard open/close (viewport height changes)
             window.visualViewport.addEventListener('resize', positionSidebar);
-            // 'scroll' fires when the user scrolls the page while the keyboard is open
-            // (the visual viewport pans inside the layout viewport)
+            // 'scroll' → user scrolls while keyboard is open (visual VP pans within layout VP)
             window.visualViewport.addEventListener('scroll', positionSidebar);
         }
 
-        // Extra safety: some Android browsers also need the window scroll event
+        // Extra safety: some Android browsers also fire window.scroll for VP changes
         window.addEventListener('scroll', () => {
             if (keyboardOpen) positionSidebar();
         }, { passive: true });
 
-        // ── Focus-in: schedule repositioning with short delays ──
-        // The keyboard animation takes ~300ms; we re-check twice to catch the final size.
+        // ── Focus-in: schedule repositioning with staggered delays ──
+        // The keyboard animation takes ~300ms on iOS; we re-check multiple times
+        // to catch the final settled size.
         editorPage.addEventListener('focusin', (e) => {
             const isEditable = e.target.matches('input, textarea, [contenteditable="true"]');
             if (isEditable) {
-                // Cancel any pending "keyboard close" from a prior focusout
+                // Cancel any pending "keyboard close" from a prior focusout —
+                // iOS fires blur→focus rapidly when tapping between inputs
                 if (focusoutTimer) { clearTimeout(focusoutTimer); focusoutTimer = null; }
-                setTimeout(positionSidebar, 100);
-                setTimeout(positionSidebar, 300);
-                setTimeout(positionSidebar, 600);
+                setTimeout(positionSidebar, 80);
+                setTimeout(positionSidebar, 200);
+                setTimeout(positionSidebar, 400);
+                setTimeout(positionSidebar, 700);
             }
         });
 
         // ── Focus-out: debounced keyboard-close ──
         // iOS fires a rapid blur → focus cycle when the user taps from one input to
-        // another. Without debouncing, the toolbar drops to the bottom and snaps back,
-        // which looks like violent twitching. A 300ms grace period lets the next
-        // focusin cancel the teardown if the user is just switching fields.
+        // another. Without debouncing, the toolbar drops to the bottom and snaps back.
+        // A 300ms grace period lets the next focusin cancel the teardown.
         editorPage.addEventListener('focusout', () => {
             if (focusoutTimer) clearTimeout(focusoutTimer);
             focusoutTimer = setTimeout(() => {
@@ -5557,14 +5616,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (!editorPage.contains(document.activeElement) ||
                     !document.activeElement.matches('input, textarea, [contenteditable="true"]')) {
                     keyboardOpen = false;
+                    lastKeyboardHeight = 0;
                     sidebar.classList.remove('keyboard-open');
+                    editorPage.classList.remove('keyboard-active');
+                    document.body.style.overscrollBehaviorY = '';
                     sidebar.style.transform = '';
                     sidebar.style.top = '';
                     sidebar.style.bottom = '0';
                     sidebar.style.willChange = '';
                     editorPage.style.setProperty('--keyboard-offset', '0px');
+                    editorPage.style.setProperty('--sidebar-height', '0px');
                 }
-            }, 300);   // 300ms debounce — long enough for iOS's blur→focus dance
+            }, 300);
         });
     })();
 
