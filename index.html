@@ -165,7 +165,7 @@ input[type="number"] { -moz-appearance: textfield; }
 .editor-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; position: sticky; top: 0; background: var(--bg-primary); z-index: 5; }
 .editor-back, .editor-save { display: flex; align-items: center; gap: 4px; font-size: 0.95rem; font-weight: 500; color: var(--text-primary); transition: opacity var(--transition); }
 .editor-back:active, .editor-save:active { opacity: 0.5; }
-.editor-body { padding: 0 20px 140px; max-width: 480px; margin: 0 auto; }
+.editor-body { padding: 0 20px 140px; padding-bottom: calc(140px + var(--keyboard-offset, 0px)); max-width: 480px; margin: 0 auto; }
 .editor-title { font-family: var(--font-heading); width: 100%; font-size: 1.8rem; font-weight: 600; border: none; outline: none; background: transparent; color: var(--text-primary); padding: 8px 0; letter-spacing: -0.3px; }
 .editor-title::placeholder { color: var(--text-placeholder); }
 .editor-description { width: 100%; min-height: 80px; border: none; outline: none; background: transparent; color: var(--text-secondary); font-size: 1rem; line-height: 1.6; padding: 4px 0; }
@@ -191,8 +191,8 @@ input[type="number"] { -moz-appearance: textfield; }
 .subtask-description-editor .subtask-desc-input:empty::before { content: attr(data-placeholder); color: var(--text-placeholder); pointer-events: none; }
 
 /* Editor Footer Toolbar */
-.editor-sidebar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; flex-direction: row; align-items: center; gap: 2px; z-index: 10; background: var(--bg-primary); padding: 6px 8px; padding-bottom: max(6px, env(safe-area-inset-bottom, 6px)); border-top: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); touch-action: none; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
-.editor-sidebar.keyboard-open { padding-bottom: 6px; }
+.editor-sidebar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; flex-direction: row; align-items: center; gap: 2px; z-index: 10; background: var(--bg-primary); padding: 6px 8px; padding-bottom: max(6px, env(safe-area-inset-bottom, 6px)); border-top: 1px solid var(--border-light); opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease; touch-action: none; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; will-change: transform; }
+.editor-sidebar.keyboard-open { padding-bottom: 0px; bottom: auto; position: fixed; transition: none; }
 #page-editor.active .editor-sidebar { opacity: 1; visibility: visible; }
 .sidebar-drag-handle { display: none; }
 .sidebar-tool { width: 38px; height: 38px; flex-shrink: 0; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-secondary); font-size: 1rem; transition: all var(--transition); }
@@ -5419,7 +5419,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // === Mobile Keyboard: keep editor-sidebar above keyboard ===
+    // === Mobile Keyboard: keep editor-sidebar pinned above keyboard ===
     (function initKeyboardHandler() {
         const sidebar = document.getElementById('editor-sidebar');
         const editorPage = document.getElementById('page-editor');
@@ -5428,49 +5428,61 @@ document.addEventListener('DOMContentLoaded', async () => {
         let keyboardOpen = false;
         let rafId = null;
 
-        function updatePosition() {
-            rafId = null;
-            if (!window.visualViewport) return;
-            const vv = window.visualViewport;
-            const keyboardHeight = Math.round(window.innerHeight - vv.height - vv.offsetTop);
-            const isOpen = keyboardHeight > 80;
+        function positionSidebar() {
+            if (rafId) return;
+            rafId = requestAnimationFrame(() => {
+                rafId = null;
+                if (!window.visualViewport) return;
+                const vv = window.visualViewport;
+                const sidebarHeight = sidebar.offsetHeight;
+                // The visual viewport gives us the actual visible area above the keyboard
+                // vv.offsetTop accounts for any scroll offset of the visual viewport within the layout viewport
+                // vv.height is the visible height (excludes keyboard)
+                const keyboardHeight = window.innerHeight - vv.height - vv.offsetTop;
+                const threshold = 80;
 
-            if (isOpen) {
-                if (!keyboardOpen) {
-                    keyboardOpen = true;
-                    sidebar.classList.add('keyboard-open');
+                if (keyboardHeight > threshold) {
+                    if (!keyboardOpen) {
+                        keyboardOpen = true;
+                        sidebar.classList.add('keyboard-open');
+                    }
+                    // Position: stick to the top of the keyboard
+                    // Use top = visualViewport.offsetTop + visualViewport.height - sidebarHeight
+                    // This works even when the page scrolls because we recalculate on every scroll/resize
+                    const topPos = vv.offsetTop + vv.height - sidebarHeight;
+                    sidebar.style.top = topPos + 'px';
+                    sidebar.style.bottom = 'auto';
+                    // Adjust editor body padding so content isn't hidden behind sidebar+keyboard
+                    editorPage.style.setProperty('--keyboard-offset', keyboardHeight + 'px');
+                } else {
+                    if (keyboardOpen) {
+                        keyboardOpen = false;
+                        sidebar.classList.remove('keyboard-open');
+                        sidebar.style.top = '';
+                        sidebar.style.bottom = '0';
+                        editorPage.style.setProperty('--keyboard-offset', '0px');
+                    }
                 }
-                // Shrink the page so scroll area ends right above the sidebar
-                // sidebar is ~50px tall, sits at bottom: keyboardHeight
-                editorPage.style.height = vv.height + 'px';
-                editorPage.style.bottom = 'auto';
-                editorPage.style.top = vv.offsetTop + 'px';
-                // Position sidebar at the bottom of the visible viewport
-                sidebar.style.bottom = keyboardHeight + 'px';
-            } else if (keyboardOpen) {
-                keyboardOpen = false;
-                sidebar.classList.remove('keyboard-open');
-                editorPage.style.height = '';
-                editorPage.style.bottom = '';
-                editorPage.style.top = '';
-                sidebar.style.bottom = '';
-            }
-        }
-
-        function scheduleUpdate() {
-            if (!rafId) rafId = requestAnimationFrame(updatePosition);
+            });
         }
 
         if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', scheduleUpdate);
-            window.visualViewport.addEventListener('scroll', scheduleUpdate);
+            // Both resize (keyboard open/close) and scroll (user scrolls while keyboard open)
+            window.visualViewport.addEventListener('resize', positionSidebar);
+            window.visualViewport.addEventListener('scroll', positionSidebar);
         }
 
-        // Trigger recheck when focusing editable fields (keyboard animate-in)
+        // Also listen on window scroll for extra safety on some browsers
+        window.addEventListener('scroll', () => {
+            if (keyboardOpen) positionSidebar();
+        }, { passive: true });
+
+        // Fallback: listen for focus/blur on inputs within the editor
         editorPage.addEventListener('focusin', (e) => {
-            if (e.target.matches('input, textarea, [contenteditable="true"]')) {
-                // Run several times during keyboard animation
-                for (let t of [50, 150, 300, 500]) setTimeout(scheduleUpdate, t);
+            const isEditable = e.target.matches('input, textarea, [contenteditable="true"]');
+            if (isEditable) {
+                setTimeout(positionSidebar, 300);
+                setTimeout(positionSidebar, 600);
             }
         });
 
@@ -5480,10 +5492,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     !document.activeElement.matches('input, textarea, [contenteditable="true"]')) {
                     keyboardOpen = false;
                     sidebar.classList.remove('keyboard-open');
-                    editorPage.style.height = '';
-                    editorPage.style.bottom = '';
-                    editorPage.style.top = '';
-                    sidebar.style.bottom = '';
+                    sidebar.style.top = '';
+                    sidebar.style.bottom = '0';
+                    editorPage.style.setProperty('--keyboard-offset', '0px');
                 }
             }, 150);
         });
