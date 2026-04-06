@@ -1011,31 +1011,71 @@ text-align: center;
   background: var(--done);
   transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
 }
-.plans-path-tabs {
+.plans-field-nav {
   display: flex;
-  background: var(--bg-tertiary);
-  border-radius: 50px;
-  padding: 0;
-  margin-bottom: 18px;
-  overflow: hidden;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+  user-select: none;
+  -webkit-user-select: none;
 }
-.plans-path-tab {
-  flex: 1;
-  padding: 12px 8px;
-  text-align: center;
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  cursor: pointer;
+.plans-field-chevron {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
   transition: all var(--transition);
-  border: none;
   background: transparent;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
+  border: none;
+  cursor: pointer;
 }
-.plans-path-tab.active {
-  background: var(--accent);
-  color: var(--bg-primary);
+.plans-field-chevron:active {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+.plans-field-title-wrap {
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+.plans-field-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+  transition: opacity 0.2s ease;
+}
+.plans-field-counter {
+  font-size: 0.68rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  margin-top: 2px;
+  font-variant-numeric: tabular-nums;
+}
+.plans-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.plans-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all var(--transition);
+}
+.plans-dot.active {
+  background: var(--text-primary);
+  width: 18px;
+  border-radius: 3px;
 }
 .plans-phase-card {
   background: var(--bg-card);
@@ -1046,6 +1086,37 @@ text-align: center;
 }
 .plans-phase-card.phase-complete {
   border: 1.5px solid var(--border);
+}
+.plans-phase-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 4px 8px;
+  margin-top: 6px;
+  animation: taskSlideIn 0.35s ease-out backwards;
+}
+.plans-phase-label:first-child {
+  padding-top: 4px;
+  margin-top: 0;
+}
+.plans-phase-label span:first-child {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  letter-spacing: 0.2px;
+}
+.plans-phase-label.all-done span:first-child {
+  color: var(--done);
+}
+.plans-phase-label-counter {
+  font-size: 0.65rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.plans-phase-label.all-done .plans-phase-label-counter {
+  color: var(--done);
 }
 .plans-phase-header {
   padding: 14px 16px;
@@ -1102,13 +1173,16 @@ text-align: center;
   opacity: 1;
 }
 .plans-subject-item {
-  padding: 12px 16px;
-  border-top: 1px solid var(--border-light);
+  padding: 12px 14px;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+  margin-bottom: 2px;
   display: flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
   transition: background var(--transition);
+  animation: taskSlideIn 0.35s ease-out backwards;
 }
 .plans-subject-item:active {
   background: var(--bg-secondary);
@@ -1172,6 +1246,11 @@ text-align: center;
 .plans-subject-item.topic-open + .plans-topics-list {
   max-height: 8000px;
   opacity: 1;
+  background: var(--bg-card);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  margin-top: -2px;
+  margin-bottom: 2px;
+  padding-bottom: 8px;
 }
 .plans-topic-row {
   padding: 5px 16px 5px 46px;
@@ -1305,40 +1384,12 @@ text-align: center;
   color: var(--text-primary);
   font-weight: 600;
 }
-.plans-stats-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.plans-stat-card {
-  flex: 1;
-  background: var(--bg-card);
-  border-radius: var(--radius-md);
-  padding: 12px 10px;
-  text-align: center;
-}
-.plans-stat-value {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  font-variant-numeric: tabular-nums;
-}
-.plans-stat-value span {
-  font-size: 0.8rem;
-  color: var(--text-tertiary);
-  font-weight: 400;
-}
 .plans-stat-label {
-  font-size: 0.6rem;
-  color: var(--text-tertiary);
-  font-weight: 600;
-  margin-top: 2px;
+  display: none;
 }
+ 
 .plans-books-section {
   padding-bottom: 10px;
-}
-.plans-path-tab i {
-  display: none;
 }
 .fa-solid.fa-bookmark {
   display: none;
@@ -1352,6 +1403,26 @@ text-align: center;
 }
 .timeline-block {
   margin-top: 0px;
+}
+#plans-field-counter {
+  display: none;
+}
+#plans-field-nav {
+  padding: 15px;
+}
+.plans-subject-item {
+  background: transparent;
+  padding-top: 20px;
+}
+.plans-topics-list {
+  background: transparent !important;
+}
+.plans-project-text {
+  background: transparent;
+  padding: 10px 0px;
+}
+.plans-phase-label {
+  display: none;
 }
 </style>
 </head>
@@ -1578,8 +1649,15 @@ text-align: center;
                         <div class="plans-progress-fill" id="plans-progress-fill" style="width:0%"></div>
                     </div>
                 </div>
-                <div class="plans-stats-row" id="plans-stats-row"></div>
-                <div class="plans-path-tabs" id="plans-path-tabs"></div>
+                <div class="plans-field-nav" id="plans-field-nav">
+                    <button class="plans-field-chevron" id="plans-chevron-left" onclick="App.plans.prevPath()"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="plans-field-title-wrap" id="plans-field-title-wrap">
+                        <div class="plans-field-title" id="plans-field-title">Mathematics</div>
+                        <div class="plans-field-counter" id="plans-field-counter">0/0</div>
+                    </div>
+                    <button class="plans-field-chevron" id="plans-chevron-right" onclick="App.plans.nextPath()"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div class="plans-dots" id="plans-dots"></div>
                 <div id="plans-phases-container"></div>
                 <div class="plans-footer" id="plans-footer"></div>
             </div>
@@ -6584,16 +6662,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     App.plans = (() => {
         const STORAGE_KEY = '1point_plans_completed';
         let completedSet = new Set();
-        let activePath = 'technical';
+        let activePath = 'mathematics';
         let expandedPhase = null;
         let expandedTopic = null;
 
         const PATHS = {
-            technical: {
-                label: 'Technical & Engineering',
-                icon: 'fa-solid fa-code',
+            mathematics: {
+                label: 'Mathematics',
+                icon: 'fa-solid fa-square-root-variable',
                 phases: [
-                    { title:'Mathematical & Scientific Foundations', subjects:[
+                    { title:'Foundational Mathematics', subjects:[
                         {name:'Calculus I–III',desc:'Limits, derivatives, integrals, multivariable & vector calculus.',
                         chapters:['Ch 1–2: Limits & Continuity','Ch 3–4: Differentiation Rules & Applications','Ch 5–6: Integration & Techniques of Integration','Ch 7: Sequences & Infinite Series','Ch 8: Parametric & Polar Curves','Ch 9–10: Vectors, Partial Derivatives & Gradients','Ch 11: Multiple Integrals','Ch 12: Vector Calculus (Green, Stokes, Divergence)'],
                         books:[{title:'Calculus: Early Transcendentals',author:'James Stewart'},{title:'Calculus',author:'Michael Spivak'},{title:'Thomas\' Calculus',author:'George B. Thomas Jr.'}],
@@ -6609,6 +6687,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         books:[{title:'Discrete Mathematics and Its Applications',author:'Kenneth H. Rosen'},{title:'Concrete Mathematics',author:'Graham, Knuth & Patashnik'},{title:'Mathematics for Computer Science',author:'Lehman, Leighton & Meyer (MIT OCW)'}],
                         projects:['Once Programming Mastery is underway: implement a graph-based route optimiser that finds shortest paths, detects cycles, and solves a network flow problem (e.g. optimal cash distribution across ATMs).','Prove 10 non-trivial theorems using induction, contradiction, and contraposition. Compile them into a proof portfolio with commentary on technique selection.','Model a real-world scheduling or resource allocation problem as a graph colouring problem, solve it, and verify the solution satisfies all constraints.'],
                         topics:['Propositional & predicate logic, proof techniques','Set theory, relations, equivalence classes','Combinatorics (permutations, combinations, pigeonhole)','Recurrence relations & generating functions','Graph theory (connectivity, coloring, planarity, flows)','Boolean algebra & lattice theory']},
+                        {name:'Abstract Algebra',desc:'Groups, rings, fields, polynomials. The deep structure behind cryptography & coding theory.',
+                        chapters:['Ch 1: Groups (Definitions, Subgroups, Cyclic Groups)','Ch 2: Permutation Groups & Cayley\'s Theorem','Ch 3: Group Homomorphisms & Quotient Groups','Ch 4: Rings (Ideals, Quotient Rings, PIDs)','Ch 5: Polynomial Rings & Factorisation','Ch 6: Fields & Field Extensions','Ch 7: Finite Fields (GF(p), GF(2^n))','Ch 8: Applications to Cryptography & Coding Theory'],
+                        books:[{title:'Abstract Algebra',author:'David S. Dummit & Richard M. Foote'},{title:'Algebra',author:'Michael Artin'},{title:'A Book of Abstract Algebra',author:'Charles C. Pinter'}],
+                        projects:['Implement finite field arithmetic (GF(2^8)) from scratch and use it to build the AES S-box, demonstrating how algebraic structure underlies modern encryption.','Build a Reed-Solomon error-correcting encoder/decoder over a finite field. Demonstrate its use in QR codes by encoding and recovering corrupted data.','Implement elliptic curve point addition and scalar multiplication over a prime field from the group-theoretic definition. Use it to build ECDH key exchange.'],
+                        topics:['Groups (cyclic, symmetric, dihedral)','Subgroups, cosets, Lagrange\'s theorem','Group homomorphisms & isomorphism theorems','Rings, ideals, quotient rings','Polynomial rings & irreducibility','Fields, field extensions, splitting fields','Finite fields (construction, arithmetic, applications)','Applications: ECC, AES, Reed-Solomon, lattice crypto']},
                         {name:'Number Theory',desc:'Primes, modular arithmetic, quadratic residues. Cryptography foundation.',
                         chapters:['Ch 1: Divisibility & Primes','Ch 2: Congruences','Ch 3: Euler\'s & Fermat\'s Theorems','Ch 4: Chinese Remainder Theorem','Ch 5: Primitive Roots & Indices','Ch 6: Quadratic Residues & Reciprocity','Ch 7: Continued Fractions','Ch 8: Elliptic Curves & Applications'],
                         books:[{title:'An Introduction to the Theory of Numbers',author:'Hardy & Wright'},{title:'Elementary Number Theory',author:'Kenneth H. Rosen'},{title:'A Computational Introduction to Number Theory and Algebra',author:'Victor Shoup'}],
@@ -6624,7 +6707,57 @@ document.addEventListener('DOMContentLoaded', async () => {
                         books:[{title:'Elements of Information Theory',author:'Cover & Thomas'},{title:'Information Theory, Inference, and Learning Algorithms',author:'David MacKay'}],
                         projects:['Once Programming Mastery is underway: build a file compressor implementing Huffman coding and arithmetic coding, then benchmark compression ratios against theoretical entropy limits.','Compute the entropy of several natural language corpora (English, Romanian, code) and compare. Build a simple language detector based on entropy profiles.','Implement a channel coding simulation: transmit data over a noisy binary symmetric channel, measure error rates, then add error-correcting codes and measure improvement.'],
                         topics:['Shannon entropy & information content','Mutual information & KL divergence','Source coding theorem (compression limits)','Channel capacity & noisy channel coding','Applications to cryptography & ML (cross-entropy, VAEs)']},
+                        {name:'Game Theory & Mechanism Design',desc:'Nash equilibria, auction theory, incentive design. Foundation for markets, protocols & strategy.',
+                        chapters:['Ch 1: Strategic Form Games & Nash Equilibrium','Ch 2: Extensive Form Games & Subgame Perfection','Ch 3: Mixed Strategies & Minimax','Ch 4: Repeated Games & Folk Theorem','Ch 5: Bayesian Games & Incomplete Information','Ch 6: Auction Theory (English, Dutch, Vickrey, Combinatorial)','Ch 7: Mechanism Design & Revelation Principle','Ch 8: Social Choice & Impossibility Theorems','Ch 9: Cooperative Games & Shapley Value'],
+                        books:[{title:'Game Theory: An Introduction',author:'Steven Tadelis'},{title:'A Course in Game Theory',author:'Osborne & Rubinstein'},{title:'Algorithmic Game Theory',author:'Nisan, Roughgarden, Tardos & Vazirani'}],
+                        projects:['Model 5 real-world strategic interactions as formal games (pricing war, regulatory negotiation, auction, protocol incentive, labour market). Compute Nash equilibria and recommend strategies.','Design and simulate a multi-unit auction (combinatorial or Vickrey–Clarke–Groves) for spectrum allocation or ad placement. Prove its incentive compatibility properties.','Build a mechanism design simulator for a decentralised protocol: define the mechanism, prove strategy-proofness, and simulate agent behaviour under rational and boundedly rational assumptions.'],
+                        topics:['Nash equilibrium & dominant strategies','Extensive form games & backward induction','Mixed strategies & minimax','Repeated games, reputation, folk theorem','Bayesian games & information asymmetry','Auction theory (revenue equivalence, optimal auctions)','Mechanism design (VCG, revelation principle)','Social choice theory (Arrow, Gibbard-Satterthwaite)','Cooperative games (Shapley value, core)','Applications: market design, protocol incentives, financial markets']},
                     ]},
+                    { title:'Applied & Computational Mathematics', subjects:[
+                        {name:'Numerical Methods',desc:'Floating-point pitfalls, numerical stability, Monte Carlo methods.',
+                        chapters:['Ch 1: Floating-Point Arithmetic','Ch 2: Root Finding Methods','Ch 3: Numerical Differentiation & Integration','Ch 4: Numerical Linear Algebra','Ch 5: ODE/PDE Solvers','Ch 6: Monte Carlo Methods','Ch 7: Error Propagation & Stability'],
+                        books:[{title:'Numerical Recipes',author:'Press, Teukolsky, Vetterling & Flannery'},{title:'Numerical Analysis',author:'Burden & Faires'},{title:'Numerical Linear Algebra',author:'Trefethen & Bau'}],
+                        projects:['Build a Monte Carlo option pricer with variance reduction techniques (antithetic variates, control variates) and compare accuracy against Black-Scholes closed-form solutions.','Implement a finite difference PDE solver for the heat equation and the Black-Scholes PDE. Compare convergence rates of explicit vs implicit schemes.','Build a numerical integration benchmark: implement trapezoidal, Simpson\'s, and Gaussian quadrature rules, compare accuracy for smooth vs discontinuous functions.'],
+                        topics:['IEEE 754 floating-point pitfalls','Numerical differentiation & integration','Root finding (Newton-Raphson, Brent\'s)','Numerical linear algebra, sparse matrices','ODE/PDE solvers (Runge-Kutta, finite difference)','Monte Carlo & variance reduction','Stability & error propagation']},
+                        {name:'Optimization Theory',desc:'Linear programming, convex optimization, constraint satisfaction.',
+                        chapters:['Ch 1: Linear Programming & Simplex','Ch 2: Duality Theory','Ch 3: Unconstrained Optimisation','Ch 4: Constrained Optimisation (KKT)','Ch 5: Convex Optimisation','Ch 6: Integer & Stochastic Programming'],
+                        books:[{title:'Convex Optimization',author:'Boyd & Vandenberghe'},{title:'Numerical Optimization',author:'Nocedal & Wright'},{title:'Introduction to Linear Optimization',author:'Bertsimas & Tsitsiklis'}],
+                        projects:['Implement a portfolio optimiser using quadratic programming that finds the efficient frontier, incorporates constraints (sector limits, position bounds), and visualises results.','Implement gradient descent, Newton\'s method, and L-BFGS from scratch. Compare convergence speed on Rosenbrock\'s function and a real logistic regression problem.','Solve a vehicle routing problem using integer linear programming: model the constraints, solve with a solver library, and visualise the optimal routes.'],
+                        topics:['Linear programming (simplex, duality)','Convex optimisation (gradient descent, Newton\'s)','Constrained (Lagrange, KKT)','Integer & mixed-integer programming','Stochastic optimisation, metaheuristics','Applications: portfolio, routing, allocation']},
+                        {name:'Stochastic Processes & Calculus',desc:'Brownian motion, Itô calculus, martingales. Derivatives pricing.',
+                        chapters:['Ch 1: Markov Chains','Ch 2: Poisson Processes','Ch 3: Brownian Motion','Ch 4: Martingales & Stopping Times','Ch 5: Itô Integral & Itô\'s Lemma','Ch 6: Stochastic Differential Equations','Ch 7: Girsanov & Feynman-Kac','Ch 8: Applications to Finance'],
+                        books:[{title:'Stochastic Calculus for Finance (Vol I & II)',author:'Steven Shreve'},{title:'Introduction to Stochastic Calculus with Applications',author:'Fima Klebaner'},{title:'Brownian Motion and Stochastic Calculus',author:'Karatzas & Shreve'}],
+                        projects:['Simulate geometric Brownian motion, price European and Asian options using Monte Carlo, and calibrate a Heston stochastic volatility model to market data.','Simulate and visualise 1,000 paths of geometric Brownian motion, then price a lookback option and an Asian option using the simulated paths.','Implement and calibrate the Vasicek and CIR interest rate models to real yield curve data. Simulate future rate scenarios and price a bond portfolio.'],
+                        topics:['Markov chains (discrete & continuous)','Poisson processes','Brownian motion & random walks','Martingales, stopping times','Itô integral & Itô\'s lemma','SDEs, Girsanov\'s theorem','Feynman-Kac formula','Applications to option & rate modelling']},
+                        {name:'Applied Graph Theory & Network Science',desc:'Transaction graphs, fraud ring detection, network centrality.',
+                        chapters:['Ch 1: Graph Fundamentals & Centrality','Ch 2: Clustering & Community Detection','Ch 3: Network Flows','Ch 4: Dynamic & Temporal Graphs','Ch 5: Applications in Finance'],
+                        books:[{title:'Networks, Crowds, and Markets',author:'Easley & Kleinberg'},{title:'Graph Theory',author:'Reinhard Diestel'},{title:'Network Science',author:'Albert-László Barabási'}],
+                        projects:['Build a fraud ring detection system using transaction graph analysis: construct the graph, compute centrality metrics, detect communities, and flag suspicious clusters.','Build a social network analyser: ingest a real dataset (e.g. email communications), compute centrality measures, detect communities, and visualise the network.','Model a financial contagion scenario: build an interbank lending network, simulate a bank failure cascade, and identify systemically important nodes.'],
+                        topics:['Centrality, clustering, PageRank','Community detection','Network flow optimisation','Dynamic & temporal graphs','Applications: fraud networks, credit networks']},
+                        {name:'Formal Verification & Type Theory',desc:'Proving code correctness. TLA+, Coq, smart contract verification.',
+                        chapters:['Ch 1: Logic for Verification','Ch 2: Model Checking (TLA+, SPIN)','Ch 3: Theorem Proving (Coq, Lean)','Ch 4: Dependent Types','Ch 5: Financial Protocol Specification','Ch 6: Smart Contract Verification'],
+                        books:[{title:'Software Foundations (Vol 1–3)',author:'Benjamin Pierce et al.'},{title:'Specifying Systems (TLA+)',author:'Leslie Lamport'},{title:'Practical TLA+',author:'Hillel Wayne'}],
+                        projects:['Write a TLA+ specification for a payment settlement protocol, model-check it for deadlocks and invariant violations, then formally verify a critical algorithm (e.g. a consensus protocol or a ledger invariant) using Coq or Lean.','Prove the correctness of a sorting algorithm (e.g. merge sort) in Coq or Lean: define the specification, write the proof, and extract verified executable code.','Specify and model-check a mutual exclusion protocol in TLA+: define safety and liveness properties, find a bug in a naive version, then prove the fixed version correct.'],
+                        topics:['Logic for verification','Model checking (SPIN, TLA+, Alloy)','Theorem proving (Coq, Lean, Isabelle)','Dependent types, design by contract','Formal spec of financial protocols','Smart contract verification (Certora, K)']},
+                    ]},
+                    { title:'Financial Mathematics', subjects:[
+                        {name:'Financial Mathematics',desc:'Stochastic calculus, Black-Scholes, rate models, Monte Carlo.',
+                        chapters:['Ch 1: Stochastic Processes','Ch 2: Itô Calculus (Applied)','Ch 3: Black-Scholes-Merton','Ch 4: Risk-Neutral Pricing','Ch 5: Interest Rate Models','Ch 6: Credit Risk & Monte Carlo'],
+                        books:[{title:'Stochastic Calculus for Finance (Vol I & II)',author:'Steven Shreve'},{title:'Paul Wilmott Introduces Quantitative Finance',author:'Paul Wilmott'},{title:'Options, Futures, and Other Derivatives',author:'John Hull'}],
+                        projects:['Price a portfolio of exotic derivatives (barrier options, Asian options) using Monte Carlo simulation with variance reduction, calibrated to real market data.','Calibrate the Black-Scholes model to real options market data: extract implied volatility across strikes and maturities, build a volatility surface, and identify the smile/skew.','Price an interest rate swap from scratch: build a discount curve, calculate fixed and floating leg present values, and determine the par swap rate.'],
+                        topics:['Stochastic processes','Ito calculus (applied)','Black-Scholes-Merton derivation','Risk-neutral pricing','Rate models (Vasicek, CIR, HJM, LMM)','Credit risk models, Monte Carlo, calibration']},
+                        {name:'Advanced Quantitative Risk',desc:'Copulas, EVT, regime-switching, volatility modelling.',
+                        chapters:['Ch 1: Copulas','Ch 2: Extreme Value Theory','Ch 3: Regime-Switching Models','Ch 4: Volatility Modelling','Ch 5: Climate & ESG Risk'],
+                        books:[{title:'Quantitative Risk Management',author:'McNeil, Frey & Embrechts'},{title:'Elements of Financial Risk Management',author:'Peter Christoffersen'}],
+                        projects:['Implement copula-based portfolio risk modelling: fit Gaussian and t-copulas to equity returns, simulate joint distributions, and compare tail risk estimates.','Calibrate a GARCH(1,1) model to equity index returns, forecast volatility, and compare VaR estimates from GARCH vs historical simulation vs parametric normal.','Implement Extreme Value Theory for operational risk: fit a Generalised Pareto Distribution to loss data, estimate high-quantile losses, and compute regulatory capital.'],
+                        topics:['Copulas (Gaussian, t, Archimedean)','Extreme Value Theory (GEV, GPD)','Regime-switching (Markov, Hamilton)','Volatility (GARCH, stochastic, rough vol)','Climate & ESG risk modelling']},
+                    ]},
+                ],
+            },
+            informational: {
+                label: 'Information Tech',
+                icon: 'fa-solid fa-microchip',
+                phases: [
                     { title:'Core Computer Science', subjects:[
                         {name:'Programming Mastery',desc:'Multi-paradigm: Python, C, functional, metaprogramming.',
                         chapters:['Ch 1: Python Advanced (Decorators, Generators, Async)','Ch 2: C Fundamentals (Pointers, Memory Layout)','Ch 3: Functional Programming Paradigms','Ch 4: Type Systems & Generics','Ch 5: Debugging, Profiling & Performance','Ch 6: Build Systems & Package Management'],
@@ -6736,33 +6869,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         projects:['Perform a side-channel timing attack against a naive cryptographic implementation, then harden the code and demonstrate the timing leak is eliminated.','Implement a constant-time comparison function and a constant-time AES implementation, then verify timing invariance with statistical tests on execution measurements.','Design the security architecture for a hardware wallet: secure element communication protocol, PIN verification, seed backup/recovery, and firmware update process.'],
                         topics:['Side-channel attacks (timing, power, EM)','TEEs (SGX, TrustZone)','Secure boot, TPMs','Hardware wallet architecture','POS terminal physical security']},
                     ]},
-                    { title:'Advanced Mathematics for Finance & ML', subjects:[
-                        {name:'Numerical Methods',desc:'Floating-point pitfalls, numerical stability, Monte Carlo methods.',
-                        chapters:['Ch 1: Floating-Point Arithmetic','Ch 2: Root Finding Methods','Ch 3: Numerical Differentiation & Integration','Ch 4: Numerical Linear Algebra','Ch 5: ODE/PDE Solvers','Ch 6: Monte Carlo Methods','Ch 7: Error Propagation & Stability'],
-                        books:[{title:'Numerical Recipes',author:'Press, Teukolsky, Vetterling & Flannery'},{title:'Numerical Analysis',author:'Burden & Faires'},{title:'Numerical Linear Algebra',author:'Trefethen & Bau'}],
-                        projects:['Build a Monte Carlo option pricer with variance reduction techniques (antithetic variates, control variates) and compare accuracy against Black-Scholes closed-form solutions.','Implement a finite difference PDE solver for the heat equation and the Black-Scholes PDE. Compare convergence rates of explicit vs implicit schemes.','Build a numerical integration benchmark: implement trapezoidal, Simpson\'s, and Gaussian quadrature rules, compare accuracy for smooth vs discontinuous functions.'],
-                        topics:['IEEE 754 floating-point pitfalls','Numerical differentiation & integration','Root finding (Newton-Raphson, Brent\'s)','Numerical linear algebra, sparse matrices','ODE/PDE solvers (Runge-Kutta, finite difference)','Monte Carlo & variance reduction','Stability & error propagation']},
-                        {name:'Optimization Theory',desc:'Linear programming, convex optimization, constraint satisfaction.',
-                        chapters:['Ch 1: Linear Programming & Simplex','Ch 2: Duality Theory','Ch 3: Unconstrained Optimisation','Ch 4: Constrained Optimisation (KKT)','Ch 5: Convex Optimisation','Ch 6: Integer & Stochastic Programming'],
-                        books:[{title:'Convex Optimization',author:'Boyd & Vandenberghe'},{title:'Numerical Optimization',author:'Nocedal & Wright'},{title:'Introduction to Linear Optimization',author:'Bertsimas & Tsitsiklis'}],
-                        projects:['Implement a portfolio optimiser using quadratic programming that finds the efficient frontier, incorporates constraints (sector limits, position bounds), and visualises results.','Implement gradient descent, Newton\'s method, and L-BFGS from scratch. Compare convergence speed on Rosenbrock\'s function and a real logistic regression problem.','Solve a vehicle routing problem using integer linear programming: model the constraints, solve with a solver library, and visualise the optimal routes.'],
-                        topics:['Linear programming (simplex, duality)','Convex optimisation (gradient descent, Newton\'s)','Constrained (Lagrange, KKT)','Integer & mixed-integer programming','Stochastic optimisation, metaheuristics','Applications: portfolio, routing, allocation']},
-                        {name:'Stochastic Processes & Calculus',desc:'Brownian motion, Itô calculus, martingales. Derivatives pricing.',
-                        chapters:['Ch 1: Markov Chains','Ch 2: Poisson Processes','Ch 3: Brownian Motion','Ch 4: Martingales & Stopping Times','Ch 5: Itô Integral & Itô\'s Lemma','Ch 6: Stochastic Differential Equations','Ch 7: Girsanov & Feynman-Kac','Ch 8: Applications to Finance'],
-                        books:[{title:'Stochastic Calculus for Finance (Vol I & II)',author:'Steven Shreve'},{title:'Introduction to Stochastic Calculus with Applications',author:'Fima Klebaner'},{title:'Brownian Motion and Stochastic Calculus',author:'Karatzas & Shreve'}],
-                        projects:['Simulate geometric Brownian motion, price European and Asian options using Monte Carlo, and calibrate a Heston stochastic volatility model to market data.','Simulate and visualise 1,000 paths of geometric Brownian motion, then price a lookback option and an Asian option using the simulated paths.','Implement and calibrate the Vasicek and CIR interest rate models to real yield curve data. Simulate future rate scenarios and price a bond portfolio.'],
-                        topics:['Markov chains (discrete & continuous)','Poisson processes','Brownian motion & random walks','Martingales, stopping times','Itô integral & Itô\'s lemma','SDEs, Girsanov\'s theorem','Feynman-Kac formula','Applications to option & rate modelling']},
-                        {name:'Applied Graph Theory & Network Science',desc:'Transaction graphs, fraud ring detection, network centrality.',
-                        chapters:['Ch 1: Graph Fundamentals & Centrality','Ch 2: Clustering & Community Detection','Ch 3: Network Flows','Ch 4: Dynamic & Temporal Graphs','Ch 5: Applications in Finance'],
-                        books:[{title:'Networks, Crowds, and Markets',author:'Easley & Kleinberg'},{title:'Graph Theory',author:'Reinhard Diestel'},{title:'Network Science',author:'Albert-László Barabási'}],
-                        projects:['Build a fraud ring detection system using transaction graph analysis: construct the graph, compute centrality metrics, detect communities, and flag suspicious clusters.','Build a social network analyser: ingest a real dataset (e.g. email communications), compute centrality measures, detect communities, and visualise the network.','Model a financial contagion scenario: build an interbank lending network, simulate a bank failure cascade, and identify systemically important nodes.'],
-                        topics:['Centrality, clustering, PageRank','Community detection','Network flow optimisation','Dynamic & temporal graphs','Applications: fraud networks, credit networks']},
-                        {name:'Formal Verification & Type Theory',desc:'Proving code correctness. TLA+, Coq, smart contract verification.',
-                        chapters:['Ch 1: Logic for Verification','Ch 2: Model Checking (TLA+, SPIN)','Ch 3: Theorem Proving (Coq, Lean)','Ch 4: Dependent Types','Ch 5: Financial Protocol Specification','Ch 6: Smart Contract Verification'],
-                        books:[{title:'Software Foundations (Vol 1–3)',author:'Benjamin Pierce et al.'},{title:'Specifying Systems (TLA+)',author:'Leslie Lamport'},{title:'Practical TLA+',author:'Hillel Wayne'}],
-                        projects:['Write a TLA+ specification for a payment settlement protocol, model-check it for deadlocks and invariant violations, then formally verify a critical algorithm (e.g. a consensus protocol or a ledger invariant) using Coq or Lean.','Prove the correctness of a sorting algorithm (e.g. merge sort) in Coq or Lean: define the specification, write the proof, and extract verified executable code.','Specify and model-check a mutual exclusion protocol in TLA+: define safety and liveness properties, find a bug in a naive version, then prove the fixed version correct.'],
-                        topics:['Logic for verification','Model checking (SPIN, TLA+, Alloy)','Theorem proving (Coq, Lean, Isabelle)','Dependent types, design by contract','Formal spec of financial protocols','Smart contract verification (Certora, K)']},
-                    ]},
                     { title:'Data Science, AI & Machine Learning', subjects:[
                         {name:'Data Analysis & Visualisation',desc:'Pandas, SQL analytics, dashboards, exploratory analysis. Turning data into decisions.',
                         chapters:['Ch 1: Exploratory Data Analysis with Pandas','Ch 2: Data Cleaning, Wrangling & Transformation','Ch 3: SQL Analytics (Aggregations, Window Functions)','Ch 4: Statistical Analysis & Hypothesis Testing','Ch 5: Data Visualisation (Matplotlib, Seaborn, Plotly)','Ch 6: Dashboard Design & BI Tools','Ch 7: Data Storytelling & Presentation'],
@@ -6851,8 +6957,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ]},
                 ],
             },
-            business: {
-                label: 'Finance, Business & Law',
+            finance: {
+                label: 'Finance & Biz',
                 icon: 'fa-solid fa-euro-sign',
                 phases: [
                     { title:'Economic & Accounting Foundations', subjects:[
@@ -6903,33 +7009,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                         books:[{title:'A Random Walk Down Wall Street',author:'Burton Malkiel'},{title:'Expected Returns',author:'Antti Ilmanen'},{title:'The Intelligent Investor',author:'Benjamin Graham'}],
                         projects:['Build a portfolio optimiser in a spreadsheet or code: implement mean-variance optimisation, plot the efficient frontier, backtest a multi-asset strategy over 10 years, and compute Sharpe ratios.','Backtest a factor investing strategy (value + momentum + quality) on 10 years of equity data. Compare returns, Sharpe ratio, and maximum drawdown against a benchmark.','Build a risk parity portfolio: implement the equal risk contribution algorithm, compare allocation weights to mean-variance optimisation, and backtest both.'],
                         topics:['Modern Portfolio Theory','CAPM, APT, multi-factor models','Risk-adjusted performance (Sharpe, Sortino, IR)','Asset allocation (strategic, tactical, dynamic)','Alternative investments (PE, VC, hedge funds)','Behavioural investing & anomalies']},
-                        {name:'Financial Mathematics',desc:'Stochastic calculus, Black-Scholes, rate models, Monte Carlo.',
-                        chapters:['Ch 1: Stochastic Processes','Ch 2: Itô Calculus (Applied)','Ch 3: Black-Scholes-Merton','Ch 4: Risk-Neutral Pricing','Ch 5: Interest Rate Models','Ch 6: Credit Risk & Monte Carlo'],
-                        books:[{title:'Stochastic Calculus for Finance (Vol I & II)',author:'Steven Shreve'},{title:'Paul Wilmott Introduces Quantitative Finance',author:'Paul Wilmott'},{title:'Options, Futures, and Other Derivatives',author:'John Hull'}],
-                        projects:['Price a portfolio of exotic derivatives (barrier options, Asian options) using Monte Carlo simulation with variance reduction, calibrated to real market data.','Calibrate the Black-Scholes model to real options market data: extract implied volatility across strikes and maturities, build a volatility surface, and identify the smile/skew.','Price an interest rate swap from scratch: build a discount curve, calculate fixed and floating leg present values, and determine the par swap rate.'],
-                        topics:['Stochastic processes','Ito calculus (applied)','Black-Scholes-Merton derivation','Risk-neutral pricing','Rate models (Vasicek, CIR, HJM, LMM)','Credit risk models, Monte Carlo, calibration']},
                         {name:'International Finance & Geopolitics',desc:'Sanctions, currency crises, correspondent banking, emerging markets.',
                         chapters:['Ch 1: Balance of Payments','Ch 2: Currency Crises','Ch 3: Sanctions Regimes','Ch 4: Correspondent Banking','Ch 5: Emerging Markets & SWFs','Ch 6: China\'s Financial System'],
                         books:[{title:'International Economics',author:'Krugman, Obstfeld & Melitz'},{title:'Manias, Panics, and Crashes',author:'Kindleberger & Aliber'},{title:'The Dollar Trap',author:'Eswar Prasad'}],
                         projects:['Analyse a real sanctions programme (e.g. Russia or Iran): map the sanctions architecture, identify compliance risks for a hypothetical fintech, and write a risk assessment.','Build an FX carry trade simulator: select currency pairs based on interest rate differentials, simulate the strategy over 10 years, and analyse risk-adjusted returns.','Map the correspondent banking network for a specific corridor (e.g. USD payments from Europe to Africa). Identify the intermediary banks, fees, and settlement times.'],
                         topics:['Balance of payments','Currency crises (Asian 97, Euro debt)','Sanctions (OFAC, EU, secondary)','Correspondent banking & de-risking','Emerging markets, sovereign wealth funds','China\'s financial system & digital yuan']},
                     ]},
-                    { title:'Risk Management & Regulation', subjects:[
+                    { title:'Risk Management & Insurance', subjects:[
                         {name:'Risk Management',desc:'Market, credit, operational, liquidity risk. VaR, stress testing.',
                         chapters:['Ch 1: Market Risk (VaR, CVaR)','Ch 2: Credit Risk','Ch 3: Operational & Model Risk','Ch 4: Liquidity & Counterparty Risk','Ch 5: ERM Frameworks'],
                         books:[{title:'Risk Management and Financial Institutions',author:'John Hull'},{title:'Value at Risk',author:'Philippe Jorion'},{title:'Against the Gods: The Remarkable Story of Risk',author:'Peter Bernstein'}],
                         projects:['Build a market risk engine: compute VaR and CVaR for a sample portfolio using historical simulation, parametric, and Monte Carlo methods. Backtest with real data.','Build a stress testing framework: define 3 macroeconomic scenarios (base, adverse, severely adverse), shock a portfolio\'s risk factors, and report P&L impact.','Implement a credit scoring pipeline: build a scorecard using logistic regression, assign PD grades, compute expected loss (PD × LGD × EAD), and validate with a Gini coefficient.'],
                         topics:['Market risk (VaR, CVaR, stress testing)','Credit risk (PD, LGD, EAD, scoring)','Operational risk, model risk','Liquidity risk, counterparty risk (CVA/DVA)','ERM frameworks (COSO, ISO 31000)']},
-                        {name:'Advanced Quantitative Risk',desc:'Copulas, EVT, regime-switching, volatility modelling.',
-                        chapters:['Ch 1: Copulas','Ch 2: Extreme Value Theory','Ch 3: Regime-Switching Models','Ch 4: Volatility Modelling','Ch 5: Climate & ESG Risk'],
-                        books:[{title:'Quantitative Risk Management',author:'McNeil, Frey & Embrechts'},{title:'Elements of Financial Risk Management',author:'Peter Christoffersen'}],
-                        projects:['Implement copula-based portfolio risk modelling: fit Gaussian and t-copulas to equity returns, simulate joint distributions, and compare tail risk estimates.','Calibrate a GARCH(1,1) model to equity index returns, forecast volatility, and compare VaR estimates from GARCH vs historical simulation vs parametric normal.','Implement Extreme Value Theory for operational risk: fit a Generalised Pareto Distribution to loss data, estimate high-quantile losses, and compute regulatory capital.'],
-                        topics:['Copulas (Gaussian, t, Archimedean)','Extreme Value Theory (GEV, GPD)','Regime-switching (Markov, Hamilton)','Volatility (GARCH, stochastic, rough vol)','Climate & ESG risk modelling']},
-                        {name:'Financial Regulation',desc:'Basel, MiFID, Dodd-Frank, AML/CFT, consumer protection.',
-                        chapters:['Ch 1: Basel III/IV','Ch 2: MiFID II / Dodd-Frank','Ch 3: AML/CFT (FATF)','Ch 4: Consumer Protection','Ch 5: Regulatory Reporting & RegTech'],
-                        books:[{title:'International Financial Regulation',author:'Dariush Alavi'},{title:'The End of Alchemy',author:'Mervyn King'},{title:'Principles of Financial Regulation',author:'Armour et al.'}],
-                        projects:['Map the complete regulatory requirements for launching an e-money institution in the EU: licensing steps, capital requirements, reporting obligations, and a compliance timeline.','Write a mock regulatory response to a supervisory finding: acknowledge the issue, describe root cause analysis, propose remediation actions with timelines, and demonstrate compliance.','Build a regulatory change tracker: monitor 3 regulatory bodies (FCA, ECB, SEC) for new publications, categorise by impact area, and produce a monthly digest.'],
-                        topics:['Basel III/IV in depth','MiFID II / MiFIR, Dodd-Frank','AML/CFT (FATF 40, travel rule)','Consumer protection, Solvency II','Regulatory reporting, RegTech']},
                         {name:'Insurance & Actuarial Concepts',desc:'Risk pooling, underwriting, InsurTech models.',
                         chapters:['Ch 1: Insurance Principles','Ch 2: Life vs General Insurance','Ch 3: Actuarial Fundamentals','Ch 4: InsurTech Models','Ch 5: Reinsurance'],
                         books:[{title:'Actuarial Mathematics',author:'Bowers et al.'},{title:'Insurance Economics',author:'Zweifel & Eisen'}],
@@ -6978,48 +7069,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                         projects:['Write a complete architecture decision record (ADR), an API documentation site (using OpenAPI), an investor update email, and a 10-minute technical presentation.','Write a complete RFC (Request for Comments) proposing a significant technical change (e.g. migrating databases, adopting a new framework). Include trade-offs, risks, and rollback plan.','Create a developer documentation site for a sample API: getting started guide, authentication docs, endpoint reference, error codes, code examples in 3 languages, and a changelog.'],
                         topics:['Structured writing (clarity, brevity, audience)','Architecture decision records (ADRs)','API docs (OpenAPI, developer portals)','Investor memos & board reporting','Regulatory filings & compliance narratives','Presentation design & delivery']},
                     ]},
-                    { title:'Law & Legal Frameworks', subjects:[
-                        {name:'Contract & Commercial Law',desc:'Formation, breach, remedies, dispute resolution.',
-                        chapters:['Ch 1: Contract Formation','Ch 2: Terms, Breach & Remedies','Ch 3: Commercial Contracts','Ch 4: Dispute Resolution','Ch 5: Smart Contracts vs Legal Contracts'],
-                        books:[{title:'Contract Law: Text, Cases, and Materials',author:'Ewan McKendrick'},{title:'The Law of Contract',author:'Treitel'}],
-                        projects:['Draft a SaaS subscription agreement and a technology licensing contract. Include liability caps, indemnities, IP clauses, and termination provisions.','Review and redline a real SaaS terms of service: identify problematic clauses, suggest amendments, and write a summary of key legal risks for a non-lawyer audience.','Draft a partnership agreement between a fintech and a bank: scope of services, data sharing terms, liability allocation, termination provisions, and dispute resolution.'],
-                        topics:['Contract formation & enforceability','Terms, breach & remedies','Commercial contracts, agency law','Dispute resolution (litigation, arbitration)','Smart contracts vs legal contracts']},
-                        {name:'Company Law & Governance',desc:'Incorporation, fiduciary duties, board dynamics, SPVs.',
-                        chapters:['Ch 1: Company Structures','Ch 2: Fiduciary Duties','Ch 3: Board Governance','Ch 4: Restructuring & Cross-Border'],
-                        books:[{title:'Principles of Corporate Governance',author:'OECD'},{title:'Company Law in Context',author:'David Kershaw'}],
-                        projects:['Prepare incorporation documents for a fintech startup: articles of association, shareholder agreement, board resolution templates, and a ESOP framework.','Analyse the corporate governance failures in a real case (Theranos, WeWork, or FTX). Map the board structure, identify governance gaps, and propose fixes.','Design a board reporting pack for a fintech: financial summary, KPIs, risk dashboard, regulatory update, and strategic initiatives — presented in a 10-page monthly format.'],
-                        topics:['Company structures (Ltd, LLC, AG, SAS)','Directors\' fiduciary duties','Board governance, shareholder rights','Restructuring, cross-border incorporation']},
-                        {name:'Financial Services Law',desc:'Licensing, conduct rules, prudential regulation, sandboxes.',
-                        chapters:['Ch 1: Licensing Regimes','Ch 2: Conduct & Prudential Rules','Ch 3: E-Money & Payment Licensing','Ch 4: Cross-Border Passporting & Sandboxes'],
-                        books:[{title:'Principles of Financial Regulation',author:'Armour et al.'},{title:'Financial Services Law',author:'George Walker et al.'}],
-                        projects:['Prepare a mock regulatory application for an e-money licence: cover letter, business plan, governance structure, AML policy, and capital adequacy projections.','Compare the licensing requirements for launching a payment service across 3 jurisdictions (UK, EU, Singapore). Produce a comparison matrix and a recommended entry strategy.','Draft a regulatory sandbox application: describe the innovation, the test parameters, consumer protection measures, and the exit strategy.'],
-                        topics:['Licensing (FCA, BaFin, MAS, OCC)','Conduct rules, prudential regulation','E-money/payment institution licensing','Cross-border passporting, sandboxes']},
-                        {name:'Data Protection & Privacy',desc:'GDPR, CCPA, cross-border transfers, DPIAs.',
-                        chapters:['Ch 1: GDPR Principles & Rights','Ch 2: Global Privacy Laws','Ch 3: Cross-Border Transfers','Ch 4: Privacy by Design & Breach Notification'],
-                        books:[{title:'EU General Data Protection Regulation (GDPR): A Commentary',author:'Kuner et al.'},{title:'Data Privacy and GDPR Handbook',author:'Sanjay Sharma'}],
-                        projects:['Conduct a Data Protection Impact Assessment (DPIA) for a fintech app that processes financial and biometric data. Produce the full DPIA report with mitigations.','Design a cookie consent mechanism and a data subject rights portal (access, deletion, portability) that comply with GDPR. Document the technical and legal requirements.','Write a privacy policy and a data processing agreement (DPA) for a fintech that processes payment data, biometric data, and uses third-party analytics.'],
-                        topics:['GDPR (principles, rights, DPO)','CCPA/CPRA, global privacy laws','Cross-border transfers (SCCs, adequacy)','Privacy by design, breach notification']},
-                        {name:'IP & Technology Law',desc:'Patents, trade secrets, open-source, AI regulation.',
-                        chapters:['Ch 1: Fintech Patent Strategies','Ch 2: Software Licensing','Ch 3: AI Regulation','Ch 4: E-Signatures & Digital Identity','Ch 5: Algorithmic Accountability'],
-                        books:[{title:'Intellectual Property Law',author:'Lionel Bently & Brad Sherman'},{title:'The Future of Law and eTechnologies',author:'Tanel Kerikmäe & Addi Rull'}],
-                        projects:['Draft an open-source contribution policy, a patent landscape analysis for a fintech product, and an AI model governance framework aligned with the EU AI Act.','Conduct a freedom-to-operate analysis for a fintech product: search relevant patents, assess infringement risk, and document the analysis with a risk matrix.','Draft an AI governance policy for a company using ML for credit decisions: model documentation, bias testing requirements, human oversight, and audit trail.'],
-                        topics:['Fintech patent strategies','Software licensing (GPL, MIT, Apache)','AI regulation (EU AI Act, NIST RMF)','E-signatures, digital identity (eIDAS)','Algorithmic accountability']},
-                        {name:'Crypto & Digital Asset Regulation',desc:'MiCA, SEC/CFTC, Howey test, DAO wrappers, CBDC law.',
-                        chapters:['Ch 1: MiCA Framework','Ch 2: US Regulatory Landscape','Ch 3: Global Licensing','Ch 4: DAO Legal Structures','Ch 5: Stablecoin & CBDC Regulation','Ch 6: Travel Rule (FATF)'],
-                        books:[{title:'Cryptoassets: Legal, Regulatory, and Monetary Perspectives',author:'Chris Brummer'},{title:'Blockchain and the Law',author:'De Filippi & Wright'}],
-                        projects:['Write a legal opinion on whether a specific token qualifies as a security under MiCA, the Howey test, and Singapore\'s regulatory framework. Compare all three.','Produce a regulatory compliance matrix for a crypto exchange operating across US, EU, and UAE: licensing requirements, AML obligations, and reporting duties per jurisdiction.','Draft a legal wrapper for a DAO: compare foundation (Cayman, Swiss), LLC (Wyoming), and unincorporated structures. Recommend one with reasoning.'],
-                        topics:['MiCA (CASPs, stablecoins, market abuse)','US (SEC vs CFTC, Howey test)','Global licensing (VARA, Singapore, UK)','DAO legal structures','Stablecoin & CBDC regulation','Travel Rule (FATF R.16)']},
-                        {name:'Tax Law & Strategy',desc:'Corporate tax, transfer pricing, crypto taxation.',
-                        chapters:['Ch 1: Corporate Income Tax','Ch 2: VAT/GST on Financial Services','Ch 3: Crypto Taxation','Ch 4: Cross-Border Planning','Ch 5: BEPS & Reporting'],
-                        books:[{title:'International Tax Primer',author:'Brian Arnold'},{title:'Fundamentals of Taxation',author:'Ana Cruz et al.'}],
-                        projects:['Design a cross-border tax structure for a fintech with operations in 3 jurisdictions: corporate structure, transfer pricing policy, and crypto tax treatment for staking rewards.','Calculate the tax implications of a token airdrop, a DeFi yield farming position, and an NFT sale across 3 jurisdictions. Produce a tax memo with recommendations.','Design a transfer pricing structure for a fintech with a parent in Ireland, a subsidiary in the UK, and operations in Singapore. Document the arm\'s-length analysis.'],
-                        topics:['Corporate income tax, transfer pricing','VAT/GST on financial services','Crypto tax (income, gains, staking, DeFi)','Cross-border planning, R&D credits','BEPS, reporting automation']},
-                        {name:'Competition Law & Antitrust',desc:'Market dominance, platform regulation, merger control.',
-                        chapters:['Ch 1: Antitrust Fundamentals','Ch 2: Platform Regulation (DMA/DSA)','Ch 3: Merger Control','Ch 4: Open Banking as Competition Remedy'],
-                        books:[{title:'Competition Law',author:'Richard Whish & David Bailey'},{title:'The Antitrust Paradox',author:'Robert Bork'}],
-                        projects:['Analyse a real fintech acquisition (e.g. Visa/Plaid) through a competition law lens: define the relevant market, assess dominance, and write a mock merger clearance submission.','Write a market definition analysis for a fintech product: identify the relevant product and geographic market, calculate market shares, and assess dominance indicators.','Analyse the DMA (Digital Markets Act) obligations for a hypothetical fintech that qualifies as a gatekeeper. Map specific compliance requirements and implementation steps.'],
-                        topics:['Antitrust fundamentals','Platform regulation (DMA/DSA)','Merger control, data & competition','Open Banking as competition remedy']},
-                    ]},
                     { title:'Crypto-Finance & Digital Assets', subjects:[
                         {name:'Cryptocurrency Fundamentals',desc:'Bitcoin, Ethereum, L2s, tokenisation, CBDCs, privacy.',
                         chapters:['Ch 1: Bitcoin Fundamentals','Ch 2: Ethereum Platform','Ch 3: Layer 2 Scaling','Ch 4: Alternative L1s & RWA Tokenisation','Ch 5: CBDCs','Ch 6: Stablecoins & Privacy Tech'],
@@ -7057,22 +7106,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                         projects:['Design and run a behavioural experiment: test how framing effects influence investment decisions using a survey (n=50+), analyse results, and write up findings.','Design a choice architecture for a savings product: implement commitment devices, default options, and social proof. Mock up the UX and document the behavioural principles used.','Build a cognitive bias quiz application with 20 scenarios drawn from financial decision-making. Score users, explain which biases they exhibited, and suggest debiasing strategies.'],
                         topics:['Prospect theory & loss aversion','Cognitive biases in investing','Nudge theory & choice architecture','Designing for better financial decisions','Gamification ethics']},
                     ]},
-                    { title:'Central Banking, Policy & Fintech Mastery', subjects:[
+                    { title:'Central Banking & Fintech Mastery', subjects:[
                         {name:'Central Banking & Monetary Theory',desc:'QE mechanics, CBDC design, monetary sovereignty.',
                         chapters:['Ch 1: Monetary Policy Transmission','Ch 2: QE/QT Mechanics','Ch 3: CBDC Design','Ch 4: Digital Dollarisation','Ch 5: Central Bank Independence','Ch 6: Lender of Last Resort'],
                         books:[{title:'The End of Alchemy',author:'Mervyn King'},{title:'The Lords of Easy Money',author:'Christopher Leonard'},{title:'Central Banking: Theory and Practice in Sustaining Monetary and Financial Stability',author:'Thammarak Moenjak'}],
                         projects:['Build a simple monetary policy simulation: model how interest rate changes transmit through lending, inflation, and employment over 20 quarters.','Analyse 3 historical episodes of quantitative easing (US 2008, EU 2015, Japan 2001). Compare the transmission mechanisms, asset purchases, and outcomes.','Design a wholesale CBDC prototype: define the ledger structure, participant onboarding, settlement finality, privacy model, and interoperability with existing RTGS.'],
                         topics:['Monetary policy transmission','QE/QT mechanics','CBDC design (account vs token, privacy)','Digital dollarisation risks','Central bank independence','Lender of last resort & crisis management']},
-                        {name:'Public Policy & Political Economy',desc:'How regulation is made. Advocacy, regulatory competition.',
-                        chapters:['Ch 1: Regulatory Capture & Public Choice','Ch 2: Lobbying & Policy Advocacy','Ch 3: Regulatory Competition','Ch 4: Financial Stability Oversight','Ch 5: Digital Sovereignty'],
-                        books:[{title:'The Shifts and the Shocks',author:'Martin Wolf'},{title:'Crashed',author:'Adam Tooze'}],
-                        projects:['Write a policy brief (2,000 words) proposing a regulatory framework for a fintech innovation (e.g. DeFi lending or AI credit scoring), with stakeholder analysis.','Write a regulatory impact assessment for a proposed fintech regulation: identify affected parties, model compliance costs, estimate benefits, and recommend implementation approach.','Map the lobbying landscape for fintech regulation in a specific jurisdiction: identify key stakeholders, their positions, the regulatory bodies involved, and recent advocacy outcomes.'],
-                        topics:['Regulatory capture, public choice','Lobbying & policy advocacy','Regulatory competition','Financial stability oversight (FSB, FSOC)','Digital sovereignty & data geopolitics']},
-                        {name:'Securities Law (Advanced)',desc:'Token offerings, crowdfunding, secondary markets.',
-                        chapters:['Ch 1: Securities Exemptions','Ch 2: Security Token Offerings','Ch 3: Equity Crowdfunding','Ch 4: Market Abuse Regulation'],
-                        books:[{title:'Securities Regulation',author:'James Cox et al.'},{title:'Cryptoassets: Legal, Regulatory, and Monetary Perspectives',author:'Chris Brummer'}],
-                        projects:['Structure a compliant token offering: draft the offering memorandum, map exemptions across US (Reg D), EU (MiCA), and Singapore, and produce a compliance checklist.','Analyse 3 SEC enforcement actions against crypto projects. For each, identify the legal theory, the facts, the outcome, and what the project should have done differently.','Draft a compliance programme for a security token platform: KYC/AML procedures, transfer restrictions, reporting obligations, and a technology implementation plan.'],
-                        topics:['Securities exemptions (Reg D, A+, CF)','Security Token Offerings','Equity crowdfunding regulation','Market abuse regulation (MAR for crypto)']},
                         {name:'Fintech Business Models & Case Studies',desc:'Neobanks, BNPL, embedded finance, super-apps, failures.',
                         chapters:['Ch 1: Neobanks','Ch 2: BNPL Models','Ch 3: Embedded Finance & BaaS','Ch 4: WealthTech, InsurTech, Super-Apps','Ch 5: Failure Case Studies'],
                         books:[{title:'Bank 4.0',author:'Brett King'},{title:'The FINTECH Book',author:'Susanne Chishti & Janos Barberis'}],
@@ -7088,11 +7127,103 @@ document.addEventListener('DOMContentLoaded', async () => {
                         books:[{title:'Weapons of Math Destruction',author:'Cathy O\'Neil'},{title:'The Age of Surveillance Capitalism',author:'Shoshana Zuboff'}],
                         projects:['Conduct an ethical audit of a fintech product: assess algorithmic bias, dark patterns, data practices, financial inclusion impact, and produce an ethics review report.','Design a responsible AI framework for a lending product: fairness metrics, bias testing protocol, model documentation requirements, and an ethics review board charter.','Audit a real fintech app for dark patterns: screenshot and categorise each instance, assess the harm, and propose ethical redesigns for each.'],
                         topics:['Responsible AI & fairness','Financial inclusion','ESG & sustainable finance','Ethical design, data ethics','Building trust in fintech']},
+                        {name:'Personal Finance & Wealth Management',desc:'Retail financial planning, robo-advisory, pension systems, financial literacy.',
+                        chapters:['Ch 1: Budgeting, Saving & Debt Management','Ch 2: Investment Planning for Individuals','Ch 3: Retirement & Pension Systems','Ch 4: Tax-Efficient Personal Investing','Ch 5: Robo-Advisory & Automated Wealth Management','Ch 6: Financial Literacy & Consumer Behaviour'],
+                        books:[{title:'The Psychology of Money',author:'Morgan Housel'},{title:'A Random Walk Down Wall Street',author:'Burton Malkiel'},{title:'The Wealthy Barber',author:'David Chilton'}],
+                        projects:['Design a robo-advisory engine: risk profiling questionnaire, automated asset allocation (MPT-based), rebalancing logic, tax-loss harvesting rules, and a projected retirement outcome dashboard.','Build a retirement calculator that models compound growth, inflation, social security / state pension, employer contributions, and withdrawal strategies (4% rule vs dynamic). Visualise outcomes under optimistic, base, and pessimistic scenarios.','Conduct a financial literacy audit of 5 consumer fintech apps: evaluate how well they educate users on fees, compound interest, risk, and behavioural biases. Write a UX improvement proposal for the weakest.'],
+                        topics:['Budgeting frameworks & debt management','Investment planning (risk profiling, asset allocation)','Pension systems (DB vs DC, state pensions)','Tax-efficient investing (ISAs, 401k, Roth)','Robo-advisory algorithms & rebalancing','Financial literacy, behavioural nudges','Consumer financial protection']},
                         {name:'Capstone: Fintech Venture Design',desc:'Design a fintech venture from zero to investor-ready.',
                         chapters:['Ch 1: Market Sizing (TAM/SAM/SOM)','Ch 2: Regulatory & Licensing Roadmap','Ch 3: Architecture & Build-vs-Buy','Ch 4: Business Model & Projections','Ch 5: Legal Structure & IP Strategy','Ch 6: Fundraising & Go-to-Market'],
                         books:[{title:'The Lean Startup',author:'Eric Ries'},{title:'Venture Deals',author:'Brad Feld & Jason Mendelson'},{title:'Business Model Generation',author:'Osterwalder & Pigneur'}],
                         projects:['Produce a complete investor-ready venture package: market analysis, regulatory roadmap, technical architecture, financial projections, legal structure, and a 15-minute pitch video.','Present your fintech venture to 3 real investors or mentors. Collect feedback, iterate on the pitch and model, and document what changed and why.','Write a 100-day launch plan for your venture: week-by-week milestones covering product development, regulatory submissions, hiring, partnerships, and go-to-market.'],
                         topics:['Market sizing (TAM/SAM/SOM)','Regulatory & licensing roadmap','Architecture & build-vs-buy','Business model & projections','Legal structure, IP strategy','Fundraising & go-to-market']},
+                    ]},
+                ],
+            },
+            law: {
+                label: 'Law',
+                icon: 'fa-solid fa-scale-balanced',
+                phases: [
+                    { title:'Foundational Law', subjects:[
+                        {name:'Contract & Commercial Law',desc:'Formation, breach, remedies, dispute resolution.',
+                        chapters:['Ch 1: Contract Formation','Ch 2: Terms, Breach & Remedies','Ch 3: Commercial Contracts','Ch 4: Dispute Resolution','Ch 5: Smart Contracts vs Legal Contracts'],
+                        books:[{title:'Contract Law: Text, Cases, and Materials',author:'Ewan McKendrick'},{title:'The Law of Contract',author:'Treitel'}],
+                        projects:['Draft a SaaS subscription agreement and a technology licensing contract. Include liability caps, indemnities, IP clauses, and termination provisions.','Review and redline a real SaaS terms of service: identify problematic clauses, suggest amendments, and write a summary of key legal risks for a non-lawyer audience.','Draft a partnership agreement between a fintech and a bank: scope of services, data sharing terms, liability allocation, termination provisions, and dispute resolution.'],
+                        topics:['Contract formation & enforceability','Terms, breach & remedies','Commercial contracts, agency law','Dispute resolution (litigation, arbitration)','Smart contracts vs legal contracts']},
+                        {name:'Company Law & Governance',desc:'Incorporation, fiduciary duties, board dynamics, SPVs.',
+                        chapters:['Ch 1: Company Structures','Ch 2: Fiduciary Duties','Ch 3: Board Governance','Ch 4: Restructuring & Cross-Border'],
+                        books:[{title:'Principles of Corporate Governance',author:'OECD'},{title:'Company Law in Context',author:'David Kershaw'}],
+                        projects:['Prepare incorporation documents for a fintech startup: articles of association, shareholder agreement, board resolution templates, and a ESOP framework.','Analyse the corporate governance failures in a real case (Theranos, WeWork, or FTX). Map the board structure, identify governance gaps, and propose fixes.','Design a board reporting pack for a fintech: financial summary, KPIs, risk dashboard, regulatory update, and strategic initiatives — presented in a 10-page monthly format.'],
+                        topics:['Company structures (Ltd, LLC, AG, SAS)','Directors\' fiduciary duties','Board governance, shareholder rights','Restructuring, cross-border incorporation']},
+                        {name:'IP & Technology Law',desc:'Patents, trade secrets, open-source, AI regulation.',
+                        chapters:['Ch 1: Fintech Patent Strategies','Ch 2: Software Licensing','Ch 3: AI Regulation','Ch 4: E-Signatures & Digital Identity','Ch 5: Algorithmic Accountability'],
+                        books:[{title:'Intellectual Property Law',author:'Lionel Bently & Brad Sherman'},{title:'The Future of Law and eTechnologies',author:'Tanel Kerikmäe & Addi Rull'}],
+                        projects:['Draft an open-source contribution policy, a patent landscape analysis for a fintech product, and an AI model governance framework aligned with the EU AI Act.','Conduct a freedom-to-operate analysis for a fintech product: search relevant patents, assess infringement risk, and document the analysis with a risk matrix.','Draft an AI governance policy for a company using ML for credit decisions: model documentation, bias testing requirements, human oversight, and audit trail.'],
+                        topics:['Fintech patent strategies','Software licensing (GPL, MIT, Apache)','AI regulation (EU AI Act, NIST RMF)','E-signatures, digital identity (eIDAS)','Algorithmic accountability']},
+                        {name:'Competition Law & Antitrust',desc:'Market dominance, platform regulation, merger control.',
+                        chapters:['Ch 1: Antitrust Fundamentals','Ch 2: Platform Regulation (DMA/DSA)','Ch 3: Merger Control','Ch 4: Open Banking as Competition Remedy'],
+                        books:[{title:'Competition Law',author:'Richard Whish & David Bailey'},{title:'The Antitrust Paradox',author:'Robert Bork'}],
+                        projects:['Analyse a real fintech acquisition (e.g. Visa/Plaid) through a competition law lens: define the relevant market, assess dominance, and write a mock merger clearance submission.','Write a market definition analysis for a fintech product: identify the relevant product and geographic market, calculate market shares, and assess dominance indicators.','Analyse the DMA (Digital Markets Act) obligations for a hypothetical fintech that qualifies as a gatekeeper. Map specific compliance requirements and implementation steps.'],
+                        topics:['Antitrust fundamentals','Platform regulation (DMA/DSA)','Merger control, data & competition','Open Banking as competition remedy']},
+                        {name:'Employment & Labour Law',desc:'Hiring, termination, equity compensation, contractor vs employee, cross-border teams.',
+                        chapters:['Ch 1: Employment Contract Fundamentals','Ch 2: Termination, Redundancy & Wrongful Dismissal','Ch 3: Equity Compensation (Stock Options, RSUs, ESOP)','Ch 4: Contractor vs Employee Classification','Ch 5: Non-Competes, NDAs & Restrictive Covenants','Ch 6: Cross-Border Employment & Remote Work'],
+                        books:[{title:'Employment Law',author:'Stephen Taylor & Astra Emir'},{title:'The Entrepreneur\'s Guide to Business Law',author:'Constance Bagley & Craig Dauchy'}],
+                        projects:['Draft a complete employment contract suite for a fintech startup: offer letter, employment agreement, equity vesting schedule, NDA, invention assignment, and termination provisions across 2 jurisdictions.','Analyse the contractor vs employee classification for 5 common fintech roles across US, UK, and EU. Produce a classification matrix with risk ratings and recommendations.','Design an equity compensation plan for a 30-person startup: option pool sizing, vesting schedules, exercise windows, tax implications across 3 jurisdictions, and a plain-English employee guide.'],
+                        topics:['Employment contract formation & terms','Wrongful dismissal & constructive dismissal','Equity compensation structures & taxation','Contractor vs employee (IR35, ABC test)','Non-competes & restrictive covenants','Cross-border employment, EOR models','Workplace discrimination & harassment law']},
+                        {name:'Dispute Resolution & Arbitration',desc:'Litigation, arbitration, mediation, cross-border enforcement.',
+                        chapters:['Ch 1: Civil Litigation Procedure','Ch 2: International Commercial Arbitration','Ch 3: Mediation & ADR','Ch 4: Cross-Border Enforcement of Judgments','Ch 5: Fintech-Specific Disputes','Ch 6: Regulatory Enforcement Actions'],
+                        books:[{title:'International Commercial Arbitration',author:'Gary Born'},{title:'Redfern and Hunter on International Arbitration',author:'Blackaby, Partasides et al.'}],
+                        projects:['Draft an arbitration clause for a fintech platform\'s terms of service: choose a seat, rules (ICC, LCIA, SIAC), language, and governing law. Justify each choice in a memo.','Analyse 3 real regulatory enforcement actions against fintech companies (e.g. FCA fines, SEC actions). Map the enforcement process, identify what triggered the action, and extract compliance lessons.','Write a dispute resolution strategy document for a fintech operating across 4 jurisdictions: which disputes go to arbitration vs litigation, choice of forum, and cost-benefit analysis.'],
+                        topics:['Civil litigation procedure & jurisdiction','International commercial arbitration (ICC, LCIA, SIAC)','Mediation & alternative dispute resolution','Cross-border enforcement (New York Convention)','Regulatory enforcement & appeals','Class actions & collective redress in fintech']},
+                    ]},
+                    { title:'Financial Services & Regulatory Law', subjects:[
+                        {name:'Financial Services Law',desc:'Licensing, conduct rules, prudential regulation, sandboxes.',
+                        chapters:['Ch 1: Licensing Regimes','Ch 2: Conduct & Prudential Rules','Ch 3: E-Money & Payment Licensing','Ch 4: Cross-Border Passporting & Sandboxes'],
+                        books:[{title:'Principles of Financial Regulation',author:'Armour et al.'},{title:'Financial Services Law',author:'George Walker et al.'}],
+                        projects:['Prepare a mock regulatory application for an e-money licence: cover letter, business plan, governance structure, AML policy, and capital adequacy projections.','Compare the licensing requirements for launching a payment service across 3 jurisdictions (UK, EU, Singapore). Produce a comparison matrix and a recommended entry strategy.','Draft a regulatory sandbox application: describe the innovation, the test parameters, consumer protection measures, and the exit strategy.'],
+                        topics:['Licensing (FCA, BaFin, MAS, OCC)','Conduct rules, prudential regulation','E-money/payment institution licensing','Cross-border passporting, sandboxes']},
+                        {name:'Financial Regulation',desc:'Basel, MiFID, Dodd-Frank, AML/CFT, consumer protection.',
+                        chapters:['Ch 1: Basel III/IV','Ch 2: MiFID II / Dodd-Frank','Ch 3: AML/CFT (FATF)','Ch 4: Consumer Protection','Ch 5: Regulatory Reporting & RegTech'],
+                        books:[{title:'International Financial Regulation',author:'Dariush Alavi'},{title:'The End of Alchemy',author:'Mervyn King'},{title:'Principles of Financial Regulation',author:'Armour et al.'}],
+                        projects:['Map the complete regulatory requirements for launching an e-money institution in the EU: licensing steps, capital requirements, reporting obligations, and a compliance timeline.','Write a mock regulatory response to a supervisory finding: acknowledge the issue, describe root cause analysis, propose remediation actions with timelines, and demonstrate compliance.','Build a regulatory change tracker: monitor 3 regulatory bodies (FCA, ECB, SEC) for new publications, categorise by impact area, and produce a monthly digest.'],
+                        topics:['Basel III/IV in depth','MiFID II / MiFIR, Dodd-Frank','AML/CFT (FATF 40, travel rule)','Consumer protection, Solvency II','Regulatory reporting, RegTech']},
+                        {name:'Securities Law (Advanced)',desc:'Token offerings, crowdfunding, secondary markets.',
+                        chapters:['Ch 1: Securities Exemptions','Ch 2: Security Token Offerings','Ch 3: Equity Crowdfunding','Ch 4: Market Abuse Regulation'],
+                        books:[{title:'Securities Regulation',author:'James Cox et al.'},{title:'Cryptoassets: Legal, Regulatory, and Monetary Perspectives',author:'Chris Brummer'}],
+                        projects:['Structure a compliant token offering: draft the offering memorandum, map exemptions across US (Reg D), EU (MiCA), and Singapore, and produce a compliance checklist.','Analyse 3 SEC enforcement actions against crypto projects. For each, identify the legal theory, the facts, the outcome, and what the project should have done differently.','Draft a compliance programme for a security token platform: KYC/AML procedures, transfer restrictions, reporting obligations, and a technology implementation plan.'],
+                        topics:['Securities exemptions (Reg D, A+, CF)','Security Token Offerings','Equity crowdfunding regulation','Market abuse regulation (MAR for crypto)']},
+                        {name:'Public Policy & Political Economy',desc:'How regulation is made. Advocacy, regulatory competition.',
+                        chapters:['Ch 1: Regulatory Capture & Public Choice','Ch 2: Lobbying & Policy Advocacy','Ch 3: Regulatory Competition','Ch 4: Financial Stability Oversight','Ch 5: Digital Sovereignty'],
+                        books:[{title:'The Shifts and the Shocks',author:'Martin Wolf'},{title:'Crashed',author:'Adam Tooze'}],
+                        projects:['Write a policy brief (2,000 words) proposing a regulatory framework for a fintech innovation (e.g. DeFi lending or AI credit scoring), with stakeholder analysis.','Write a regulatory impact assessment for a proposed fintech regulation: identify affected parties, model compliance costs, estimate benefits, and recommend implementation approach.','Map the lobbying landscape for fintech regulation in a specific jurisdiction: identify key stakeholders, their positions, the regulatory bodies involved, and recent advocacy outcomes.'],
+                        topics:['Regulatory capture, public choice','Lobbying & policy advocacy','Regulatory competition','Financial stability oversight (FSB, FSOC)','Digital sovereignty & data geopolitics']},
+                        {name:'AML/KYC Compliance Law',desc:'Anti-money laundering frameworks, sanctions law, beneficial ownership, whistleblowing.',
+                        chapters:['Ch 1: FATF 40 Recommendations & National Implementation','Ch 2: Customer Due Diligence & Enhanced Due Diligence','Ch 3: Beneficial Ownership Registers & Transparency','Ch 4: Sanctions Law (OFAC, EU, UN)','Ch 5: Suspicious Activity Reporting & Tipping Off','Ch 6: Whistleblower Protection & Incentives'],
+                        books:[{title:'Anti-Money Laundering in a Nutshell',author:'Kevin Sullivan'},{title:'International Guide to Anti-Money Laundering',author:'Mushtaq Khan'}],
+                        projects:['Design a risk-based AML compliance programme for a cross-border payments company: customer risk assessment methodology, transaction monitoring rules, SAR filing procedures, and staff training plan.','Map the beneficial ownership requirements across US (Corporate Transparency Act), EU (AMLD6), and UK (PSC Register). Identify gaps that a fintech must address when onboarding corporate clients.','Analyse 3 major AML enforcement actions (e.g. Danske Bank, Westpac, Binance): identify the failures, the legal basis for enforcement, penalties, and what compliance controls would have prevented the violations.'],
+                        topics:['FATF 40 Recommendations','CDD, EDD, simplified due diligence','Beneficial ownership & transparency','Sanctions screening (OFAC, EU, UN)','Suspicious activity reporting','Whistleblower protection (Dodd-Frank, EU Directive)','AML for crypto & DeFi']},
+                    ]},
+                    { title:'Data, Privacy & Digital Asset Law', subjects:[
+                        {name:'Data Protection & Privacy',desc:'GDPR, CCPA, cross-border transfers, DPIAs.',
+                        chapters:['Ch 1: GDPR Principles & Rights','Ch 2: Global Privacy Laws','Ch 3: Cross-Border Transfers','Ch 4: Privacy by Design & Breach Notification'],
+                        books:[{title:'EU General Data Protection Regulation (GDPR): A Commentary',author:'Kuner et al.'},{title:'Data Privacy and GDPR Handbook',author:'Sanjay Sharma'}],
+                        projects:['Conduct a Data Protection Impact Assessment (DPIA) for a fintech app that processes financial and biometric data. Produce the full DPIA report with mitigations.','Design a cookie consent mechanism and a data subject rights portal (access, deletion, portability) that comply with GDPR. Document the technical and legal requirements.','Write a privacy policy and a data processing agreement (DPA) for a fintech that processes payment data, biometric data, and uses third-party analytics.'],
+                        topics:['GDPR (principles, rights, DPO)','CCPA/CPRA, global privacy laws','Cross-border transfers (SCCs, adequacy)','Privacy by design, breach notification']},
+                        {name:'Crypto & Digital Asset Regulation',desc:'MiCA, SEC/CFTC, Howey test, DAO wrappers, CBDC law.',
+                        chapters:['Ch 1: MiCA Framework','Ch 2: US Regulatory Landscape','Ch 3: Global Licensing','Ch 4: DAO Legal Structures','Ch 5: Stablecoin & CBDC Regulation','Ch 6: Travel Rule (FATF)'],
+                        books:[{title:'Cryptoassets: Legal, Regulatory, and Monetary Perspectives',author:'Chris Brummer'},{title:'Blockchain and the Law',author:'De Filippi & Wright'}],
+                        projects:['Write a legal opinion on whether a specific token qualifies as a security under MiCA, the Howey test, and Singapore\'s regulatory framework. Compare all three.','Produce a regulatory compliance matrix for a crypto exchange operating across US, EU, and UAE: licensing requirements, AML obligations, and reporting duties per jurisdiction.','Draft a legal wrapper for a DAO: compare foundation (Cayman, Swiss), LLC (Wyoming), and unincorporated structures. Recommend one with reasoning.'],
+                        topics:['MiCA (CASPs, stablecoins, market abuse)','US (SEC vs CFTC, Howey test)','Global licensing (VARA, Singapore, UK)','DAO legal structures','Stablecoin & CBDC regulation','Travel Rule (FATF R.16)']},
+                        {name:'Tax Law & Strategy',desc:'Corporate tax, transfer pricing, crypto taxation.',
+                        chapters:['Ch 1: Corporate Income Tax','Ch 2: VAT/GST on Financial Services','Ch 3: Crypto Taxation','Ch 4: Cross-Border Planning','Ch 5: BEPS & Reporting'],
+                        books:[{title:'International Tax Primer',author:'Brian Arnold'},{title:'Fundamentals of Taxation',author:'Ana Cruz et al.'}],
+                        projects:['Design a cross-border tax structure for a fintech with operations in 3 jurisdictions: corporate structure, transfer pricing policy, and crypto tax treatment for staking rewards.','Calculate the tax implications of a token airdrop, a DeFi yield farming position, and an NFT sale across 3 jurisdictions. Produce a tax memo with recommendations.','Design a transfer pricing structure for a fintech with a parent in Ireland, a subsidiary in the UK, and operations in Singapore. Document the arm\'s-length analysis.'],
+                        topics:['Corporate income tax, transfer pricing','VAT/GST on financial services','Crypto tax (income, gains, staking, DeFi)','Cross-border planning, R&D credits','BEPS, reporting automation']},
+                        {name:'Computational Law & Legal Engineering',desc:'Smart contracts as law, legal automation, RegTech architecture, machine-readable regulation.',
+                        chapters:['Ch 1: Law as Computation (Formalising Legal Rules)','Ch 2: Smart Contracts & Legal Enforceability','Ch 3: Legal Automation & Document Assembly','Ch 4: Machine-Readable Regulation','Ch 5: AI in Legal Practice (Contract Review, Prediction)','Ch 6: Legal Design & Access to Justice'],
+                        books:[{title:'Blockchain and the Law',author:'De Filippi & Wright'},{title:'The Technology of Trust',author:'Kevin Werbach'},{title:'Legal Informatics',author:'Daniel Martin Katz et al.'}],
+                        projects:['Translate a set of regulatory rules (e.g. MiFID II suitability requirements) into machine-readable decision logic. Build a prototype rules engine that evaluates compliance automatically.','Draft a smart contract and its corresponding legal contract for the same transaction (e.g. escrow or vesting). Map each clause to code, identify gaps where code cannot capture legal intent, and propose solutions.','Build a legal document assembly tool for a specific use case (NDA generator or loan agreement builder): parameterised templates, conditional logic, and output in both human-readable and machine-readable formats.'],
+                        topics:['Law as computation & formalisation','Smart contract legal enforceability','Legal automation & document assembly','Machine-readable regulation (XBRL, RDF)','AI-assisted legal analysis','Legal design, plain language, access to justice']},
                     ]},
                 ],
             },
@@ -7139,24 +7270,30 @@ document.addEventListener('DOMContentLoaded', async () => {
             expandedTopic = expandedTopic === key ? null : key;
             render();
         }
+        const PATH_KEYS = Object.keys(PATHS);
+        const PATH_TITLES = {mathematics:'Mathematics',informational:'Informational Technology',finance:'Finance & Business Administration',law:'Law'};
+
+        function getActiveIndex() { return PATH_KEYS.indexOf(activePath); }
+
         function render() {
             load();
             const total = getTotalSubjects();
-            const completed = getPathCompleted('technical') + getPathCompleted('business');
+            const completed = PATH_KEYS.reduce(function(sum, k) { return sum + getPathCompleted(k); }, 0);
             const pct = total ? Math.round((completed / total) * 100) : 0;
             document.getElementById('plans-progress-text').textContent = completed + ' / ' + total + ' subjects';
             document.getElementById('plans-progress-pct').textContent = pct + '%';
             document.getElementById('plans-progress-fill').style.width = pct + '%';
 
-            const statsRow = document.getElementById('plans-stats-row');
-            const techDone = getPathCompleted('technical'), techTotal = getPathSubjectCount('technical');
-            const bizDone = getPathCompleted('business'), bizTotal = getPathSubjectCount('business');
-            statsRow.innerHTML = '<div class="plans-stat-card"><div class="plans-stat-value">' + techDone + '<span>/' + techTotal + '</span></div><div class="plans-stat-label">Technical</div></div><div class="plans-stat-card"><div class="plans-stat-value">' + bizDone + '<span>/' + bizTotal + '</span></div><div class="plans-stat-label">Business</div></div>';
+            // Field title & counter
+            const pathDone = getPathCompleted(activePath);
+            const pathTotal = getPathSubjectCount(activePath);
+            document.getElementById('plans-field-title').textContent = PATH_TITLES[activePath];
+            document.getElementById('plans-field-counter').textContent = pathDone + ' / ' + pathTotal + ' completed';
 
-            const tabsEl = document.getElementById('plans-path-tabs');
-            tabsEl.innerHTML = Object.entries(PATHS).map(function(entry) {
-                var key = entry[0], p = entry[1];
-                return '<button class="plans-path-tab ' + (activePath===key?'active':'') + '" onclick="App.plans.setPath(\'' + key + '\')"><i class="' + p.icon + '" style="margin-right:4px;font-size:0.65rem;"></i>' + p.label + '</button>';
+            // Dots
+            const dotsEl = document.getElementById('plans-dots');
+            dotsEl.innerHTML = PATH_KEYS.map(function(k) {
+                return '<div class="plans-dot ' + (k===activePath?'active':'') + '" onclick="App.plans.setPath(\'' + k + '\')"></div>';
             }).join('');
 
             const container = document.getElementById('plans-phases-container');
@@ -7166,21 +7303,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const phaseKeys = phase.subjects.map(function(_,si){ return activePath+'-'+pi+'-'+si; });
                 const phaseDone = phaseKeys.filter(function(k){ return completedSet.has(k); }).length;
                 const isComplete = phaseDone === phase.subjects.length;
-                const isExpanded = expandedPhase === pi;
-                html += '<div class="plans-phase-card ' + (isComplete?'phase-complete':'') + ' ' + (isExpanded?'expanded':'') + '" style="animation-delay:' + (pi*0.04) + 's"><div class="plans-phase-header" onclick="App.plans.togglePhase(' + pi + ')"><div><div class="plans-phase-title">' + phase.title + '</div></div><div class="plans-phase-counter ' + (isComplete?'all-done':'') + '">' + phaseDone + '/' + phase.subjects.length + '</div></div><div class="plans-phase-subjects">';
+                html += '<div class="plans-phase-label ' + (isComplete?'all-done':'') + '" style="animation-delay:' + (pi*0.04) + 's"><span>' + phase.title + '</span><span class="plans-phase-label-counter">' + phaseDone + '/' + phase.subjects.length + '</span></div>';
                 phase.subjects.forEach(function(subj, si) {
                     const key = activePath+'-'+pi+'-'+si;
                     const isDone = completedSet.has(key);
                     const isTopicOpen = expandedTopic === key;
-                    html += '<div class="plans-subject-item ' + (isDone?'completed':'') + ' ' + (isTopicOpen?'topic-open':'') + '" onclick="App.plans.toggleTopic(\'' + key + '\')"><div class="plans-subject-check" onclick="event.stopPropagation();App.plans.toggleComplete(\'' + key + '\')">' + (isDone ? '<i class="fa-solid fa-check"></i>' : '') + '</div><div class="plans-subject-body"><div class="plans-subject-name">' + subj.name + '</div><div class="plans-subject-desc">' + subj.desc + '</div></div><div class="plans-subject-chevron"><i class="fa-solid fa-chevron-right"></i></div></div>';
+                    html += '<div class="plans-subject-item ' + (isDone?'completed':'') + ' ' + (isTopicOpen?'topic-open':'') + '" onclick="App.plans.toggleTopic(\'' + key + '\')" style="animation-delay:' + ((pi*0.04)+(si*0.02)) + 's"><div class="plans-subject-check" onclick="event.stopPropagation();App.plans.toggleComplete(\'' + key + '\')">' + (isDone ? '<i class="fa-solid fa-check"></i>' : '') + '</div><div class="plans-subject-body"><div class="plans-subject-name">' + subj.name + '</div><div class="plans-subject-desc">' + subj.desc + '</div></div><div class="plans-subject-chevron"><i class="fa-solid fa-chevron-right"></i></div></div>';
                     html += '<div class="plans-topics-list">';
-                    // Chapters section
                     if (subj.chapters && subj.chapters.length) {
                         html += '<div class="plans-chapters-section"><div class="plans-chapters-header">Chapters</div>';
                         subj.chapters.forEach(function(ch) { html += '<div class="plans-chapter-row">' + ch + '</div>'; });
                         html += '</div>';
                     }
-                    // Books section
                     if (subj.books && subj.books.length) {
                         html += '<div class="plans-books-section"><div class="plans-books-header">Recommended Books</div>';
                         subj.books.forEach(function(b) {
@@ -7188,11 +7322,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         });
                         html += '</div>';
                     }
-                    // Project section
                     if (subj.projects && subj.projects.length) {
                         html += '<div class="plans-project-section"><div class="plans-project-header">Practical Projects</div>';
-                        subj.projects.forEach(function(p, pi) {
-                            html += '<div class="plans-project-text"><span class="plans-project-num">' + (pi+1) + '</span>' + p + '</div>';
+                        subj.projects.forEach(function(p, pj) {
+                            html += '<div class="plans-project-text"><span class="plans-project-num">' + (pj+1) + '</span>' + p + '</div>';
                         });
                         html += '</div>';
                     } else if (subj.project) {
@@ -7200,16 +7333,52 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     html += '</div>';
                 });
-                html += '</div></div>';
             });
             container.innerHTML = html;
 
-            document.getElementById('plans-footer').innerHTML = '<div class="plans-footer-title">How to execute</div><div class="plans-footer-item">Study both paths in parallel. Master each subject before moving on. For every 2–3 theory subjects, build something real. The intersections between disciplines are where mastery lives.</div>';
+            document.getElementById('plans-footer').innerHTML = '<div class="plans-footer-title">How to execute</div><div class="plans-footer-item">Study all four branches in parallel — Mathematics builds logical power, Information Technology turns it into real systems, Finance & Business grounds it in real-world value creation, and Law ensures you operate with precision and compliance. Math is foundational but not a prerequisite for coding — start building software from day one and let the mathematical depth compound over time. For every 2–3 theory subjects, build something real. The intersections between disciplines are where exceptional fintech mastery lives.</div>';
         }
+
+        function navigatePath(direction) {
+            var idx = getActiveIndex() + direction;
+            if (idx < 0) idx = PATH_KEYS.length - 1;
+            if (idx >= PATH_KEYS.length) idx = 0;
+            activePath = PATH_KEYS[idx];
+            expandedPhase = null;
+            expandedTopic = null;
+            render();
+            // Scroll plans container to top
+            var page = document.getElementById('page-plans');
+            if (page) page.scrollTop = 0;
+        }
+
+        // Swipe support
+        (function initSwipe() {
+            var startX = 0, startY = 0, tracking = false;
+            var container = document.getElementById('page-plans');
+            if (!container) return;
+            container.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+                tracking = true;
+            }, {passive: true});
+            container.addEventListener('touchend', function(e) {
+                if (!tracking) return;
+                tracking = false;
+                var dx = e.changedTouches[0].clientX - startX;
+                var dy = e.changedTouches[0].clientY - startY;
+                if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+                    if (dx < 0) navigatePath(1);
+                    else navigatePath(-1);
+                }
+            }, {passive: true});
+        })();
 
         return {
             render: render,
-            setPath: function(p) { activePath = p; expandedPhase = null; expandedTopic = null; render(); },
+            setPath: function(p) { activePath = p; expandedPhase = null; expandedTopic = null; render(); var page = document.getElementById('page-plans'); if (page) page.scrollTop = 0; },
+            prevPath: function() { navigatePath(-1); },
+            nextPath: function() { navigatePath(1); },
             togglePhase: togglePhase,
             toggleTopic: toggleTopic,
             toggleComplete: toggleComplete,
