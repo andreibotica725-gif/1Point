@@ -1,105 +1,42 @@
-const CACHE_NAME = '1point-v4';
-const ASSETS = [
+// 1Point service worker — fully offline, no external/CDN assets.
+const CACHE = '1point-v5';
+const CORE = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,700&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
+  './icon-512.png'
 ];
 
-// Stored notifications synced from the main thread
-let pendingNotifications = [];
-
-// Install: cache all core assets
+// Install: pre-cache the app shell
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
+    caches.open(CACHE).then((cache) =>
+      Promise.allSettled(CORE.map((url) => cache.add(url)))
+    )
   );
   self.skipWaiting();
 });
 
-// Activate: clean up old caches
+// Activate: drop old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
-    })
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    )
   );
   self.clients.claim();
 });
 
-// Fetch: serve from cache first, fall back to network
+// Fetch: cache-first, fall back to network, then to the app shell for navigations
 self.addEventListener('fetch', (event) => {
+  if (event.request.method !== 'GET') return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (response.ok && (event.request.url.includes('fonts.g') || event.request.url.includes('cdnjs.'))) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      }).catch(() => {
-        return caches.match('./index.html');
-      });
+      return (
+        cached ||
+        fetch(event.request).catch(() => caches.match('./index.html'))
+      );
     })
   );
-});
-
-// Handle messages from main thread (notification sync)
-self.addEventListener('message', (event) => {
-  if (event.data && event.data.type === 'SYNC_NOTIFICATIONS') {
-    pendingNotifications = event.data.notifications || [];
-    // Start checking immediately
-    checkAndFireNotifications();
-  }
-});
-
-// Check pending notifications and fire any that are due
-function checkAndFireNotifications() {
-  const now = Date.now();
-  const due = pendingNotifications.filter(n => n.fireAt <= now);
-  pendingNotifications = pendingNotifications.filter(n => n.fireAt > now);
-
-  due.forEach(n => {
-    self.registration.showNotification(n.title, {
-      body: n.body,
-      icon: 'logoLight.png',
-      badge: 'logoLight.png',
-      vibrate: [200, 100, 200],
-      tag: n.title + '-' + n.fireAt,
-      renotify: true,
-      requireInteraction: true
-    }).catch(() => {});
-  });
-}
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      for (const client of clientList) {
-        if (client.url.includes('index.html') && 'focus' in client) {
-          return client.focus();
-        }
-      }
-      if (clients.openWindow) {
-        return clients.openWindow('./index.html');
-      }
-    })
-  );
-});
-
-// Periodic background sync (for browsers that support it)
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === '1point-notification-check') {
-    event.waitUntil(checkAndFireNotifications());
-  }
 });
