@@ -1,14 +1,15 @@
-// 1Point service worker — fully offline, no external/CDN assets.
-const CACHE = '1point-v5';
+const CACHE = '1point-v6';
 const CORE = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  'https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;600;700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap',
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'
 ];
 
-// Install: pre-cache the app shell
+// Install: cache core assets individually so one 404 (e.g. a missing icon) won't abort install
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE).then((cache) =>
@@ -33,10 +34,19 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      return (
-        cached ||
-        fetch(event.request).catch(() => caches.match('./index.html'))
-      );
+      if (cached) return cached;
+      return fetch(event.request)
+        .then((response) => {
+          if (
+            response.ok &&
+            (event.request.url.includes('fonts.g') || event.request.url.includes('cdnjs.'))
+          ) {
+            const clone = response.clone();
+            caches.open(CACHE).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match('./index.html'));
     })
   );
 });
