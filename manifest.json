@@ -1,6 +1,6 @@
 {
-  "name": "1Point",
-  "short_name": "1Point",
+  "name": "Project",
+  "short_name": "Project",
   "description": "Daily discipline tracker — checklist, goals and 10-week progress",
   "start_url": "./index.html",
   "display": "standalone",
