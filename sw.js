@@ -1,4 +1,4 @@
-const CACHE = '1point-v7';
+const CACHE = '1point-v8';
 const CORE = [
   './',
   './index.html',
