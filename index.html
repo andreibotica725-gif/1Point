@@ -195,6 +195,20 @@ input[type=number]{-moz-appearance:textfield;}
 @keyframes barGrow{to{transform:scaleY(1);}}
 .bar-wk{fill:var(--text-dim);font-size:10px;font-family:var(--font);font-weight:500;font-variant-numeric:tabular-nums;}
 
+/* Milestones */
+.ms{display:flex;flex-direction:column;gap:10px;}
+.ms-item{background:var(--surface);border-radius:16px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;cursor:pointer;transition:opacity var(--tr);}
+.ms-item:active{opacity:.7;}
+.ms-item .check{margin-top:2px;}
+.ms-item.done .check{background:var(--green);border-color:var(--green);color:#000;}
+.ms-body{flex:1;}
+.ms-title{font-size:.95rem;font-weight:600;line-height:1.35;transition:color var(--tr);}
+.ms-item.done .ms-title{color:var(--text-faint);text-decoration:line-through;text-decoration-thickness:1.5px;}
+.ms-meta{margin-top:6px;font-size:.72rem;color:var(--text-dim);font-weight:600;font-variant-numeric:tabular-nums;}
+.ms-meta .left{color:var(--text-faint);font-weight:500;}
+.ms-item.done .ms-meta{color:var(--text-ghost);}
+.ms-item.overdue .ms-meta{color:#fff;}
+
 /* Celebration */
 .celebrate{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:64px 20px 40px;text-align:center;}
 .cmark{width:172px;height:172px;border-radius:50%;border:9px solid var(--green);display:flex;align-items:center;justify-content:center;
@@ -229,7 +243,7 @@ b{font-family:var(--font);}
   <div class="wrap">
     <div class="masthead">
       <h1>Calendar</h1>
-      <div class="sub">6 Jul - 13 Sep</div>
+      <div class="sub">27 Jul - 20 Sep</div>
     </div>
     <div id="cal-grid"></div>
   </div>
@@ -239,9 +253,19 @@ b{font-family:var(--font);}
   <div class="wrap">
     <div class="masthead">
       <h1>Analytics</h1>
-      <div class="sub">Weekly progress over the 10 weeks</div>
+      <div class="sub">Weekly progress over the 8 weeks</div>
     </div>
     <div id="analytics-body"></div>
+  </div>
+</div>
+
+<div id="page-milestones" class="page">
+  <div class="wrap">
+    <div class="masthead">
+      <h1>Plan</h1>
+      <div class="sub" id="ms-sub"></div>
+    </div>
+    <div class="ms" id="ms-list"></div>
   </div>
 </div>
 
@@ -254,7 +278,7 @@ b{font-family:var(--font);}
     <div class="regsum">
       <div class="row">
         <div><div class="lbl">Cumulated</div><div class="big" id="money-cum">€0</div></div>
-        <div class="tgt">Target<b>€20,000</b></div>
+        <div class="tgt">Target<b>€10,000</b></div>
       </div>
       <div class="bar"><span id="money-bar"></span></div>
       <div class="foot"><span id="money-left"></span><span class="pct" id="money-pct">0%</span></div>
@@ -307,6 +331,7 @@ b{font-family:var(--font);}
 <nav class="nav" id="nav">
   <button class="tab active" data-tab="today" onclick="App.go('today')"><i class="fa-solid fa-list-check"></i>Today</button>
   <button class="tab" data-tab="calendar" onclick="App.go('calendar')"><i class="fa-regular fa-calendar"></i>Calendar</button>
+  <button class="tab" data-tab="milestones" onclick="App.go('milestones')"><i class="fa-solid fa-flag-checkered"></i>Plan</button>
   <button class="tab" data-tab="analytics" onclick="App.go('analytics')"><i class="fa-solid fa-chart-column"></i>Analytics</button>
 </nav>
 
@@ -314,11 +339,11 @@ b{font-family:var(--font);}
 const App = (function(){
   'use strict';
 
-  const START=new Date(2026,6,6,12,0,0);   // Mon 6 Jul 2026
-  const TOTAL_DAYS=70;
-  const MONEY_TARGET=20000;
+  const START=new Date(2026,6,27,12,0,0);  // Mon 27 Jul 2026
+  const TOTAL_DAYS=56;                     // 8 weeks — 27 Jul → 20 Sep 2026
+  const MONEY_TARGET=10000;
   const WEIGHT_TARGET=70;
-  const EXCLUDED=new Set(['2026-07-06','2026-07-07','2026-07-08']); // not counted
+  const EXCLUDED=new Set([]); // not counted
   const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const DOW_FULL=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -343,8 +368,8 @@ const App = (function(){
     return Math.max(0,Math.round((end-now)/86400000));
   }
 
-  var DB={checks:{},money:{},weight:{}};
-  function loadDB(){try{var raw=localStorage.getItem(STORE);if(raw){var p=JSON.parse(raw);DB={checks:p.checks||{},money:p.money||{},weight:p.weight||{}};}}catch(e){DB={checks:{},money:{},weight:{}};}}
+  var DB={checks:{},money:{},weight:{},miles:{}};
+  function loadDB(){try{var raw=localStorage.getItem(STORE);if(raw){var p=JSON.parse(raw);DB={checks:p.checks||{},money:p.money||{},weight:p.weight||{},miles:p.miles||{}};}}catch(e){DB={checks:{},money:{},weight:{},miles:{}};}}
   function saveDB(){try{localStorage.setItem(STORE,JSON.stringify(DB));}catch(e){}}
   function dayChecks(k){if(!DB.checks[k])DB.checks[k]={main:{},sub:{}};if(!DB.checks[k].main)DB.checks[k].main={};if(!DB.checks[k].sub)DB.checks[k].sub={};return DB.checks[k];}
 
@@ -372,7 +397,7 @@ const App = (function(){
     var d=dateAt(dayIdx),dow=d.getDay(),weekIdx=Math.floor(dayIdx/7);
     var tr=trainingSubs(dow,weekIdx);
     var workTitle='4 hours of work';
-    var workCutoff=new Date(2026,6,19,12,0,0); // through 19 Jul 2026
+    var workCutoff=new Date(2026,6,27,12,0,0); // through 27 Jul 2026
     if(d<=workCutoff) workTitle='4 hours of work finishing ongoing projects';
     var mainItems=[
       {id:'sleep',title:'8 hours of sleep'},
@@ -381,13 +406,13 @@ const App = (function(){
       .concat(tr?[{id:'training',title:'1 hour of training',note:tr.label,subs:tr.subs}]:[])
       .concat([
         {id:'stretch',title:'15 min stretching',note:'8 stretches',subs:STRETCH.map(function(s){return{name:s.n,reps:s.v};})},
-        {id:'leads',title:'30 new leads found and contacted'},
+        {id:'leads',title:'50 new leads found and contacted'},
         {id:'work',title:workTitle},
         {id:'evening',title:'20 min evening hygiene',subs:eveningSubs(dow)}
       ]);
     var groups=[
       {items:mainItems},
-      {items:[{id:'water',title:'3L of water'},{id:'kcal',title:'2000 kcalories'},{id:'carbs',title:'200g of carbs'},{id:'protein',title:'150g of protein'},{id:'fat',title:'50g of fat'}]},
+      {items:[{id:'water',title:'3L of water'}]},
       {items:[{id:'book',title:'30 pages of a business book'},{id:'steps',title:'10k steps'}]}
     ];
     return groups;
@@ -524,7 +549,7 @@ const App = (function(){
   /* Registries */
   function renderRegistry(kind){
     var isMoney=kind==='money',store=isMoney?DB.money:DB.weight,tbl=document.getElementById(isMoney?'money-table':'weight-table'),t=todayInfo(),html='';
-    for(var wk=0;wk<10;wk++){
+    for(var wk=0;wk<WEEKS;wk++){
       html+='<div class="reg-week">Week '+(wk+1)+'</div><div class="reg">';
       for(var j=0;j<7;j++){
         var d=DATES[wk*7+j];
@@ -548,7 +573,7 @@ const App = (function(){
   /* Calendar */
   function renderCalendar(){
     var t=todayInfo();
-    var groups=[[0,1],[2,3,4,5],[6,7,8,9]];
+    var groups=[[0,1,2,3],[4,5,6,7]];
     var html='';
     groups.forEach(function(weeks,gi){
       var first=weeks[0]*7,last=weeks[weeks.length-1]*7+6;
@@ -588,7 +613,7 @@ const App = (function(){
     go('detail');
   }
 
-  /* Analytics — per-week bar charts across all 10 weeks */
+  /* Analytics — per-week bar charts across all 8 weeks */
   var WEEKS=Math.ceil(TOTAL_DAYS/7);
   function weeklyRevenue(){ // money earned each week (€)
     var out=[];
@@ -648,15 +673,43 @@ const App = (function(){
     var doneWks=tk.filter(function(v,i){return i<=curWk;});
     var avgTask=doneWks.length?Math.round(sum(doneWks)/doneWks.length):0;
     var html='';
-    html+=chartBlock('Revenue per week',money0(sum(rev)),barChart(rev,{max:20000,ticks:4,fmtY:function(v){return v?(v/1000)+'k':'0';}}),'money');
+    html+=chartBlock('Revenue per week',money0(sum(rev)),barChart(rev,{max:10000,ticks:4,fmtY:function(v){return v?(v/1000)+'k':'0';}}),'money');
     html+=chartBlock('Weight lost per week',sum(wl).toFixed(1)+'kg',barChart(wl,{max:6,ticks:3,fmtY:function(v){return v+'';}}),'weight');
     html+=chartBlock('Tasks accomplished',avgTask+'%',barChart(tk,{max:100,ticks:4,fmtY:function(v){return v+'';}}),null);
     document.getElementById('analytics-body').innerHTML=html;
   }
 
+  /* Milestones */
+  var MILESTONES=[
+    {id:'m1',title:'Finish all ongoing projects',due:new Date(2026,6,27,12,0,0)},
+    {id:'m2',title:"Set up the company's website and back-office",due:new Date(2026,6,29,12,0,0)},
+    {id:'m3',title:'Start outreaching to potential clients and deliver exceptional work',due:new Date(2026,8,13,12,0,0)}
+  ];
+  function daysTo(due){
+    var now=new Date();now.setHours(12,0,0,0);
+    return Math.round((due-now)/86400000);
+  }
+  function toggleMilestone(id){DB.miles[id]=!DB.miles[id];saveDB();renderMilestones();}
+  function renderMilestones(){
+    var done=MILESTONES.filter(function(m){return !!DB.miles[m.id];}).length;
+    document.getElementById('ms-sub').innerHTML='<b>'+done+'</b> of '+MILESTONES.length+' completed';
+    var html='';
+    MILESTONES.forEach(function(m,i){
+      var isDone=!!DB.miles[m.id],left=daysTo(m.due),overdue=!isDone&&left<0;
+      var when='Until '+m.due.getDate()+' '+MON[m.due.getMonth()];
+      var tail=isDone?'Completed':(left<0?Math.abs(left)+' days overdue':(left===0?'Due today':left+' days left'));
+      html+='<div class="ms-item fade-in'+(isDone?' done':'')+(overdue?' overdue':'')+'" style="animation-delay:'+(i*0.05)+'s" onclick="App.toggleMilestone(\''+m.id+'\')">'+
+        '<div class="check"><i class="fa-solid fa-check"></i></div>'+
+        '<div class="ms-body"><div class="ms-title">'+(i+1)+'. '+m.title+'</div>'+
+        '<div class="ms-meta">'+when+' <span class="left">· '+tail+'</span></div></div>'+
+      '</div>';
+    });
+    document.getElementById('ms-list').innerHTML=html;
+  }
+
   /* Nav */
   var current='today';
-  var MAIN=['today','calendar','analytics'];
+  var MAIN=['today','calendar','milestones','analytics'];
   var OVERLAY=['money','weight','detail'];
   var overlayOrigin='today';
   function go(page){
@@ -669,6 +722,7 @@ const App = (function(){
     current=page;
     if(page==='today')renderToday();
     if(page==='calendar')renderCalendar();
+    if(page==='milestones')renderMilestones();
     if(page==='analytics')renderAnalytics();
     if(page==='money')renderRegistry('money');
     if(page==='weight')renderRegistry('weight');
@@ -687,7 +741,7 @@ const App = (function(){
     if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
   }
 
-  return {init:init,go:go,back:back,openDay:openDay,toggleTask:toggleTask,toggleSub:toggleSub,toggleExpand:toggleExpand,setReg:setReg,setToday:setToday};
+  return {init:init,go:go,back:back,openDay:openDay,toggleMilestone:toggleMilestone,toggleTask:toggleTask,toggleSub:toggleSub,toggleExpand:toggleExpand,setReg:setReg,setToday:setToday};
 })();
 document.addEventListener('DOMContentLoaded',App.init);
 </script>
