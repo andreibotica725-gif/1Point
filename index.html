@@ -7,7 +7,7 @@
 
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#E6E9E2">
-<meta name="description" content="Budget your 24 hours: allocate tasks on a dial, see what stays free, and tick things off.">
+<meta name="description" content="Budget your 24 hours: place tasks on a dial, see what stays free, and tick things off.">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -53,10 +53,7 @@
   /* ---------- plans shelf ---------- */
   .shelf{border-bottom:1px solid var(--rule);padding-bottom:16px;margin-bottom:30px}
   .shelf-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-wrap:wrap}
-  .shelf-toggle{
-    display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:4px 0;
-    font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
-  }
+  .shelf-toggle{display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:4px 0;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
   .shelf-toggle:hover{color:var(--ink)}
   .shelf-toggle svg{transition:transform .18s ease}
   .shelf-toggle[aria-expanded=false] svg{transform:rotate(-90deg)}
@@ -117,21 +114,21 @@
   svg.dial{display:block;width:100%;height:auto;overflow:visible}
 
   .arc{transition:opacity .18s ease, transform .18s ease, fill .25s ease;transform-origin:160px 160px;cursor:pointer;outline:none}
-  .dial.has-focus .arc{opacity:.32}
+  .dial.has-focus .arc{opacity:.3}
   .dial.has-focus .arc.is-active{opacity:1;transform:scale(1.025)}
   .arc:focus-visible{stroke:var(--ink);stroke-width:1.5px}
+  .arc.is-conflict{stroke:var(--alert);stroke-width:1.5px;stroke-dasharray:3 3}
   .arc-check{fill:var(--panel);font-size:12px;text-anchor:middle;dominant-baseline:central;pointer-events:none;font-family:var(--sans);font-weight:600}
 
   .tick-mark{stroke:var(--rule);stroke-width:1}
   .tick-mark.major{stroke:var(--ink-soft);stroke-width:1.5}
   .tick-label{font-family:var(--mono);font-size:10px;fill:var(--ink-soft);text-anchor:middle;dominant-baseline:middle;letter-spacing:.06em}
-  .over-ring{fill:none;stroke:var(--alert);stroke-width:2;stroke-dasharray:3 5}
 
   .readout{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none;padding:0 22%}
   .readout .r-label{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:2px}
   .readout .r-name{font-family:var(--sans);font-weight:600;font-size:15px;line-height:1.25;margin-bottom:4px;word-break:break-word}
-  .readout .r-value{font-family:var(--serif);font-size:clamp(30px,4.4vw,44px);line-height:1}
-  .readout .r-note{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:6px}
+  .readout .r-value{font-family:var(--serif);font-size:clamp(28px,4.2vw,42px);line-height:1}
+  .readout .r-note{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin-top:6px;line-height:1.4}
   .readout.is-over .r-value{color:var(--alert)}
 
   .totals{display:flex;margin-top:20px;border-top:1px solid var(--rule)}
@@ -139,30 +136,34 @@
   .totals div:last-child{border-right:0}
   .totals dt{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 3px}
   .totals dd{margin:0;font-family:var(--mono);font-size:16px}
+  .totals dd.over{color:var(--alert)}
 
   /* ---------- lists ---------- */
   .list-col h2{font-family:var(--serif);font-weight:400;font-size:28px;margin:0 0 4px}
   .list-col .sub{color:var(--ink-soft);font-size:13px;margin:0 0 18px}
 
-  .composer{display:grid;grid-template-columns:1fr 110px auto;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:10px;margin-bottom:22px}
-  .composer.single{grid-template-columns:1fr auto}
-  input[type=text]{font-family:var(--sans);font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:3px;padding:9px 10px;width:100%}
+  .composer{display:grid;grid-template-columns:minmax(0,1fr) 104px 92px auto;gap:8px;background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:10px;margin-bottom:22px}
+  .composer.single{grid-template-columns:minmax(0,1fr) auto}
+  input[type=text],input[type=time],textarea{font-family:var(--sans);font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--rule);border-radius:3px;padding:9px 10px;width:100%}
+  input[type=time]{font-family:var(--mono);font-size:13px;min-width:0}
   .composer input.dur{font-family:var(--mono);text-align:center}
-  input:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-
-  .hint{font-family:var(--mono);font-size:11px;color:var(--ink-soft);margin:8px 2px 24px;line-height:1.6}
-  .hint b{font-weight:500;color:var(--ink)}
+  input:focus-visible,button:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 
   ul.tasks{list-style:none;margin:0;padding:0}
   li.task{
-    display:grid;grid-template-columns:20px 20px 1fr 78px 46px 28px;align-items:center;gap:9px;
-    padding:9px 6px;border-bottom:1px solid var(--rule);background:var(--paper);
+    display:grid;
+    grid-template-columns:20px 20px minmax(0,1fr) auto 26px;
+    grid-template-areas:"grip tick name meta del" "desc desc desc desc desc";
+    align-items:center;column-gap:8px;row-gap:0;
+    padding:8px 6px;border-bottom:1px solid var(--rule);background:var(--paper);
     position:relative;touch-action:pan-y;transition:background .15s ease;
   }
   li.task.is-active{background:var(--panel)}
   li.task.is-done input.name{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--rule)}
+  li.task.is-conflict{box-shadow:inset 2px 0 0 var(--alert)}
+  li.task.is-unplaced{opacity:.72}
 
-  .grip{background:none;border:0;padding:0;width:20px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--rule);cursor:grab;touch-action:none}
+  .grip{grid-area:grip;background:none;border:0;padding:0;width:20px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--rule);cursor:grab;touch-action:none}
   li.task:hover .grip,.grip:focus-visible{color:var(--ink-soft)}
   .grip:active{cursor:grabbing}
 
@@ -171,27 +172,47 @@
   li.task.dragging{background:#fff;border-radius:3px;border-bottom-color:transparent;box-shadow:0 10px 26px rgba(24,34,38,.18);z-index:5;cursor:grabbing}
   li.task.dragging .grip{color:var(--accent);cursor:grabbing}
 
-  .tick{
-    width:19px;height:19px;padding:0;border:2px solid var(--tick,var(--rule));border-radius:3px;
-    background:transparent;color:transparent;display:grid;place-items:center;transition:background .15s ease,color .15s ease;
-  }
+  .tick{grid-area:tick;width:19px;height:19px;padding:0;border:2px solid var(--tick,var(--rule));border-radius:3px;background:transparent;color:transparent;display:grid;place-items:center;transition:background .15s ease,color .15s ease}
   .tick svg{width:11px;height:11px}
   .tick.is-done{background:var(--tick);border-color:var(--tick);color:var(--panel)}
   .tick.is-gap{border-color:var(--ink-soft);cursor:default;background:repeating-linear-gradient(45deg,var(--rule) 0 2px,transparent 2px 4px)}
 
-  li.task input.name{border-color:transparent;background:transparent;padding:6px 4px;font-size:15px}
+  li.task input.name{grid-area:name;border-color:transparent;background:transparent;padding:6px 4px;font-size:15px}
   li.task input.name:hover,li.task input.name:focus{background:#fff;border-color:var(--rule)}
-  li.task input.dur{font-family:var(--mono);font-size:13px;text-align:right;border-color:transparent;background:transparent;padding:6px 4px}
-  li.task input.dur:hover,li.task input.dur:focus{background:#fff;border-color:var(--rule)}
-  li.task .pct{font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-align:right}
-  .btn-remove{background:none;border:1px solid transparent;color:var(--ink-soft);font-size:18px;line-height:1;width:26px;height:26px;padding:0}
+
+  .meta{grid-area:meta;display:flex;align-items:center;gap:4px}
+  .meta input.dur{width:66px;font-family:var(--mono);font-size:13px;text-align:right;border-color:transparent;background:transparent;padding:6px 4px}
+  .meta input.dur:hover,.meta input.dur:focus{background:#fff;border-color:var(--rule)}
+
+  .btn-expand{background:none;border:1px solid transparent;color:var(--rule);width:24px;height:24px;padding:0;display:grid;place-items:center;flex:none;border-radius:3px}
+  li.task:hover .btn-expand{color:var(--ink-soft)}
+  .btn-expand:hover{border-color:var(--rule);background:#fff;color:var(--ink)}
+  .btn-expand.has-note{color:var(--accent)}
+  .btn-expand svg{transition:transform .18s ease}
+  .btn-expand[aria-expanded=true]{color:var(--ink)}
+  .btn-expand[aria-expanded=true] svg{transform:rotate(180deg)}
+
+  .desc{grid-area:desc;padding:4px 0 12px 28px;display:flex;flex-direction:column;gap:9px}
+  .desc[hidden]{display:none}
+  .desc-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .desc-row label{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .desc-row input.start{width:118px;font-family:var(--mono);font-size:13px;padding:7px 8px}
+  .btn-unpin{background:none;border:0;padding:0;font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-decoration:underline}
+  .btn-unpin:hover{color:var(--alert)}
+  .btn-unpin[hidden]{display:none}
+  .desc-meta{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+  li.task.is-conflict .desc-meta,li.task.is-unplaced .desc-meta{color:var(--alert)}
+  .desc textarea{font-size:14px;line-height:1.5;min-height:62px;resize:vertical;display:block;color:var(--ink-soft)}
+  .desc textarea:focus{color:var(--ink)}
+
+  .btn-remove{grid-area:del;background:none;border:1px solid transparent;color:var(--ink-soft);font-size:18px;line-height:1;width:26px;height:26px;padding:0}
   .btn-remove:hover{color:var(--alert);border-color:var(--rule);background:#fff}
 
-  li.free{display:grid;grid-template-columns:20px 20px 1fr 78px 46px 28px;align-items:center;gap:9px;padding:14px 6px;border-bottom:1px solid var(--ink);border-top:1px solid var(--ink);margin-top:2px}
-  li.free .label{font-weight:600;grid-column:3}
-  li.free .amount{font-family:var(--mono);font-size:13px;text-align:right}
-  li.free .pct{font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-align:right}
-  li.free .hatch{width:19px;height:19px;border-radius:3px;border:1px solid var(--ink-soft);background:repeating-linear-gradient(45deg,var(--rule) 0 2px,transparent 2px 4px)}
+  li.free{display:flex;align-items:center;gap:10px;padding:14px 6px;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-top:2px}
+  li.free .hatch{width:19px;height:19px;flex:none;border-radius:3px;border:1px solid var(--ink-soft);background:repeating-linear-gradient(45deg,var(--rule) 0 2px,transparent 2px 4px)}
+  li.free .label{font-weight:600;flex:1;min-width:0}
+  li.free .amount{font-family:var(--mono);font-size:13px}
+  li.free .pct{font-family:var(--mono);font-size:12px;color:var(--ink-soft);width:44px;text-align:right}
   li.free.is-over{border-color:var(--alert)}
   li.free.is-over .label,li.free.is-over .amount{color:var(--alert)}
   .free-note{font-family:var(--mono);font-size:10px;color:var(--ink-soft);letter-spacing:.04em;margin-left:8px;font-weight:400}
@@ -204,7 +225,7 @@
   /* ---------- checklist ---------- */
   .checklist{margin-top:44px;padding-top:26px;border-top:1px solid var(--rule)}
   ul.checks{list-style:none;margin:0;padding:0}
-  li.check{display:grid;grid-template-columns:20px 1fr 28px;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--rule)}
+  li.check{display:grid;grid-template-columns:20px minmax(0,1fr) 26px;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--rule)}
   li.check input.text{border-color:transparent;background:transparent;padding:6px 4px;font-size:15px}
   li.check input.text:hover,li.check input.text:focus{background:#fff;border-color:var(--rule)}
   li.check.is-done input.text{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--rule)}
@@ -237,11 +258,12 @@
     .columns{grid-template-columns:1fr;gap:38px}
     .dial-col{position:static}
     .dial-stage{max-width:380px;margin:0 auto}
-    .composer{grid-template-columns:1fr 92px;grid-template-areas:"name dur" "btn btn"}
+    .composer{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"name name" "start dur" "btn btn"}
     .composer input.name{grid-area:name}
+    .composer input.start{grid-area:start}
     .composer input.dur{grid-area:dur}
     .composer .btn-solid{grid-area:btn}
-    .composer.single{grid-template-columns:1fr;grid-template-areas:"name" "btn"}
+    .composer.single{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "btn"}
     .cmp-row{grid-template-columns:1fr 64px 64px;grid-template-areas:"name alloc free" "bar bar bar";gap:8px 12px}
     .cmp-row.head{display:none}
     .cmp-name{grid-area:name}
@@ -249,8 +271,13 @@
 
     /* No grip on touch — press and hold a row to move it. */
     .grip{display:none}
-    li.task,li.free{grid-template-columns:20px 1fr 74px 42px 26px;gap:8px}
-    li.free .label{grid-column:2}
+    li.task{
+      grid-template-columns:20px minmax(0,1fr) auto 26px;
+      grid-template-areas:"tick name meta del" "desc desc desc desc";
+      align-items:center;row-gap:2px;padding:10px 6px;
+    }
+    .meta input.dur{width:58px}
+    .desc{padding-left:0}
     li.task.pressing{background:#fff;box-shadow:0 4px 14px rgba(24,34,38,.12);border-radius:3px}
     .shelf-controls .btn-line,.shelf-controls .btn-solid{flex:1 1 auto}
   }
@@ -294,7 +321,7 @@
     <section class="dial-col" aria-label="Day time graph">
       <div class="dial-stage">
         <svg class="dial" id="dial" viewBox="0 0 320 320" role="img" aria-labelledby="dialTitle">
-          <title id="dialTitle">Donut chart of the 24-hour day by task</title>
+          <title id="dialTitle">Ring chart of the 24-hour day by task</title>
           <defs>
             <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <rect width="6" height="6" fill="#F4F6F0"></rect>
@@ -304,7 +331,6 @@
           <g id="ticks"></g>
           <g id="arcs"></g>
           <g id="checks" aria-hidden="true"></g>
-          <circle id="overRing" class="over-ring" cx="160" cy="160" r="136" style="display:none"></circle>
         </svg>
         <div class="readout" id="readout">
           <span class="r-label" id="rLabel">Free time</span>
@@ -322,13 +348,15 @@
 
     <section class="list-col" aria-label="Task list">
       <h2>Timed tasks</h2>
-      <p class="sub">Tick a task to fill in its slice — pale means still ahead of you, full colour means done.</p>
+      <p class="sub">Give a task a start time to pin it to the clock, or leave it blank and it fills the next free stretch. Same name, same colour — split a task in two and it stays one activity.</p>
 
       <div class="composer">
         <input type="text" id="newName" class="name" placeholder="What are you doing?" aria-label="Task name" autocomplete="off">
+        <input type="time" id="newStart" class="start" step="300" aria-label="Start time (optional)">
         <input type="text" id="newDur" class="dur" placeholder="1h 30m" aria-label="Estimated duration" autocomplete="off">
         <button class="btn-solid" id="addBtn">Add task</button>
       </div>
+
       <ul class="tasks" id="taskList"></ul>
 
       <div class="empty" id="empty">
@@ -342,7 +370,6 @@
           <span class="label" id="freeLabel">Free time</span>
           <span class="amount" id="freeAmount">24h</span>
           <span class="pct" id="freePct">100%</span>
-          <span></span>
         </li>
       </ul>
 
@@ -400,14 +427,16 @@
   var SVGNS = 'http://www.w3.org/2000/svg';
 
   var tasks = [], checks = [], plans = [];
+  var colorMap = {}, colorSeq = 0;
   var activePlanId = null, activeId = null;
   var dirty = false, booting = true, isDragging = false;
-  var seq = 0, checkSeq = 0, colorSeq = 0, planSeq = 0;
+  var seq = 0, checkSeq = 0, planSeq = 0;
   var saveTimer = null, flashTimer = null;
+  var LAY = null;
 
   var el = {};
-  ['arcs','ticks','checks','dial','overRing','readout','rLabel','rValue','rNote','tAlloc','tFree','tDone',
-   'taskList','checkList','empty','freeRow','freeLabel','freeAmount','freePct','newName','newDur','newCheck',
+  ['arcs','ticks','checks','dial','readout','rLabel','rValue','rNote','tAlloc','tFree','tDone',
+   'taskList','checkList','empty','freeRow','freeLabel','freeAmount','freePct','newName','newStart','newDur','newCheck',
    'progressFill','progressLabel','chips','planName','saveBtn','dupBtn','compareBtn','comparePanel','cmpBody',
    'saveState','shelfToggle','shelfLabel','importInput','modal','modalTitle','modalBody','modalField',
    'modalLabel','modalInput','modalActions'
@@ -500,15 +529,39 @@
     };
   })();
 
-  /* ---------- helpers ---------- */
+  /* ---------- activities and colour ---------- */
+
+  // Tasks sharing a name are one activity: same colour, highlighted together.
+  function activityKey(name){ return String(name || '').trim().toLowerCase(); }
 
   function hueFor(i){ return (45 + i * 137.508) % 360; }
+
+  function colorIndexOf(name){
+    var key = activityKey(name);
+    if (!(key in colorMap)) colorMap[key] = colorSeq++;
+    return colorMap[key];
+  }
+
   function colorFor(i){ return 'oklch(0.66 0.132 ' + hueFor(i).toFixed(1) + ')'; }
+
   // Pending slices sit pale on the dial; ticking a task fills it in.
   function arcFill(i, done){
     var h = hueFor(i).toFixed(1);
     return done ? 'oklch(0.645 0.142 ' + h + ')' : 'oklch(0.805 0.085 ' + h + ')';
   }
+
+  function seedColors(list){
+    (list || []).forEach(function(t){
+      var key = activityKey(t.name);
+      if (key in colorMap) return;
+      var idx = (t.colorIndex == null) ? colorSeq : Number(t.colorIndex);
+      if (isNaN(idx) || idx < 0) idx = colorSeq;
+      colorMap[key] = idx;
+      if (idx >= colorSeq) colorSeq = idx + 1;
+    });
+  }
+
+  /* ---------- helpers ---------- */
 
   function isFreeBlock(name){ return /^(free(\s*time)?|buffer|gap|slack)$/i.test(String(name || '').trim()); }
 
@@ -553,6 +606,20 @@
     return Math.round(p) + '%';
   }
 
+  // "HH:MM" <-> minutes past midnight
+  function clock(mins){
+    var m = ((Math.round(mins) % DAY) + DAY) % DAY;
+    var h = Math.floor(m / 60), mm = m % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (mm < 10 ? '0' : '') + mm;
+  }
+  function parseClock(value){
+    var m = String(value || '').match(/^(\d{1,2}):([0-5]\d)$/);
+    if (!m) return null;
+    var h = +m[1];
+    if (h > 23) return null;
+    return h * 60 + (+m[2]);
+  }
+
   function polar(r, a){ return [CX + r * Math.sin(a), CY - r * Math.cos(a)]; }
 
   function annulus(a0, a1){
@@ -573,6 +640,95 @@
   function isTouchLayout(){ return window.matchMedia('(max-width: 880px)').matches; }
 
   var CHECK_SVG = '<svg viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2 6.3 4.7 9 10 3.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CHEVRON_SVG = '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">' +
+    '<path d="M2.5 4.5 6 8 9.5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  /* ---------- layout: where each task sits on the clock ---------- */
+
+  // Anchored tasks take their stated slot (wrapping past midnight if needed).
+  // Everything else flows into whatever stretches are left, in list order,
+  // splitting across stretches when a task doesn't fit in one piece.
+  function computeLayout(){
+    var occ = new Uint8Array(DAY);
+    var segs = {}, conflicts = {}, unplaced = {};
+
+    function anchorSegments(start, minutes){
+      var out = [], s = ((start % DAY) + DAY) % DAY, left = Math.min(minutes, DAY);
+      while (left > 0){
+        var take = Math.min(left, DAY - s);
+        out.push({ start: s, len: take });
+        left -= take;
+        s = (s + take) % DAY;
+      }
+      return out;
+    }
+
+    var anchored = tasks.filter(function(t){ return t.start != null && t.minutes > 0; })
+                        .slice().sort(function(a, b){ return a.start - b.start; });
+
+    anchored.forEach(function(t){
+      var list = anchorSegments(t.start, t.minutes), clash = false;
+      list.forEach(function(sg){
+        for (var i = 0; i < sg.len; i++){
+          var m = sg.start + i;
+          if (occ[m]) clash = true;
+          occ[m] = 1;
+        }
+      });
+      segs[t.id] = list;
+      if (clash) conflicts[t.id] = true;
+    });
+
+    var runs = [], runStart = null;
+    for (var m = 0; m < DAY; m++){
+      if (!occ[m]){ if (runStart === null) runStart = m; }
+      else if (runStart !== null){ runs.push({ start: runStart, len: m - runStart }); runStart = null; }
+    }
+    if (runStart !== null) runs.push({ start: runStart, len: DAY - runStart });
+
+    var ri = 0, offset = 0;
+    tasks.forEach(function(t){
+      if (t.start != null || t.minutes <= 0){ if (t.minutes <= 0) segs[t.id] = []; return; }
+      var need = t.minutes, list = [];
+      while (need > 0 && ri < runs.length){
+        var avail = runs[ri].len - offset;
+        if (avail <= 0){ ri++; offset = 0; continue; }
+        var take = Math.min(need, avail);
+        list.push({ start: runs[ri].start + offset, len: take });
+        offset += take;
+        need -= take;
+        if (offset >= runs[ri].len){ ri++; offset = 0; }
+      }
+      if (need > 0) unplaced[t.id] = need;
+      list.forEach(function(sg){
+        for (var i = 0; i < sg.len; i++) occ[sg.start + i] = 1;
+      });
+      segs[t.id] = list;
+    });
+
+    var freeRuns = [], fs = null;
+    for (var k = 0; k < DAY; k++){
+      if (!occ[k]){ if (fs === null) fs = k; }
+      else if (fs !== null){ freeRuns.push({ start: fs, len: k - fs }); fs = null; }
+    }
+    if (fs !== null) freeRuns.push({ start: fs, len: DAY - fs });
+
+    return { segs: segs, conflicts: conflicts, unplaced: unplaced, freeRuns: freeRuns, totals: splitTotals(tasks) };
+  }
+
+  function taskRange(t){
+    var list = LAY && LAY.segs[t.id];
+    if (!list || !list.length) return null;
+    var first = list[0], last = list[list.length - 1];
+    return clock(first.start) + '–' + clock(last.start + last.len);
+  }
+
+  // All tasks sharing this name, as one activity.
+  function activityTotal(name){
+    var key = activityKey(name), total = 0, blocks = 0;
+    tasks.forEach(function(t){ if (activityKey(t.name) === key){ total += t.minutes; blocks++; } });
+    return { total: total, blocks: blocks };
+  }
 
   /* ---------- hour ring ---------- */
 
@@ -601,79 +757,84 @@
   /* ---------- rendering ---------- */
 
   function renderDial(){
-    var s = splitTotals(tasks);
-    var scale = Math.max(s.total, DAY);
     var arcFrag = document.createDocumentFragment();
     var markFrag = document.createDocumentFragment();
-    var cursor = 0;
 
     tasks.forEach(function(t){
-      if (t.minutes <= 0) return;
+      var list = LAY.segs[t.id] || [];
       var gap = isFreeBlock(t.name);
-      var a0 = cursor / scale * Math.PI * 2;
-      cursor += t.minutes;
-      var a1 = cursor / scale * Math.PI * 2;
+      var idx = colorIndexOf(t.name);
 
-      var path = document.createElementNS(SVGNS, 'path');
-      path.setAttribute('d', annulus(a0, a1));
-      if (gap){
-        path.setAttribute('fill', 'url(#hatch)');
-        path.setAttribute('stroke', '#C7CEC3');
-      } else {
-        path.setAttribute('fill', arcFill(t.colorIndex, t.done));
-      }
-      path.setAttribute('class', 'arc');
-      path.setAttribute('tabindex', '0');
-      path.setAttribute('role', 'button');
-      path.setAttribute('aria-label', (gap ? 'Gap, ' : t.name + ', ') + fmt(t.minutes) + ', ' +
-                        pct(t.minutes) + ' of the day' + (t.done ? ', done' : ''));
-      path.dataset.id = t.id;
-      arcFrag.appendChild(path);
+      list.forEach(function(sg){
+        var a0 = sg.start / DAY * Math.PI * 2;
+        var a1 = (sg.start + sg.len) / DAY * Math.PI * 2;
+        var path = document.createElementNS(SVGNS, 'path');
+        path.setAttribute('d', annulus(a0, a1));
+        if (gap){
+          path.setAttribute('fill', 'url(#hatch)');
+          path.setAttribute('stroke', '#C7CEC3');
+        } else {
+          path.setAttribute('fill', arcFill(idx, t.done));
+        }
+        path.setAttribute('class', 'arc' + (LAY.conflicts[t.id] ? ' is-conflict' : ''));
+        path.setAttribute('tabindex', '0');
+        path.setAttribute('role', 'button');
+        path.setAttribute('aria-label', (gap ? 'Gap' : t.name) + ', ' + clock(sg.start) + ' to ' +
+                          clock(sg.start + sg.len) + (t.done && !gap ? ', done' : ''));
+        path.dataset.id = t.id;
+        path.dataset.key = activityKey(t.name);
+        arcFrag.appendChild(path);
 
-      // A tick on the arc itself, when the slice is wide enough to hold one.
-      if (t.done && !gap && t.minutes >= 25){
-        var mid = (a0 + a1) / 2;
-        var mp = polar((R_OUT + R_IN) / 2, mid);
-        var mark = document.createElementNS(SVGNS, 'text');
-        mark.setAttribute('x', mp[0].toFixed(2));
-        mark.setAttribute('y', mp[1].toFixed(2));
-        mark.setAttribute('class', 'arc-check');
-        mark.textContent = '✓';
-        markFrag.appendChild(mark);
-      }
+        if (t.done && !gap && sg.len >= 25){
+          var mp = polar((R_OUT + R_IN) / 2, (a0 + a1) / 2);
+          var mark = document.createElementNS(SVGNS, 'text');
+          mark.setAttribute('x', mp[0].toFixed(2));
+          mark.setAttribute('y', mp[1].toFixed(2));
+          mark.setAttribute('class', 'arc-check');
+          mark.textContent = '✓';
+          markFrag.appendChild(mark);
+        }
+      });
     });
 
-    if (s.remainder > 0.5){
+    LAY.freeRuns.forEach(function(run){
       var fp = document.createElementNS(SVGNS, 'path');
-      fp.setAttribute('d', annulus(cursor / scale * Math.PI * 2, Math.PI * 2));
+      fp.setAttribute('d', annulus(run.start / DAY * Math.PI * 2, (run.start + run.len) / DAY * Math.PI * 2));
       fp.setAttribute('fill', 'url(#hatch)');
       fp.setAttribute('stroke', '#C7CEC3');
       fp.setAttribute('class', 'arc');
       fp.setAttribute('tabindex', '0');
       fp.setAttribute('role', 'button');
-      fp.setAttribute('aria-label', 'Unclaimed time, ' + fmt(s.remainder));
+      fp.setAttribute('aria-label', 'Free, ' + clock(run.start) + ' to ' + clock(run.start + run.len));
       fp.dataset.id = 'free';
+      fp.dataset.key = '\u0000free';
       arcFrag.appendChild(fp);
-    }
+    });
 
     el.arcs.textContent = ''; el.arcs.appendChild(arcFrag);
     el.checks.textContent = ''; el.checks.appendChild(markFrag);
-    el.overRing.style.display = s.over ? '' : 'none';
     applyActive();
   }
 
   function renderReadout(){
-    var s = splitTotals(tasks);
+    var s = LAY.totals;
     el.readout.classList.toggle('is-over', s.over);
 
     if (activeId && activeId !== 'free'){
       var t = tasks.filter(function(x){ return x.id === activeId; })[0];
       if (t){
         var gap = isFreeBlock(t.name);
+        var act = activityTotal(t.name);
+        var range = taskRange(t);
         el.rLabel.className = 'r-name';
         el.rLabel.textContent = gap ? 'Gap' : (t.name || 'Untitled task');
         el.rValue.textContent = fmt(t.minutes);
-        el.rNote.textContent = pct(t.minutes) + ' of the day' + (t.done && !gap ? ' · done' : '');
+        var bits = [];
+        if (range) bits.push(range);
+        if (!gap && act.blocks > 1) bits.push(fmt(act.total) + ' total in ' + act.blocks + ' blocks');
+        else bits.push(pct(t.minutes) + ' of the day');
+        if (t.done && !gap) bits.push('done');
+        el.rNote.textContent = bits.join(' · ');
         return;
       }
     }
@@ -689,14 +850,42 @@
     }
   }
 
+  function renderRows(){
+    tasks.forEach(function(t){
+      var idx = colorIndexOf(t.name);
+      var gap = isFreeBlock(t.name);
+      t.color = colorFor(idx);
+      t.els.tick.style.setProperty('--tick', t.color);
+
+      var conflict = !!LAY.conflicts[t.id];
+      var short = LAY.unplaced[t.id];
+      t.els.row.classList.toggle('is-conflict', conflict);
+      t.els.row.classList.toggle('is-unplaced', !!short);
+
+      var range = taskRange(t);
+      var bits = [];
+      if (range) bits.push(t.start != null ? range : 'falls at ' + range);
+      bits.push(pct(t.minutes) + ' of the day');
+      if (conflict) bits.push('overlaps another task');
+      if (short) bits.push(fmt(short) + " doesn't fit");
+      t.els.info.textContent = bits.join(' · ');
+
+      t.els.unpin.hidden = t.start == null;
+      t.els.row.title = conflict ? 'Overlaps another scheduled task'
+                      : (short ? fmt(short) + " of this doesn't fit in the day"
+                               : (range ? range : ''));
+    });
+  }
+
   function renderTotals(){
-    var s = splitTotals(tasks);
+    var s = LAY.totals;
     var timed = tasks.filter(function(t){ return !isFreeBlock(t.name); });
     var doneCount = timed.filter(function(t){ return t.done; }).length + checks.filter(function(c){ return c.done; }).length;
     var allCount = timed.length + checks.length;
 
     el.tAlloc.textContent = fmt(s.allocated);
     el.tFree.textContent = s.over ? '—' : fmt(s.free);
+    el.tFree.classList.toggle('over', s.over);
     el.tDone.textContent = doneCount + '/' + allCount;
 
     el.freeRow.classList.toggle('is-over', s.over);
@@ -704,13 +893,12 @@
     if (!s.over && s.blocks > 0){
       var note = document.createElement('span');
       note.className = 'free-note';
-      note.textContent = fmt(s.blocks) + ' in gaps · ' + fmt(Math.max(0, s.remainder)) + ' at the end';
+      note.textContent = fmt(s.blocks) + ' in gaps';
       el.freeLabel.appendChild(note);
     }
     el.freeAmount.textContent = s.over ? fmt(s.total - DAY) : fmt(s.free);
     el.freePct.textContent = s.over ? pct(s.total - DAY) : pct(s.free);
 
-    tasks.forEach(function(t){ t.els.pct.textContent = pct(t.minutes); });
     el.empty.style.display = tasks.length ? 'none' : '';
 
     var cDone = checks.filter(function(c){ return c.done; }).length;
@@ -719,7 +907,9 @@
   }
 
   function refresh(){
+    LAY = computeLayout();
     renderDial();
+    renderRows();
     renderReadout();
     renderTotals();
     renderChips();
@@ -728,11 +918,20 @@
   }
 
   function applyActive(){
-    el.dial.classList.toggle('has-focus', !!activeId);
+    var activeKey = null;
+    if (activeId === 'free') activeKey = '\u0000free';
+    else if (activeId){
+      var t = tasks.filter(function(x){ return x.id === activeId; })[0];
+      if (t) activeKey = activityKey(t.name);
+    }
+    el.dial.classList.toggle('has-focus', !!activeKey);
     Array.prototype.forEach.call(el.arcs.children, function(a){
-      a.classList.toggle('is-active', a.dataset.id === activeId);
+      a.classList.toggle('is-active', activeKey != null && a.dataset.key === activeKey);
     });
-    tasks.forEach(function(t){ t.els.row.classList.toggle('is-active', t.id === activeId); });
+    // Every block of the same activity lights up together.
+    tasks.forEach(function(t){
+      t.els.row.classList.toggle('is-active', activeKey != null && activeKey !== '\u0000free' && activityKey(t.name) === activeKey);
+    });
     el.freeRow.classList.toggle('is-active', activeId === 'free');
   }
 
@@ -755,23 +954,34 @@
     flashTimer = setTimeout(function(){ el.saveState.classList.remove('flash'); renderSaveState(); }, 1600);
   }
 
+  // Only the colours actually in use get saved — typing a name letter by letter
+  // allocates throwaway keys that shouldn't end up in storage.
+  function usedColors(){
+    var out = {};
+    tasks.forEach(function(t){ out[activityKey(t.name)] = colorIndexOf(t.name); });
+    return out;
+  }
+
+  function currentState(){
+    return { tasks: snapshotTasks(), checks: snapshotChecks(), colors: usedColors(),
+             activePlanId: activePlanId, dirty: dirty };
+  }
+
   function writeActivePlan(){
     if (!activePlanId) return false;
     var p = findPlan(activePlanId);
     if (!p) return false;
     p.tasks = snapshotTasks();
     p.checks = snapshotChecks();
+    p.colors = usedColors();
     store.set(KEY_PLANS, JSON.stringify(plans));
     dirty = false;
     return true;
   }
 
-  // Every edit persists immediately; a named plan is also written back to the shelf.
   function autosave(){
     if (booting) return;
-    store.set(KEY_CURRENT, JSON.stringify({
-      tasks: snapshotTasks(), checks: snapshotChecks(), activePlanId: activePlanId, dirty: dirty
-    }));
+    store.set(KEY_CURRENT, JSON.stringify(currentState()));
     if (!activePlanId) return;
     clearTimeout(saveTimer);
     saveTimer = setTimeout(function(){
@@ -782,9 +992,7 @@
   function flushSave(){
     clearTimeout(saveTimer);
     if (booting) return;
-    store.set(KEY_CURRENT, JSON.stringify({
-      tasks: snapshotTasks(), checks: snapshotChecks(), activePlanId: activePlanId, dirty: dirty
-    }));
+    store.set(KEY_CURRENT, JSON.stringify(currentState()));
     writeActivePlan();
   }
 
@@ -803,9 +1011,6 @@
 
   function blockScroll(e){ e.preventDefault(); }
 
-  // The dragged row is lifted with a transform and the rest slide around it; the DOM
-  // is only touched once, on drop. Listeners live on the document so the pointer can
-  // wander off the row without the drag dying.
   function startDrag(li, startY, handle, touchDrag){
     if (isDragging) return;
 
@@ -832,7 +1037,6 @@
     function move(ev){
       var dy = Math.max(minDy, Math.min(maxDy, ev.clientY - startY));
       li.style.transform = 'translateY(' + dy + 'px)';
-
       var center = centers[dragIndex] + dy;
       var idx = dragIndex;
       rows.forEach(function(n, i){
@@ -870,7 +1074,6 @@
     document.addEventListener('pointercancel', end);
   }
 
-  // Touch layout has no grip: press and hold the row itself for ~420ms.
   function attachLongPress(li){
     var timer = null, startX = 0, startY = 0, armed = false;
 
@@ -891,10 +1094,9 @@
     li.addEventListener('pointerdown', function(e){
       if (isDragging || !isTouchLayout()) return;
       if (e.pointerType === 'mouse') return;
-      if (e.target.closest('button')) return;
-      // If they are already editing this field, a long press means text selection, not a drag.
+      if (e.target.closest('button, textarea')) return;
       var field = e.target.closest('input');
-      if (field && field === document.activeElement) return;
+      if (field && (field === document.activeElement || field.type === 'time')) return;
       startX = e.clientX; startY = e.clientY;
       armed = true;
       li.classList.add('pressing');
@@ -906,7 +1108,7 @@
         if (!armed) return;
         cancel();
         if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
-        if (navigator.vibrate) { try { navigator.vibrate(12); } catch (err){} }
+        if (navigator.vibrate){ try { navigator.vibrate(12); } catch (err){} }
         startDrag(li, startY, null, true);
       }, 500);
     });
@@ -921,16 +1123,17 @@
 
   /* ---------- timed tasks ---------- */
 
-  function addTask(name, minutes, colorIndex, done){
+  function addTask(opts){
     var t = {
       id: 'task-' + (++seq),
-      name: name || 'Untitled task',
-      minutes: clampMin(minutes),
-      colorIndex: (colorIndex == null ? colorSeq++ : colorIndex),
-      done: !!done
+      name: opts.name || 'Untitled task',
+      minutes: clampMin(opts.minutes),
+      start: (opts.start == null || opts.start === '') ? null : clampMin(Number(opts.start)) % DAY,
+      note: opts.note || '',
+      done: !!opts.done
     };
-    if (t.colorIndex >= colorSeq) colorSeq = t.colorIndex + 1;
-    t.color = colorFor(t.colorIndex);
+    colorIndexOf(t.name);
+    t.color = colorFor(colorIndexOf(t.name));
 
     var li = document.createElement('li');
     li.className = 'task';
@@ -953,22 +1156,68 @@
     nameIn.type = 'text'; nameIn.className = 'name'; nameIn.value = t.name;
     nameIn.setAttribute('aria-label', 'Task name');
 
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+
     var durIn = document.createElement('input');
     durIn.type = 'text'; durIn.className = 'dur'; durIn.value = fmt(t.minutes);
     durIn.setAttribute('aria-label', 'Duration for ' + t.name);
-    durIn.setAttribute('inputmode', 'text');
 
-    var pctEl = document.createElement('span');
-    pctEl.className = 'pct';
+    var expand = document.createElement('button');
+    expand.className = 'btn-expand'; expand.type = 'button';
+    expand.setAttribute('aria-expanded', 'false');
+    expand.innerHTML = CHEVRON_SVG;
+
+    meta.append(durIn, expand);
 
     var del = document.createElement('button');
     del.className = 'btn-remove'; del.type = 'button'; del.innerHTML = '&times;';
     del.title = 'Remove task'; del.setAttribute('aria-label', 'Remove ' + t.name);
 
-    li.append(grip, tick, nameIn, durIn, pctEl, del);
-    t.els = { row: li, grip: grip, tick: tick, name: nameIn, dur: durIn, pct: pctEl };
+    // Expandable detail: when it starts, and everything else worth writing down.
+    var desc = document.createElement('div');
+    desc.className = 'desc'; desc.hidden = true;
+
+    var descRow = document.createElement('div');
+    descRow.className = 'desc-row';
+
+    var startLabel = document.createElement('label');
+    startLabel.textContent = 'Starts at';
+    startLabel.htmlFor = 'start-' + t.id;
+
+    var startIn = document.createElement('input');
+    startIn.type = 'time'; startIn.className = 'start'; startIn.step = '300';
+    startIn.id = 'start-' + t.id;
+    startIn.value = t.start == null ? '' : clock(t.start);
+    startIn.setAttribute('aria-label', 'Start time for ' + t.name);
+
+    var unpin = document.createElement('button');
+    unpin.className = 'btn-unpin'; unpin.type = 'button'; unpin.textContent = 'unpin';
+    unpin.title = 'Let this task float into the next free stretch';
+    unpin.hidden = t.start == null;
+
+    var info = document.createElement('span');
+    info.className = 'desc-meta';
+
+    descRow.append(startLabel, startIn, unpin, info);
+
+    var noteArea = document.createElement('textarea');
+    noteArea.placeholder = 'Details — sets and reps, agenda, what "done" means…';
+    noteArea.value = t.note;
+    noteArea.setAttribute('aria-label', 'Description for ' + t.name);
+
+    desc.append(descRow, noteArea);
+
+    li.append(grip, tick, nameIn, meta, del, desc);
+    t.els = { row: li, grip: grip, tick: tick, name: nameIn, start: startIn, dur: durIn,
+              info: info, unpin: unpin, expand: expand, desc: desc, area: noteArea };
     tasks.push(t);
     el.taskList.appendChild(li);
+
+    function grow(){
+      noteArea.style.height = 'auto';
+      noteArea.style.height = Math.max(62, noteArea.scrollHeight) + 'px';
+    }
 
     function paintRow(){
       var gap = isFreeBlock(t.name);
@@ -979,7 +1228,8 @@
       tick.setAttribute('aria-checked', String(!gap && t.done));
       tick.setAttribute('aria-label', gap ? 'Gap in the day' : (t.done ? 'Mark ' + t.name + ' as not done' : 'Mark ' + t.name + ' as done'));
       li.classList.toggle('is-done', !gap && t.done);
-      li.classList.toggle('is-gap', gap);
+      expand.classList.toggle('has-note', !!t.note.trim());
+      expand.setAttribute('aria-label', 'Start time and details for ' + (t.name || 'this task'));
     }
     paintRow();
 
@@ -988,6 +1238,26 @@
       t.done = !t.done;
       paintRow();
       markDirty(); refresh();
+    });
+
+    expand.addEventListener('click', function(){
+      var open = desc.hidden;
+      desc.hidden = !open;
+      expand.setAttribute('aria-expanded', String(open));
+      if (open) grow();
+    });
+
+    unpin.addEventListener('click', function(){
+      t.start = null;
+      startIn.value = '';
+      markDirty(); refresh();
+    });
+
+    noteArea.addEventListener('input', function(){
+      t.note = noteArea.value;
+      grow();
+      paintRow();
+      markDirty(); autosave();
     });
 
     grip.addEventListener('pointerdown', function(e){
@@ -1009,6 +1279,15 @@
       paintRow();
       del.setAttribute('aria-label', 'Remove ' + (t.name || 'task'));
       grip.setAttribute('aria-label', 'Reorder ' + (t.name || 'task') + '. Press the up or down arrow keys to move it.');
+      markDirty(); refresh();
+    });
+
+    startIn.addEventListener('input', function(){
+      t.start = parseClock(startIn.value);
+      markDirty(); refresh();
+    });
+    startIn.addEventListener('change', function(){
+      t.start = parseClock(startIn.value);
       markDirty(); refresh();
     });
 
@@ -1123,7 +1402,8 @@
 
   function snapshotTasks(){
     return tasks.map(function(t){
-      return { name: t.name, minutes: t.minutes, colorIndex: t.colorIndex, done: !!t.done };
+      return { name: t.name, minutes: t.minutes, start: t.start, note: t.note,
+               colorIndex: colorIndexOf(t.name), done: !!t.done };
     });
   }
   function snapshotChecks(){
@@ -1185,7 +1465,16 @@
   function applyPlan(p){
     booting = true;
     clearTasks(); clearChecks();
-    (p.tasks || []).forEach(function(t){ addTask(t.name, t.minutes, t.colorIndex, t.done); });
+    if (p.colors && typeof p.colors === 'object'){
+      Object.keys(p.colors).forEach(function(k){
+        var idx = Number(p.colors[k]);
+        if (isNaN(idx)) return;
+        colorMap[k] = idx;
+        if (idx >= colorSeq) colorSeq = idx + 1;
+      });
+    }
+    seedColors(p.tasks);
+    (p.tasks || []).forEach(function(t){ addTask(t); });
     (p.checks || []).forEach(function(c){ addCheck(c.text, c.done); });
     booting = false;
     activePlanId = p.id;
@@ -1194,7 +1483,6 @@
     refresh();
   }
 
-  // Only unnamed work can be lost now — a named plan is already saved.
   function guardUnsaved(body){
     if (activePlanId || (!tasks.length && !checks.length)) return Promise.resolve(true);
     return modal.choose({
@@ -1238,18 +1526,14 @@
     var p = activePlanId ? findPlan(activePlanId) : null;
 
     if (p){
-      return modal.prompt({
-        title: 'Rename this plan',
-        label: 'Plan name',
-        value: p.name,
-        confirmLabel: 'Rename'
-      }).then(function(name){
-        if (!name) return false;
-        p.name = name;
-        el.planName.value = name;
-        persistPlans(); refresh();
-        return true;
-      });
+      return modal.prompt({ title: 'Rename this plan', label: 'Plan name', value: p.name, confirmLabel: 'Rename' })
+        .then(function(name){
+          if (!name) return false;
+          p.name = name;
+          el.planName.value = name;
+          persistPlans(); refresh();
+          return true;
+        });
     }
 
     if (typed) return Promise.resolve(commitNewPlan(typed));
@@ -1267,7 +1551,8 @@
   }
 
   function commitNewPlan(name){
-    var p = { id: 'plan-' + (++planSeq) + '-' + Date.now(), name: name, tasks: snapshotTasks(), checks: snapshotChecks() };
+    var p = { id: 'plan-' + (++planSeq) + '-' + Date.now(), name: name,
+              tasks: snapshotTasks(), checks: snapshotChecks(), colors: usedColors() };
     plans.push(p);
     activePlanId = p.id;
     dirty = false;
@@ -1310,8 +1595,7 @@
     el.cmpBody.textContent = '';
 
     var rows = plans.map(function(p){
-      return { id: p.id, name: p.name, tasks: p.tasks,
-               note: p.id === activePlanId ? 'On the dial' : '' };
+      return { id: p.id, name: p.name, tasks: p.tasks, note: p.id === activePlanId ? 'On the dial' : '' };
     });
     if (!activePlanId && tasks.length){
       rows.push({ id: null, name: el.planName.value.trim() || 'Unsaved day', tasks: snapshotTasks(), note: 'On the dial · not saved' });
@@ -1394,16 +1678,17 @@
   function submitNew(){
     var name = el.newName.value.trim();
     var mins = parseDuration(el.newDur.value);
+    var start = parseClock(el.newStart.value);
     if (!name && mins === null){ el.newName.focus(); return; }
-    addTask(name || 'Untitled task', mins === null ? 60 : mins);
-    el.newName.value = ''; el.newDur.value = '';
+    addTask({ name: name || 'Untitled task', minutes: mins === null ? 60 : mins, start: start });
+    el.newName.value = ''; el.newDur.value = ''; el.newStart.value = '';
     if (!isTouchLayout()) el.newName.focus();
     markDirty(); refresh();
   }
 
   function submitCheck(){
     var text = el.newCheck.value.trim();
-    if (!text) { el.newCheck.focus(); return; }
+    if (!text){ el.newCheck.focus(); return; }
     addCheck(text, false);
     el.newCheck.value = '';
     if (!isTouchLayout()) el.newCheck.focus();
@@ -1411,16 +1696,18 @@
   }
 
   document.getElementById('addBtn').addEventListener('click', submitNew);
-  [el.newName, el.newDur].forEach(function(input){
+  [el.newName, el.newStart, el.newDur].forEach(function(input){
     input.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitNew(); });
   });
   document.getElementById('addCheckBtn').addEventListener('click', submitCheck);
   el.newCheck.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitCheck(); });
 
   document.getElementById('exampleBtn').addEventListener('click', function(){
-    [['Sleep', 450], ['Deep work', 180], ['Meetings', 90], ['Email and admin', 60],
-     ['Meals', 90], ['Buffer', 30], ['Exercise', 45], ['Commute', 40], ['Reading', 30]
-    ].forEach(function(r){ addTask(r[0], r[1]); });
+    [['Sleep', 450, '23:00'], ['Exercise', 45, '06:45'], ['Breakfast', 30, '07:40'],
+     ['Commute', 40, '08:20'], ['Deep work', 180, '09:00'], ['Lunch', 45, '12:00'],
+     ['Meetings', 90, '13:00'], ['Deep work', 90, '14:45'], ['Email and admin', 60, '16:30'],
+     ['Buffer', 30, '17:30'], ['Commute', 40, '18:00'], ['Reading', 30, '21:00']
+    ].forEach(function(r){ addTask({ name: r[0], minutes: r[1], start: parseClock(r[2]) }); });
     if (!checks.length){
       addCheck('Drink 3 L of water', false);
       addCheck('Take vitamins', false);
@@ -1436,13 +1723,18 @@
       confirmLabel: 'Uncheck all'
     }).then(function(ok){
       if (!ok) return;
-      var snapT = snapshotTasks().map(function(t){ t.done = false; return t; });
-      var snapC = snapshotChecks().map(function(c){ c.done = false; return c; });
-      booting = true;
-      clearTasks(); clearChecks();
-      snapT.forEach(function(t){ addTask(t.name, t.minutes, t.colorIndex, false); });
-      snapC.forEach(function(c){ addCheck(c.text, false); });
-      booting = false;
+      tasks.forEach(function(t){
+        t.done = false;
+        t.els.tick.classList.remove('is-done');
+        t.els.tick.setAttribute('aria-checked', 'false');
+        t.els.row.classList.remove('is-done');
+      });
+      checks.forEach(function(c){
+        c.done = false;
+        c.els.tick.classList.remove('is-done');
+        c.els.tick.setAttribute('aria-checked', 'false');
+        c.els.row.classList.remove('is-done');
+      });
       markDirty(); refresh();
     });
   });
@@ -1470,7 +1762,6 @@
   }
 
   el.shelfToggle.addEventListener('click', function(){ setShelf(el.chips.hidden); });
-
   el.saveBtn.addEventListener('click', function(){ savePlan(); });
   el.dupBtn.addEventListener('click', duplicatePlan);
   el.planName.addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); savePlan(); } });
@@ -1486,7 +1777,7 @@
 
   document.getElementById('exportBtn').addEventListener('click', function(){
     flushSave();
-    var payload = { format: 'day-dial', version: 2, exported: new Date().toISOString(), plans: plans };
+    var payload = { format: 'day-dial', version: 3, exported: new Date().toISOString(), plans: plans };
     var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     var a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -1513,12 +1804,15 @@
             id: 'plan-' + (++planSeq) + '-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
             name: String(p.name || 'Imported plan'),
             tasks: p.tasks.map(function(t, i){
+              var st = (t.start == null || t.start === '') ? null : Number(t.start);
               return { name: String(t.name || 'Untitled task'), minutes: clampMin(Number(t.minutes) || 0),
-                       colorIndex: Number(t.colorIndex) || i, done: !!t.done };
+                       start: (st == null || isNaN(st)) ? null : clampMin(st) % DAY,
+                       note: String(t.note || ''), colorIndex: Number(t.colorIndex) || i, done: !!t.done };
             }),
             checks: Array.isArray(p.checks) ? p.checks.map(function(c){
               return { text: String(c.text || 'Untitled item'), done: !!c.done };
-            }) : []
+            }) : [],
+            colors: (p.colors && typeof p.colors === 'object') ? p.colors : null
           });
           added++;
         });
@@ -1543,7 +1837,16 @@
     try {
       var cur = JSON.parse(store.get(KEY_CURRENT) || 'null');
       if (cur){
-        (cur.tasks || []).forEach(function(t, i){ addTask(t.name, t.minutes, t.colorIndex == null ? i : t.colorIndex, t.done); });
+        if (cur.colors && typeof cur.colors === 'object'){
+          Object.keys(cur.colors).forEach(function(k){
+            var idx = Number(cur.colors[k]);
+            if (isNaN(idx)) return;
+            colorMap[k] = idx;
+            if (idx >= colorSeq) colorSeq = idx + 1;
+          });
+        }
+        seedColors(cur.tasks);
+        (cur.tasks || []).forEach(function(t){ addTask(t); });
         (cur.checks || []).forEach(function(c){ addCheck(c.text, c.done); });
         activePlanId = cur.activePlanId && findPlan(cur.activePlanId) ? cur.activePlanId : null;
         dirty = !!cur.dirty;
