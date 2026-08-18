@@ -225,8 +225,12 @@
   /* ---------- checklist ---------- */
   .checklist{margin-top:44px;padding-top:26px;border-top:1px solid var(--rule)}
   ul.checks{list-style:none;margin:0;padding:0}
-  li.check{display:grid;grid-template-columns:20px minmax(0,1fr) 26px;align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--rule)}
-  li.check input.text{border-color:transparent;background:transparent;padding:6px 4px;font-size:15px}
+  li.check{
+    display:grid;grid-template-columns:20px minmax(0,1fr) 26px;
+    grid-template-areas:"tick name del";
+    align-items:center;gap:10px;padding:9px 6px;border-bottom:1px solid var(--rule);
+  }
+  li.check input.text{grid-area:name;border-color:transparent;background:transparent;padding:6px 4px;font-size:15px}
   li.check input.text:hover,li.check input.text:focus{background:#fff;border-color:var(--rule)}
   li.check.is-done input.text{color:var(--ink-soft);text-decoration:line-through;text-decoration-color:var(--rule)}
 
